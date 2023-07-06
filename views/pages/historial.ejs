@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Historial</title>
+	<%- include('../partials/head-table'); %>
+	<style>
+		#historial_menu {
+			background-color: bisque;
+		}
+		#imprimir-historial {
+			background-color: rgb(87, 19, 19);
+			color: white;
+			padding: 7px;
+			position: fixed;
+			top: 12%;
+			left: 90%;
+		}
+	</style>
+</head>
+<body>
+  <header>
+	<%- include('../partials/header'); %>
+  </header>
+	<div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100" id="historial">
+				<span><%-historial.length %> transacciones</span>
+				<input class="search" placeholder="Search" />
+				<button type="button" id="imprimir-historial" onclick="imprimirHistorial()">Imprimir</button>
+				<div class="table100 ver3 m-b-110" id="historial-frame">
+					<div class="table100-head">
+						<table>
+							<thead>
+							<tr class="row100 head">
+								<th class="cell100 column6"><button class="sort" data-sort="Cliente">Cliente</button></th>
+								<th class="cell100 column6"><button class="sort" data-sort="Item">Item</button></th>
+								<th class="cell100 column6"><button class="sort" data-sort="Tipo">Tipo</button></th>
+								<th class="cell100 column6"><button class="sort" data-sort="Timestamp">Timestamp</button></th>
+								<th class="cell100 column6"><button class="sort" data-sort="Color">Color</button></th>
+								<th class="cell100 column6"><button class="sort" data-sort="Medida">Medida</button></th>
+								<th class="cell100 column6"><button class="sort" data-sort="Marca">Marca</button></th>
+								<th class="cell100 column6"><button class="sort" data-sort="Unidad">Unidad</button></th>
+								<th class="cell100 column6"><button class="sort" data-sort="Cantidad">Cantidad</button></th>
+								<th class="cell100 column6"><button class="sort" data-sort="Precio">Precio</button></th>
+							</tr>
+							</thead>
+						</table>
+					</div>
+					<div class="table100-body js-pscroll ps ps--active-y">
+						<table>
+							<tbody class="list">
+							<% for (let index = historial.length-1; index >= 0; index--) {%>
+								<tr class="row100 body">
+									<td class="cell100 column6 Cliente"><%= historial[index].cliente %></td>
+									<td class="cell100 column6 Item"><%= historial[index].item %></td>
+									<td class="cell100 column6 Tipo"><%= (historial[index].tipo_entrada == 'ingreso')?'Compra':'Venta' %></td>
+									<td class="cell100 column6 Timestamp"><%= historial[index].fecha %></td>
+									<td class="cell100 column6 Color"><%= historial[index].color %></td>
+									<td class="cell100 column6 Medida"><%= historial[index].medida %></td>
+									<td class="cell100 column6 Marca"><%= historial[index].marca %></td>
+									<td class="cell100 column6 Unidad"><%= historial[index].nombreDeUnidad %></td>
+									<td class="cell100 column6 Cantidad"><%= historial[index].cantidad %></td>
+									<td class="cell100 column6 Precio"><%= (historial[index].tipo_entrada == 'ingreso')?historial[index].precioCompra:historial[index].precioVenta %></td>
+								</tr>
+							<% } %>
+							</tbody>
+						</table>
+						<div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+							<div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;">
+							</div>
+						</div>
+						<div class="ps__rail-y" style="top: 0px; height: 585px; right: 0px;">
+							<div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 291px;">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="javascripts/jquery-3.3.1.min.js"></script>
+
+	<script src="javascripts/popper.js"></script>
+	<script src="javascripts/bootstrap.min.js"></script>
+
+	<script src="javascripts/select2.min.js"></script>
+
+	<script src="javascripts/perfect-scrollbar.min.js"></script>
+	<script>
+			$('.js-pscroll').each(function(){
+				var ps = new PerfectScrollbar(this);
+
+				$(window).on('resize', function(){
+					ps.update();
+				})
+			});
+		</script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'UA-23581568-13');
+	</script>
+
+	<script src="javascripts/main_historial.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+
+	<script>
+		var options = {
+			valueNames: [ 'Cliente', 'Item', 'Tipo', 'Timestamp', 'Color', 'Medida', 'Marca', 'Unidad', 'Cantidad', 'Precio' ],
+		};
+
+		var userList = new List('historial', options);
+
+		function imprimirHistorial() {
+			var printData = document.getElementById("historial-frame");
+			newWindow = window.open("");
+			newWindow.document.write(printData.outerHTML);
+			newWindow.print();
+			newWindow.close();
+		}
+	</script>
+	<footer>
+		<%- include('../partials/footer'); %>
+	</footer>
+</body>
+</html>

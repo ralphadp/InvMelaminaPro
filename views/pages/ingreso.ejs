@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Ingresos</title>
+	<%- include('../partials/head-compras-ventas'); %>
+    <link rel="stylesheet" href="stylesheets/stylein.css">
+    <script>
+        var provedor_items = <%- JSON.stringify(provedor); %>;
+        var item_color = <%- JSON.stringify(color); %>;
+        var item_medida = <%- JSON.stringify(medida); %>;
+        var item_marca = <%- JSON.stringify(marca); %>;
+        var item_unidad = <%- JSON.stringify(unidad); %>;
+    </script>
+    <style>
+		#compras_menu {
+			background-color: bisque;
+		}
+	</style>
+</head>
+<body>
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+	<div class="page-content">
+		<div class="melaminapro-heading">Formulario de Ingreso de materiales</div>
+		<div class="melaminapro-v6-content">
+			<div class="melaminapro-form">
+		        <form class="form-register" id="form-register" action="addicionar_ingreso" method="POST">
+		        	<div id="form-total" role="application" class="wizard clearfix">
+                        <div class="steps clearfix">
+                            <ul role="tablist">
+                                <li role="tab" aria-disabled="false" class="first last current" aria-selected="true">
+                                    <a id="form-total-t-0" aria-controls="form-total-p-0">
+                                        <div class="title">
+                                            <p class="step-icon"><span></span></p>
+                                            <span class="step-text">Nuevo Ingreso <input style="border: 0px;" id="timestamp1" name="timestamp1" value="" readonly=""></span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="content clearfix">
+                            <section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false">
+                                <div class="inner">
+                                    <div class="form-images">
+                                        <img src="images/provedor.jpg">
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-holder form-holder-2">
+                                            <label for="ingreso" class="special-label-1">Ingreso del dia #
+                                            <input class="form-control" type="text" id="ingreso" value="<%- historial.length + 1 %>" readonly>
+                                            </label>
+                                        </div>
+                                        <div class="form-holder form-holder-2">
+                                            <label for="room" class="special-label-1">Provedor</label>
+                                            <select name="provedor" id="provedor" class="form-control" onchange="selectProvedor()">
+                                                <option value="" selected="">(Elija el provedor)</option>
+                                                <% for(let index = 0; index < provedor.length; index++) {%>
+                                                <option value="<%= provedor[index].nombre %>"><%= provedor[index].nombre %></option>
+                                                <% } %>
+                                            </select>
+                                            <span class="select-btn">
+                                                <i class="zmdi zmdi-chevron-down"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-holder form-holder-2">
+                                            <label for="room" class="special-label-1">Item</label>
+                                            <select name="item" id="item" class="form-control" onchange="selectItem()">
+                                                <option value="" selected="">(Elija el item)</option>
+                                                <% for(let index = 0; index < item.length; index++) {%>
+                                                    <option value="<%= item[index].nombre %>"><%= item[index].nombre %></option>
+                                                <% } %>
+                                            </select>
+                                            <span class="select-btn">
+                                                <i class="zmdi zmdi-chevron-down"></i>
+                                            </span>
+                                        </div>
+                                        <div class="form-holder form-holder-2" id="divcolor">
+                                            <label for="room" class="special-label-1">Color</label>
+                                            <select name="color" id="color" class="form-control">
+                                                <option value="" selected="">(Escoja el color)</option>
+                                                <% for(let index = 0; index < color.length; index++) {%>
+                                                    <option style="background: <%= color[index].codigo %>;" 
+                                                        value="<%= color[index].nombre %>">
+                                                        <%= color[index].nombre %>
+                                                    </option>
+                                                <% } %>
+                                            </select>
+                                            <span class="select-btn">
+                                                <i class="zmdi zmdi-chevron-down"></i>
+                                            </span>
+                                        </div>
+                                        <div class="form-holder form-holder-2" id="divmedida">
+                                            <label for="room" class="special-label-1">Medida</label>
+                                            <select name="medida" id="medida" class="form-control">
+                                                <option value="" selected="">(Elija las medidas)</option>
+                                                <% for(let index = 0; index < medida.length; index++) {%>
+                                                    <option value="<%= medida[index].nombre %>"><%= medida[index].nombre %></option>
+                                                <% } %>
+                                            </select>
+                                            <span class="select-btn">
+                                                <i class="zmdi zmdi-chevron-down"></i>
+                                            </span>
+                                        </div>
+                                        <div class="form-holder form-holder-2" id="divmarca">
+											<label for="marca" class="special-label-1">Marca</label>
+											<select name="marca" id="marca" class="form-control">
+												<option value="" selected="">(Elija la marca)</option>
+                                                <% for(let index = 0; index < marca.length; index++) {%>
+                                                    <option value="<%= marca[index].nombre %>"><%= marca[index].nombre %></option>
+                                                <% } %>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-holder form-holder-2">
+                                            <label for="cantidad" class="special-label-1">Cantidad</label>
+                                            <input type="number" id="cantidad" name="cantidad" min="1" max="40" class="form-control" value="1">
+                                            <span class="select-btn">
+                                                <i class="zmdi zmdi-chevron-down"></i>
+                                            </span>
+                                        </div>
+                                        <div class="form-holder form-holder-2">
+                                            <label for="room" class="special-label-1">Unidad</label>
+                                            <select name="unidad" id="unidad" class="form-control">
+                                                <option value="" selected="">(Elija la unidad)</option>
+                                            </select>
+                                            <span class="select-btn">
+                                                <i class="zmdi zmdi-chevron-down"></i>
+                                            </span>
+                                        </div>
+                                        <div class="form-holder form-holder-2">
+                                            <label for="precio" class="special-label-1">Precio(Bs)<a class="precio" onclick="obtenerPrecioStandard()">Cargar Standard</a></label>
+                                            <input name="precio" id="precio" class="form-control" value="0.0">
+                                            <span class="select-btn"><span id="precio-mensaje"></span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+		        	    </div>
+                        <div class="actions clearfix">
+                            <ul role="menu" aria-label="Pagination">
+                                <li class="disabled"><a></a></li>
+                                <li aria-hidden="false"><a role="menuitem" style="cursor:pointer;" onclick="GuardarIngreso();">Addicionar</a></li>
+                            </ul>
+                        </div>
+                    </div>
+		        </form>
+                <ul style="list-style-type: none;">
+                    <li>
+                        <span class="row-small-header-2">Fecha</span>
+                        <span class="row-small-header-2">Hora</span>
+                        <span class="row-small-header">Provedor</span>
+                        <span class="row-small-header">Item</span>
+                        <span class="row-header">Color</span>
+                        <span class="row-header">Medida</span>
+                        <span class="row-small-header">Marca</span>
+                        <span class="row-small-header">Unidad</span>
+                        <span class="row-small-header">Cantidad</span>
+                        <span class="row-small-header-2">Gastado</span>
+                    </li>
+                    <% var gastoTotal = 0;
+                        for(let i = historial.length-1; i >= 0; i--) {
+                            var [fecha, hora] = historial[i].fecha.split(" ");
+                            gastoTotal = gastoTotal + Number(historial[i].precioCompra);
+                        %>
+                        <li>
+                            <span class="row-small-2"><%= fecha %></span>
+                            <span class="row-small-2"><%= hora %></span>
+                            <span class="row-small"><%= historial[i].cliente %></span>
+                            <span class="row-small"><%= historial[i].item %></span>
+                            <span class="row"><%= historial[i].color %></span>
+                            <span class="row"><%= historial[i].medida %></span>
+                            <span class="row-small"><%= historial[i].marca %></span>
+                            <span class="row-small"><%= historial[i].nombreDeUnidad %></span>
+                            <span class="row-small"><%= historial[i].cantidad %></span>
+                            <span class="row-small-2"><%= historial[i].precioCompra %> Bs</span>
+                            <button class="delete" type="button" id="<%= historial[i]._id.toString() %>" class="delIngresoBtn" onclick="deleteHistorial(this.id)">X</button>
+                        </li>
+                    <% } %>
+                    <% if (gastoTotal > 0) { %>
+                    <li>
+                        <span class="row-small-invisible-2"></span>
+                        <span class="row-small-invisible-2"></span>
+                        <span class="row-small-invisible"></span>
+                        <span class="row-small-invisible"></span>
+                        <span class="row-invisible"></span>
+                        <span class="row-invisible"></span>
+                        <span class="row-small-invisible"></span>
+                        <span class="row-small-invisible"></span>
+                        <span class="row-small-invisible"></span>
+                        <span class="row-small-2"><%=gastoTotal %> Bs</span>
+                    </li>
+                    <% } %>
+                </ul>
+			</div>
+		</div>
+	</div>
+	<script src="javascripts/jquery-3.3.1.min.js"></script>
+	<script src="javascripts/jquery.steps.js"></script>
+	<script src="javascripts/jquery-ui.min.js"></script>
+    <script src="javascripts/ingreso.js"></script>
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+</body>
+</html>

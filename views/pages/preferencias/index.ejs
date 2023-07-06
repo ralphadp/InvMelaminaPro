@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Booking Form HTML Template</title>
+
+	<%- include('../../partials/head-preferencias'); %>
+	<style>
+		#preferencias_menu {
+			background-color: bisque;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+        <%- include('../../partials/header'); %>
+    </header>
+	<div id="booking" class="section">
+		<div class="section-center">
+			<div class="container">
+				<div class="row">
+					<div class="booking-form">
+						<div class="booking-bg">
+							<div class="form-header">
+								<h2>Preferencias</h2>
+								<p>Esta pagina le permitira editar/añadir tipos(colores) de melanina, editar el tamaño de cinta, etc..</p>
+							</div>
+						</div>
+						<form>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<span class="form-label">Cantidad Maxima</span>
+										<select class="form-control">
+											<option>1</option>
+											<option>2</option>
+											<option>3</option>
+											<option>4</option>
+											<option selected>5</option>
+											<option>6</option>
+											<option>7</option>
+											<option>8</option>
+											<option>9</option>
+											<option>10</option>
+										</select>
+										<span class="select-arrow"></span>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<span class="form-label">Color por defecto</span>
+										<select class="form-control">
+						                	<option >Noguera Caiena</option>
+											<option selected>Blanco</option>
+											<option >Carvhallo Evora</option>
+											<option >WEngue Ravera B</option>
+											<option >Blanco Berneck</option>
+											<option >Nogueira</option>
+											<option >Negro</option>
+										</select>
+										<span class="select-arrow"></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<select class="form-control" required>
+									<option selected >Tipo de melanina</option>
+									<option>Operario</option>
+									<option>Cliente externo</option>
+									<option>Tamaños de Melanina</option>
+									<option>Tamaño de Cinta por unidad de melania</option>
+								</select>
+								<span class="select-arrow"></span>
+								<span class="form-label"><button class="form-btn" onclick="DisplayMelaninaEditForm(true); return false;">Editar</button></span>
+								<span class="form-label"><button class="form-btn" onclick="DisplayMelaninaForm(true); return false;">Añadir</button></span>
+								<span class="form-label"><button class="form-btn" onclick="DisplayMelaninaDeleteForm(true); return false;">Borrar</button></span>
+								<span class="select-arrow"></span>
+							</div>
+							<div class="form-btn">
+								<button class="submit-btn">Guardar</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+		<div id="melanina_add" class="col-md-4">
+			<div class="form-group">
+				<h1 class="form-label">Añadir Melanina</h1>
+				<br>
+				<form action="" method="get">
+					<input class="form-control" type="text" id="Nombre" name="Nombre" placeholder="Nombre">
+					<br>
+					<input class="form-control" type="text" id="Industria" name="Industria" placeholder="Industria">
+					<br>
+					<input class="form-control" type="text" id="Color" name="Color" placeholder="Color">
+					<br>
+					<button class="submit-btn light-btn" onclick="DisplayMelaninaForm(false); return false;">Guardar</button>
+					<button class="submit-btn light-btn" onclick="DisplayMelaninaForm(false); return false;">Salir</button>
+				</form>
+			</div>
+		</div>
+
+		<div id="melanina_edit" class="col-md-4">
+			<div class="form-group">
+				<h1 class="form-label">Melanina a editar</h1>
+				<select class="form-control edit-select" required onchange="getMelaninaToEdit(this.selectedIndex); return false;">
+					<option value="c1">Blanco</option>
+					<option value="c2">Noguera Caiena</option>
+					<option value="c3">Carvhallo Evora</option>
+					<option value="c4">Wengue Ravera B</option>
+					<option value="c5">Blanco Berneck</option>
+					<option value="c6">Nogueira</option>
+					<option value="c7">Negro</option>
+				</select>
+				<br>
+				<form action="" method="get">
+					<input class="form-control" type="text" id="NombreE" name="Nombre" placeholder="Nombre">
+					<br>
+					<input class="form-control" type="text" id="IndustriaE" name="Industria" placeholder="Industria">
+					<br>
+					<select class="form-control" id="ColorE" onchange="getMelaninaToEditColor(); return false;">
+						<option value="White">White</option>
+						<option value="AliceBlue">AliceBlue</option>
+						<option value="AntiqueWhite">AntiqueWhite</option>
+						<option value="Aqua">Aqua</option>
+						<option value="Aquamarine">Aquamarine</option>
+						<option value="Azure">Azure</option>
+						<option value="Beige">Beige</option>
+						<option value="Bisque">Bisque</option>
+						<option value="Black">Black</option>
+						<option value="BlanchedAlmond">BlanchedAlmond</option>
+						<option value="Blue">Blue</option>
+						<option value="BlueViolet">BlueViolet</option>
+						<option value="Brown">Brown</option>
+					</select>
+					<br>
+					<button class="submit-btn light-btn" onclick="DisplayMelaninaEditForm(false); return false;">Guardar</button>
+					<button class="submit-btn light-btn" onclick="DisplayMelaninaEditForm(false); return false;">Salir</button>
+				</form>
+			</div>
+		</div>
+	
+		<div id="melanina_delete" class="col-md-4">
+			<div class="form-group">
+				<h1 class="form-label">Melanina a borrar</h1>
+				<select class="form-control delete-select" required onchange="getMelaninaToDelete(this.selectedIndex); return false;">
+					<option value="c1">Blanco</option>
+					<option value="c2">Noguera Caiena</option>
+					<option value="c3">Carvhallo Evora</option>
+					<option value="c4">Wengue Ravera B</option>
+					<option value="c5">Blanco Berneck</option>
+					<option value="c6">Nogueira</option>
+					<option value="c7">Negro</option>
+				</select>
+				<br>
+				<form action="" method="get">
+					<input class="form-control" type="text" id="NombreD" name="Nombre" placeholder="Nombre">
+					<br>
+					<input class="form-control" type="text" id="IndustriaD" name="Industria" placeholder="Industria">
+					<br>
+					<select class="form-control" id="ColorD" onchange="getMelaninaToEditColor(); return false;">
+						<option value="White">White</option>
+						<option value="AliceBlue">AliceBlue</option>
+						<option value="AntiqueWhite">AntiqueWhite</option>
+						<option value="Aqua">Aqua</option>
+						<option value="Aquamarine">Aquamarine</option>
+						<option value="Azure">Azure</option>
+						<option value="Beige">Beige</option>
+						<option value="Bisque">Bisque</option>
+						<option value="Black">Black</option>
+						<option value="BlanchedAlmond">BlanchedAlmond</option>
+						<option value="Blue">Blue</option>
+						<option value="BlueViolet">BlueViolet</option>
+						<option value="Brown">Brown</option>
+					</select>
+					<br>
+					<button class="submit-btn light-btn" onclick="DisplayMelaninaDeleteForm(false); return false;">Guardar</button>
+					<button class="submit-btn light-btn" onclick="DisplayMelaninaDeleteForm(false); return false;">Salir</button>
+				</form>
+			</div>
+		</div>
+
+		<footer>
+			<%- include('../../partials/footer'); %>
+		</footer>
+</body>
+
+</html>

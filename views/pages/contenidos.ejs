@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Ingresos</title>
+	<%- include('../partials/head'); %>
+    <link rel="stylesheet" href="stylesheets/list.css">
+    <style>
+        td {
+            padding: 2px;
+            border: solid 1px #eee;
+        }
+        .list {
+            font-family: sans-serif;
+        }
+        .sort {
+            padding: 2px 5px;
+        }
+        .listado  {
+                padding: 10px 50px 50px;
+        }
+        table.contenido tbody tr:nth-child(odd) {
+            background: #73a9f9;
+        }
+        table.contenido tbody tr:nth-child(even) {
+            background: #d4d7e1;
+        }
+        #table-body-contents {
+            padding-top: 100px;
+            padding-bottom: 40px;
+        }
+        th button {
+            font-size: 13px;
+        }
+        tr.row-data td {
+            font-size: 16px;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        #contenidos_menu {
+			background-color: bisque;
+		}
+    </style>
+</head>
+<body>
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+    
+    <div id="table-body-contents">
+        <h4>TAPACANTOS</h4>
+        <div id="tapacantos" class="listado">
+            Busqueda: <input class="search" placeholder="Search" />
+            <table class="contenido">
+                <thead>
+                    <tr class="row100 head">
+                        <th class=""><button class="sort" data-sort="Provedor">Provedor</button></th>
+                        <th class=""><button class="sort" data-sort="Medidas">Medidas</button></th>
+                        <th class=""><button class="sort" data-sort="Color">Color</button></th>
+                        <th class=""><button class="sort" data-sort="Marca">Marca</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioCompra">Precio de Compra</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta</button></th>
+                        <th class=""><button class="sort" data-sort="MetrosXRollo">Metros x Rollo</button></th>
+                        <th class=""><button class="sort" data-sort="RollosXCaja">Rollos x Caja</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioCompraXMetros">Precio de Compra x Metros</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioVentaXMetros">Precio de Venta x Metros</button></th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+                    <%  for (let index = tapacantos.length-1; index >= 0; index--) { %>
+                        <tr class="row-data">
+                            <td class="Provedor"><%= tapacantos[index].provedor %></td>
+                            <td class="Medidas"><%= tapacantos[index].medidas %></td>
+                            <td class="Color"><%= tapacantos[index].color%></td>
+                            <td class="Marca"><%= tapacantos[index].marca %></td>
+                            <td class="PrecioCompra"><%= tapacantos[index].precio_compra %> Bs(rollo) </td>
+                            <td class="PrecioVenta"><%= tapacantos[index].precio_venta %> Bs(rollo)</td>
+                            <td class="MetrosXRollo"><%= tapacantos[index].metrosxrollo %></td>
+                            <td class="RollosXCaja"><%= tapacantos[index].rollosxcaja %></td>
+                            <td class="PrecioCompraXMetros"><%= tapacantos[index].precio_compra_metros %> Bs</td>
+                            <td class="PrecioVentaXMetros"><%= tapacantos[index].precio_venta_metros %> Bs</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <h4>MELAMINA</h4>
+        <div id="melamina" class="listado">
+            Busqueda: <input class="search" placeholder="Search" />
+            <table class="contenido">
+                <thead>
+                    <tr class="row100 head">
+                        <th class=""><button class="sort" data-sort="Provedor">Provedor</button></th>
+                        <th class=""><button class="sort" data-sort="Medidas">Medidas</button></th>
+                        <th class=""><button class="sort" data-sort="Color">Color</button></th>
+                        <th class=""><button class="sort" data-sort="Marca">Marca</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioCompra">Precio de Compra</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta</button></th>
+                        <th class=""><button class="sort" data-sort="LaminaXPaquete">Lamina x Paquete</button></th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+                    <%  for (let index = melamina.length-1; index >= 0; index--) { %>
+                        <tr class="">
+                            <td class="Provedor"><%= melamina[index].provedor %></td>
+                            <td class="Medidas"><%= melamina[index].medidas %></td>
+                            <td class="Color"><%= melamina[index].color%></td>
+                            <td class="Marca"><%= melamina[index].marca %></td>
+                            <td class="PrecioCompra"><%= melamina[index].precio_compra %> Bs(lamina) </td>
+                            <td class="PrecioVenta"><%= melamina[index].precio_venta %> Bs(lamina)</td>
+                            <td class="LaminaXPaquete"><%= melamina[index].laminaxpaquete %></td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <h4>PEGAMENTO</h4>
+        <div id="pegamento" class="listado">
+            Busqueda: <input class="search" placeholder="Search" />
+            <table class="contenido">
+                <thead>
+                    <tr class="row100 head">
+                        <th class=""><button class="sort" data-sort="Provedor">Provedor</button></th>
+                        <th class=""><button class="sort" data-sort="Marca">Marca</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioCompra">Precio de Compra</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta</button></th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+                    <%  for (let index = pegamento.length-1; index >= 0; index--) { %>
+                        <tr class="">
+                            <td class="Provedor"><%= pegamento[index].provedor %></td>
+                            <td class="Marca"><%= pegamento[index].marca %></td>
+                            <td class="PrecioCompra"><%= pegamento[index].precio_compra %> Bs(lamina) </td>
+                            <td class="PrecioVenta"><%= pegamento[index].precio_venta %> Bs(lamina)</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <h4>FONDO</h4>
+        <div id="fondo" class="listado">
+            Busqueda: <input class="search" placeholder="Search" />
+            <table class="contenido">
+                <thead>
+                    <tr class="row100 head">
+                        <th class=""><button class="sort" data-sort="Provedor">Provedor</button></th>
+                        <th class=""><button class="sort" data-sort="Medidas">Medidas</button></th>
+                        <th class=""><button class="sort" data-sort="Color">Color</button></th>
+                        <th class=""><button class="sort" data-sort="Marca">Marca</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioCompra">Precio de Compra</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta</button></th>
+                        <th class=""><button class="sort" data-sort="LaminaXPaquete">Lamina x Paquete</button></th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+                    <%  for (let index = fondo.length-1; index >= 0; index--) { %>
+                        <tr class="">
+                            <td class="Provedor"><%= fondo[index].provedor %></td>
+                            <td class="Medidas"><%= fondo[index].medidas %></td>
+                            <td class="Color"><%= fondo[index].color%></td>
+                            <td class="Marca"><%= fondo[index].marca %></td>
+                            <td class="PrecioCompra"><%= fondo[index].precio_compra %> Bs(lamina) </td>
+                            <td class="PrecioVenta"><%= fondo[index].precio_venta %> Bs(lamina)</td>
+                            <td class="LaminaXPaquete"><%= fondo[index].laminaxpaquete %></td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <h5>CLIENTES</h5>
+        <div id="cliente" class="listado">
+            Busqueda: <input class="search" placeholder="Search" />
+            <table class="contenido">
+                <thead>
+                    <tr class="row100 head">
+                        <th class=""><button class="sort" data-sort="CI">CI</button></th>
+                        <th class=""><button class="sort" data-sort="Nombre">Nombre</button></th>
+                        <th class=""><button class="sort" data-sort="NIT">NIT</button></th>
+                        <th class=""><button class="sort" data-sort="Telefono">Telefono</button></th>
+                        <th class=""><button class="sort" data-sort="Direccion">Direccion</button></th>
+                        <th class=""><button class="sort" data-sort="Email">Email</button></th>
+                        <th class=""><button class="sort" data-sort="Tipo">Tipo</button></th>
+                        <th class=""><button class="sort" data-sort="Empresa">Empresa</button></th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+                    <%  for (let index = cliente.length-1; index >= 0; index--) { %>
+                        <tr class="">
+                            <td class="CI"><%= cliente[index].ci %></td>
+                            <td class="Nombre"><%= cliente[index].nombre %></td>
+                            <td class="NIT"><%= cliente[index].nit %></td>
+                            <td class="Telefono"><%= cliente[index].celular%></td>
+                            <td class="Direccion"><%= cliente[index].direccion %></td>
+                            <td class="Email"><%= cliente[index].email %></td>
+                            <td class="Tipo"><%= cliente[index].tipo %></td>
+                            <td class="Empresa"><%= cliente[index].empresa %></td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+    <script>
+        var options_tapacantos = {
+            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','MetrosXRollo','RollosXCaja','PrecioCompraXMetros','PrecioVentaXMetros' ]
+        };
+        var options_melamina = {
+            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','LaminaXPaquete' ]
+        };
+        var options_pegamento = {
+            valueNames: [ 'Provedor', 'Marca','PrecioCompra','PrecioVenta' ]
+        };
+        var options_fondo = {
+            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','LaminaXPaquete' ]
+        };
+        var options_cliente = {
+            valueNames: [ 'CI', 'Nombre', 'NIT', 'Telefono', 'Direccion', 'Email', 'Tipo', 'Empresa' ]
+        };
+
+        var tapacantosList = new List('tapacantos', options_tapacantos);
+        var melaminaList = new List('melamina', options_melamina);
+        var pegamentoList = new List('pegamento', options_pegamento);
+        var fondoList = new List('fondo', options_fondo);
+        var clienteList = new List('cliente', options_cliente);
+
+    </script>
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+</body>
+</html>  

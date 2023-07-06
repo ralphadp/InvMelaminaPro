@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Pedidos</title>
+	<%- include('../partials/head-compras-ventas'); %>
+	<link rel="stylesheet" href="stylesheets/stylepe.css">
+	<script>
+		var pedido_cliente = <%- JSON.stringify(cliente); %>;
+        var item_color = <%- JSON.stringify(color); %>;
+        var item_medida = <%- JSON.stringify(medida); %>;
+		var item_marca = <%- JSON.stringify(marca); %>;
+		var item_unidad = <%- JSON.stringify(unidad); %>;
+    </script>
+	<style>
+		#ventas_menu {
+			background-color: bisque;
+		}
+	</style>
+</head>
+<body>
+	<header>
+        <%- include('../partials/header'); %>
+    </header>
+	<form method="post" action="" id="InternoForm">
+		<style>
+			legend {
+				font-size: 30px;
+			}
+			td img {
+				width: 140px;
+				height: 50px;
+				display: block;
+			}
+			#pedido-body {
+				border-spacing: 0px;
+			}
+			#pedido-body tr td {
+				border: 1px solid #262626c7;
+			}
+			#pedido-body tr th {
+				border: 1px solid #262626c7;
+				background-color: cornflowerblue;
+			}
+			#option_1  {
+				background-color: beige;
+			}
+			.row-head {
+    			color: white;
+			}
+			.carrito-header {
+				width:160px;
+				font-size: 14px;
+				padding: 5px;
+			}
+			.carrito-data {
+				width:160px;
+				font-size: 14px;
+				color: rgba(255,255,255,0.3);
+				padding: 5px;
+			}
+
+			table.carrito {
+				border-collapse:separate;
+				border:solid rgba(255,255,255,0.3) 1px;
+				border-radius:6px;
+				border-spacing: 0px;
+			}
+			th.carrito-header{
+				border-bottom: 1px solid rgba(255,255,255,0.3);
+				border-spacing: 0px;
+			}
+			td.carrito-data {
+				border-bottom: 1px solid rgba(255,255,255,0.3);
+			}
+			#message {
+				color: azure;
+				background-color: #55e8d5;
+			}
+		</style>
+		<fieldset>
+			<table id="pedido-header">
+				<tr>
+					<td><img src="../images/melaninapro_image.png" alt="melaminapro" /></td>
+					<td style="width: 100px;"></td>
+					<td>NOTA DE ENTREGA</td>
+					<td style="width: 100px;"></td>
+					<td style="border: black 1px;"><p id="timestamp-print"></p></td>
+				</tr>
+			</table>
+			<br>
+			<table id="pedido-datos-personales">
+				<tr>
+					<td style="width: 100px;">Señor(es):</td><td style="width: 400px;"><p id="cliente-print"></p></td>
+					<td style="width: 100px;">NIT CI:</td><td style="width: 400px;"><p id="ci-print"></p></td>
+				</tr>
+				<tr>
+					<td style="width: 100px;">Celular: </td><td style="width: 400px;"><p id="celular-print"></p></td>
+					<td style="width: 100px;">Direccion: </td><td style="width: 400px;"><p id="direccion-print"></p></td>
+					<td style="width: 100px;">Email: </td><td style="width: 400px;"><p id="email-print"></p></td>
+				</tr>
+			</table>
+			<br><br>
+			<table id="pedido-body">
+				<thead>
+					<tr>
+						<th style="width: 30px;">Nro</th>
+						<th style="width: 100px;">Item</th>
+						<th style="width: 100px;">Medida</th>
+						<th style="width: 100px;">Color</th>
+						<th style="width: 100px;">Marca</th>
+						<th style="width: 100px;">Unidad</th>
+						<th style="width: 100px;">Cantidad</th>
+						<th style="width: 100px;">Precio</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<hr>
+			<br>
+			<p>En conformidad del material entregado y revisado firme al pie de la hoja</p>
+			<br><br>
+			<table id="pedido-firmas">
+				<tr>
+					<td style="width: 100px;"></td>
+					<td style="border-top: 1px solid;">Entregue conforme</td>
+					<td style="width: 100px;"></td>
+					<td style="width: 100px;"></td>
+					<td style="border-top: 1px solid;">Recibi conforme</td>
+					<td style="width: 100px;"></td>
+				</td>
+			</table>
+		</fieldset>
+		<closeform>
+		</closeform>
+	</form>
+	<div class="page-content">
+		<div class="melaminapro-heading">Formulario de Pedidos</div>
+		<div class="melaminapro-v6-content">
+			<div class="melaminapro-form">
+		        <form class="form-register" id="form-register" action="#" method="post">
+		        	<div id="form-total" role="application" class="wizard clearfix">
+						<div class="steps clearfix">
+							<ul role="tablist">
+								<li id="option_1" role="tab" aria-disabled="false" class="first current" aria-selected="true">
+									<a id="form-total-t-0" aria-controls="form-total-p-0" style="cursor: pointer;">
+										<div class="title">
+											<p class="step-icon"><span>1</span></p>
+											<span class="step-text">Cliente interno</span>
+										</div>
+									</a>
+								</li>
+								<li id="option_2" role="tab" aria-disabled="false" class="done" aria-selected="false" style="cursor: pointer;">
+									<a id="form-total-t-1" aria-controls="form-total-p-1">
+										<div class="title">
+											<p class="step-icon"><span>2</span></p>
+											<span class="step-text">Cliente Externo</span>
+										</div>
+									</a>
+								</li>
+								<li id="option_3" role="tab" aria-disabled="false" class="last done" aria-selected="false" style="cursor: pointer;">
+									<a id="form-total-t-2" aria-controls="form-total-p-2">
+										<div class="title">
+											<p class="step-icon"><span>3</span></p>
+											<span class="step-text">Cliente Regular</span>
+										</div>
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div class="content clearfix">
+							<!-- Opcion 1 Cliente interno -->
+							<section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false" style="">
+								<div class="inner">
+									<div class="form-heading">
+										<h3>Pedido Interno</h3>
+										<span>Pedido #<span id="pedido"><%- historial.length + 1 %></span></span>
+									</div>
+									<div class="form-images">
+										<img src="images/P8240373.JPG">
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label for="room" class="special-label-1">Operario</label>
+											<select name="cliente" id="cliente" class="form-control" onChange="DatosCliente(this);">
+												<option value="" selected>(operario)</option>
+                                                <% for(let index = 0; index < cliente.length; index++) {
+													if (cliente[index].tipo == "interno") { %>
+                                                    <option value="<%= index %>"><%= cliente[index].nombre %></option>
+                                                <% } } %>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label for="item" class="special-label-1">Item </label>
+											<select name="item" id="item" class="form-control" onchange="selectItem()">
+												<option value="" selected="">(Elija el item)</option>
+                                                <% for (let index = 0; index < item.length; index++) { %>
+                                                    <option value="<%= item[index].nombre %>"><%= item[index].nombre %></option>
+                                                <% } %>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder form-holder-2" id="divmedida">
+											<label for="medida" class="special-label-1">Medida </label>
+											<select name="medida" id="medida" class="form-control">
+												<option value="" selected="">(Elija las medidas)</option>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder form-holder-2" id="divcolor">
+											<label for="color" class="special-label-1">Color </label>
+											<select name="color" id="color" class="form-control">
+												<option value="" selected="">(Escoja el color)</option>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder form-holder-2" id="divmarca">
+											<label for="marca" class="special-label-1">Marca </label>
+											<select name="marca" id="marca" class="form-control">
+												<option value="" selected="">(Elija la marca)</option>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label for="room" class="special-label-1">Una Cinta de 18 mts y fondo de 200x150 adjuntos.</label>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label for="cantidad" class="special-label-1">Cantidad</label>
+											<input type="number" id="cantidad" name="cantidad" min="1" max="40" class="form-control" value="1">
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder form-holder-2">
+                                            <label for="room" class="special-label-1">Unidad</label>
+                                            <select name="unidad" id="unidad" class="form-control">
+												<option value="" selected="">(Elija la unidad)</option>
+                                            </select>
+                                            <span class="select-btn">
+                                                <i class="zmdi zmdi-chevron-down"></i>
+                                            </span>
+                                        </div>
+										<div class="form-holder form-holder-2">
+                                            <label for="precio" class="special-label-1">Precio(Bs)<a class="precio" onclick="obtenerPrecioStandard()">Calcular Venta</a></label>
+                                            <input name="precio" id="precio" class="form-control" value="0.0">
+                                            <span class="select-btn"><span id="precio-mensaje"></span></span>
+                                        </div>
+									</div>
+									<div class="form-row form-row-date">
+										<div class="form-holder form-holder-2">
+											<input style="color: #55e8d5" type="text" class="form-control" id="timestamp1" name="timestamp" readonly="">
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<table class="carrito" id="carrito_interno">
+												<thead>
+													<tr class="row-head">
+														<th class="carrito-header">Hora</th>
+														<th class="carrito-header">Item</th>
+														<th class="carrito-header">Color</th>
+														<th class="carrito-header">Medida</th>
+														<th class="carrito-header">Marca</th>
+														<th class="carrito-header">Unidad</th>
+														<th class="carrito-header">Cantidad</th>
+														<th class="carrito-header">Precio (Bs)</th>
+														<th class="carrito-header"></th>
+													</tr>
+												</thead>
+												<tbody class="carrito-body">
+												</tbody>
+											</table>
+										</div>
+										<div class="form-holder-2">
+                                            <button type="button" onclick="addicionarPedidoAlCarrito()">+</button>
+										</div>	
+											<div class="form-holder-2">
+											<button type="button" onclick="removerUltimoPedidoDelCarrito()">-</button>
+                                        </div>
+									</div>
+								</div>
+							</section>
+							<!-- Opcion 2 Cliente externo -->
+							<section id="form-total-p-1" role="tabpanel" aria-labelledby="form-total-h-1" class="body" aria-hidden="true" style="display: none;">
+								<div class="inner">
+									<div class="form-heading">
+										<h3>Pedido externo</h3>
+										<span>Pedido #<span id="pedido"><%- historial.length + 1 %></span></span>
+									</div>
+									<div class="form-images">
+										<img src="images/wizard_v6.jpg">
+									</div>
+									<div class="form-row">
+										<div class="form-holder">
+											<label class="form-row-inner">
+												<input type="text" class="form-control" id="complete_name" name="complete_name" required="">
+												<span class="label">Nombre Completo</span>
+											</label>
+										</div>
+										<div class="form-holder">
+											<label class="form-row-inner">
+												<input type="text" class="form-control" id="carnet" name="carnet" required="">
+												<span class="label">Carnet</span>
+											</label>
+										</div>
+										<div class="form-holder">
+											<label class="form-row-inner">
+												<input type="text" class="form-control" id="nit" name="nit" required>
+												<span class="label">NIT</span>
+											</label>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder">
+											<label class="form-row-inner">
+												<input type="text" class="form-control" id="phone" name="phone" required="">
+												<span class="label">Telefono o Celular</span>
+											</label>
+										</div>
+										<div class="form-holder">
+											<label class="form-row-inner">
+												<input type="text" class="form-control" id="direccion" name="direccion" required="">
+												<span class="label">Direccion</span>
+											</label>
+										</div>
+										<div class="form-holder">
+											<label class="form-row-inner">
+												<input type="text" class="form-control" name="email" id="email" required>
+												<span class="label">E-Mail</span>
+											</label>
+										</div>
+										<div class="form-holder">
+											<label class="form-row-inner">
+												<input type="text" class="form-control" name="empresa" id="empresa" required>
+												<span class="label">Empresa</span>
+											</label>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label for="item_ex" class="special-label-1">Item </label>
+											<select name="item_ex" id="item_ex" class="form-control" onchange="selectItem()">
+												<option value="" selected="">(Elija el item)</option>
+                                                <% for(let index = 0; index < item.length; index++) {%>
+                                                    <option value="<%= item[index].nombre %>"><%= item[index].nombre %></option>
+                                                <% } %>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder form-holder-2" id="divmedida_ex">
+											<label for="medida_ex" class="special-label-1">Medida </label>
+											<select name="medida_ex" id="medida_ex" class="form-control">
+												<option value="" selected="">(Elija las medidas)</option>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder form-holder-2" id="divcolor_ex">
+											<label for="color_ex" class="special-label-1">Color </label>
+											<select name="color_ex" id="color_ex" class="form-control">
+												<option value="" selected="">(Escoja el color)</option>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder form-holder-2" id="divmarca_ex">
+											<label for="marca_ex" class="special-label-1">Marca </label>
+											<select name="marca_ex" id="marca_ex" class="form-control">
+												<option value="" selected="">(Elija la marca)</option>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label for="cantidad_ex" class="special-label-1">Cantidad</label>
+											<input type="number" id="cantidad_ex" name="cantidad_ex" min="1" max="40" class="form-control" value="1">
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder form-holder-2">
+                                            <label for="unidad_ex" class="special-label-1">Unidad</label>
+                                            <select name="unidad_ex" id="unidad_ex" class="form-control">
+												<option value="" selected="">(Elija la Unidad)</option>
+                                            </select>
+                                            <span class="select-btn">
+                                                <i class="zmdi zmdi-chevron-down"></i>
+                                            </span>
+                                        </div>
+                                        <div class="form-holder form-holder-2">
+                                            <label for="precio_ex" class="special-label-1">Precio(Bs)<a class="precio" onclick="obtenerPrecioStandard()">Cargar Precio Standard</a></label>
+                                            <input name="precio_ex" id="precio_ex" class="form-control" value="0.0">
+                                            <span class="select-btn"><span id="precio-mensaje_ex"></span></span>
+                                        </div>
+									</div>
+									<div class="form-row form-row-date">
+										<div class="form-holder form-holder-2">
+											<label for="date" class="special-label-1">Fecha de pedido:
+												<input style="color: #55e8d5" type="text" class="form-control" id="timestamp2" name="timestamp" readonly="">
+											</label>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<table class="carrito" id="carrito_externo">
+												<thead>
+													<tr class="row-head">
+														<th class="carrito-header">Hora</th>
+														<th class="carrito-header">Item</th>
+														<th class="carrito-header">Color</th>
+														<th class="carrito-header">Medida</th>
+														<th class="carrito-header">Marca</th>
+														<th class="carrito-header">Unidad</th>
+														<th class="carrito-header">Cantidad</th>
+														<th class="carrito-header">Precio (Bs)</th>
+														<th class="carrito-header"></th>
+													</tr>
+												</thead>
+												<tbody class="carrito-body">
+												</tbody>
+											</table>
+										</div>
+										<div class="form-holder-2">
+                                            <button type="button" onclick="addicionarPedidoAlCarrito()">+</button>
+										</div>	
+											<div class="form-holder-2">
+											<button type="button" onclick="removerUltimoPedidoDelCarrito()">-</button>
+                                        </div>
+									</div>
+								</div>
+							</section>
+							<!-- Opcion 3 -->
+							<section id="form-total-p-2" role="tabpanel" aria-labelledby="form-total-h-2" class="body" aria-hidden="true" style="display: none;">
+								<div class="inner">
+									<div class="form-heading">
+										<h3>Pedido externo regular</h3>
+										<span>#3</span>
+									</div>
+									<div class="form-images">
+										<img src="images/R.jpg">
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label for="cliente_re" class="special-label-1">Cliente</label>
+											<select name="cliente_re" id="cliente_re" class="form-control" onChange="DatosCliente(this);">
+												<option value="" selected="">(ninguno)</option>
+												<% for(let index = 0; index < cliente.length; index++) {
+													if (cliente[index].tipo == "externo") { %>
+                                                    <option value="<%= index %>"><%= cliente[index].nombre %></option>
+                                                <% } } %>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label for="item_re" class="special-label-1">Item </label>
+											<select name="item_re" id="item_re" class="form-control" onchange="selectItem()">
+												<option value="" selected="">(Elija el item)</option>
+                                                <% for(let index = 0; index < item.length; index++) {%>
+                                                    <option value="<%= item[index].nombre %>"><%= item[index].nombre %></option>
+                                                <% } %>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder form-holder-2" id="divmedida_re">
+											<label for="medida_re" class="special-label-1">Medida</label>
+											<select name="medida_re" id="medida_re" class="form-control">
+												<option value="" selected="">(Elija las medidas)</option>
+                                                <% for(let index = 0; index < medida.length; index++) {%>
+                                                    <option value="<%= medida[index].nombre %>"><%= medida[index].nombre %></option>
+                                                <% } %>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder form-holder-2" id="divcolor_re">
+											<label for="color_re" class="special-label-1">Color </label>
+											<select name="color_re" id="color_re" class="form-control">
+												<option value="" selected="">(Escoja el color)</option>
+                                                <% for(let index = 0; index < color.length; index++) {%>
+                                                    <option style="background: <%= color[index].codigo %>;" 
+                                                        value="<%= color[index].nombre %>">
+                                                        <%= color[index].nombre %>
+                                                    </option>
+                                                <% } %>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder form-holder-2" id="divmarca_re">
+											<label for="marca_re" class="special-label-1">Marca </label>
+											<select name="marca_re" id="marca_re" class="form-control">
+												<option value="" selected="">(Elija la marca)</option>
+                                                <% for(let index = 0; index < marca.length; index++) {%>
+                                                    <option value="<%= marca[index].nombre %>"><%= marca[index].nombre %></option>
+                                                <% } %>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label for="cantidad_re" class="special-label-1">Cantidad</label>
+											<input type="number" id="cantidad_re" name="cantidad_re" min="1" max="40" class="form-control" value="1">
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder form-holder-2">
+                                            <label for="unidad_re" class="special-label-1">Unidad</label>
+                                            <select name="unidad_re" id="unidad_re" class="form-control">
+                                                <option value="" selected="">(Elija la unidad)</option>
+                                            </select>
+                                            <span class="select-btn">
+                                                <i class="zmdi zmdi-chevron-down"></i>
+                                            </span>
+                                        </div>
+                                        <div class="form-holder form-holder-2">
+                                            <label for="precio_re" class="special-label-1">Precio(Bs)<a class="precio" onclick="obtenerPrecioStandard()">Cargar Precio Standard</a></label>
+                                            <input name="precio_re" id="precio_re" class="form-control" value="0.0">
+                                            <span class="select-btn"><span id="precio-mensaje_re"></span></span>
+                                        </div>
+									</div>
+									<div class="form-row form-row-date">
+										<div class="form-holder form-holder-2">
+											<label for="date" class="special-label-1">Fecha de pedido:
+												<input style="color: #55e8d5" type="text" class="form-control" id="timestamp3" name="timestamp" readonly="">
+											</label>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<table class="carrito" id="carrito_regular">
+												<thead>
+													<tr class="row-head">
+														<th class="carrito-header">Hora</th>
+														<th class="carrito-header">Item</th>
+														<th class="carrito-header">Color</th>
+														<th class="carrito-header">Medida</th>
+														<th class="carrito-header">Marca</th>
+														<th class="carrito-header">Unidad</th>
+														<th class="carrito-header">Cantidad</th>
+														<th class="carrito-header">Precio (Bs)</th>
+														<th class="carrito-header"></th>
+													</tr>
+												</thead>
+												<tbody class="carrito-body">
+												</tbody>
+											</table>
+										</div>
+										<div class="form-holder-2">
+                                            <button type="button" onclick="addicionarPedidoAlCarrito()">+</button>
+										</div>	
+											<div class="form-holder-2">
+											<button type="button" onclick="removerUltimoPedidoDelCarrito()">-</button>
+                                        </div>
+									</div>
+								</div>
+							</section>
+							<div class="buttonG" onclick="toprint()">Print</div>
+						</div>
+						<div class="actions clearfix">
+							<ul role="menu" aria-label="Pagination">
+								<li><a></a></li>
+								<li aria-hidden="false" aria-disabled="false"><a role="menuitem" style="cursor:pointer;" onclick="GuardarPedidos();">Guardar</a></li>
+							</ul>
+						</div>
+					</div>
+		        </form>
+				<ul style="list-style-type: none;">
+                    <li>
+                        <span class="row-small-header">Fecha</span>
+                        <span class="row-small-header">Hora</span>
+                        <span class="row-header">Cliente</span>
+                        <span class="row-small-header">Item</span>
+                        <span class="row-header">Color</span>
+                        <span class="row-header">Medida</span>
+						<span class="row-small-header">Unidad</span>
+                        <span class="row-small-header">Cantidad</span>
+						<span class="row-small-header">Venta</span>
+                    </li>
+                    <% var ventaTotal = 0;
+						for(let i = historial.length-1; i >= 0; i--) {
+                        	var [fecha, hora] = historial[i].fecha.split(" ");
+							ventaTotal = ventaTotal + Number(historial[i].precioVenta);
+                        %>
+                        <li>
+                            <span class="row-small"><%= fecha %></span>
+                            <span class="row-small"><%= hora %></span>
+                            <span class="row"><%= historial[i].cliente %></span>
+                            <span class="row-small"><%= historial[i].item %></span>
+                            <span class="row"><%= historial[i].color %></span>
+                            <span class="row"><%= historial[i].medida %></span>
+							<span class="row-small"><%= historial[i].nombreDeUnidad %></span>
+                            <span class="row-small"><%= historial[i].cantidad %></span>
+							<span class="row-small"><%= historial[i].precioVenta %> Bs</span>
+                            <button type="button" id="<%= historial[i]._id.toString() %>" class="delete" onclick="deleteHistorial(this.id)">X</button>
+                        </li>
+                    <% } %>
+					<% if (ventaTotal > 0) { %>
+						<li>
+							<span class="row-small-invisible"></span>
+							<span class="row-small-invisible"></span>
+							<span class="row-invisible"></span>
+							<span class="row-small-invisible"></span>
+							<span class="row-invisible"></span>
+							<span class="row-invisible"></span>
+							<span class="row-small-invisible"></span>
+							<span class="row-small-invisible"></span>
+							<span class="row-small"><%=ventaTotal %> Bs</span>
+						</li>
+					<% } %>
+                </ul>
+			</div>
+		</div>
+	</div>
+	<script src="javascripts/jquery-3.3.1.min.js"></script>
+	<script src="javascripts/jquery.steps.js"></script>
+	<script src="javascripts/jquery-ui.min.js"></script>
+	<script src="javascripts/pedido.js"></script>
+	<footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+</body>
+</html>
