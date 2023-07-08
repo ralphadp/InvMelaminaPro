@@ -190,6 +190,10 @@ let GuardarPedidos = function() {
     var table_carrito = document.getElementById(ids.CARRITO).getElementsByTagName('tbody')[0];
     MAX_REQUESTS = table_carrito.children.length;
 
+     if (MAX_REQUESTS <= 0) {
+        alert("Aun no tiene productos en el carrito, addicione por lo menos uno.");
+    }
+
     for (let index = 0; index < MAX_REQUESTS; index++) {
         var Pedido = table_carrito.children[index].pedido;
         salvarPedidos(Pedido);
