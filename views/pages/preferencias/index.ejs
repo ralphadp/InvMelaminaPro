@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Booking Form HTML Template</title>
+	<title>Preferencias</title>
 
 	<%- include('../../partials/head-preferencias'); %>
 	<style>
@@ -81,9 +81,9 @@
 									<option>Catalogo Fondos</option>
 								</select>
 								<span class="select-arrow"></span>
-								<span class="form-label"><button class="form-btn" onclick="DisplayMelaninaEditForm(true); return false;">Editar</button></span>
+								<!-- <span class="form-label"><button class="form-btn" onclick="DisplayMelaninaEditForm(true); return false;">Editar</button></span>
 								<span class="form-label"><button class="form-btn" onclick="DisplayMelaninaForm(true); return false;">Añadir</button></span>
-								<span class="form-label"><button class="form-btn" onclick="DisplayMelaninaDeleteForm(true); return false;">Borrar</button></span>
+								<span class="form-label"><button class="form-btn" onclick="DisplayMelaninaDeleteForm(true); return false;">Borrar</button></span>-->
 								<span class="select-arrow"></span>
 							</div>
 							<div class="form-btn">
@@ -177,44 +177,27 @@
             <th> Tapacantos </th>  
             <th> Fondos </th>
             <th></th>
-          </tr>  
-          <tr id="row0">  
-            <td contenteditable="true"> Blanco </td>  
-            <td contenteditable="true"> White </td>  
-            <td contenteditable="true"> true </td>  
-            <td contenteditable="true"> false </td>  
-            <td contenteditable="true"> true </td>  
-            <td><button type="button" onclick="delete_row(0)">X</button></td>  
-          </tr>  
-          <tr id="row1">  
-            <td contenteditable="true"> Carvalo evora </td>  
-            <td contenteditable="true"> #44b121 </td>  
-            <td contenteditable="true"> true </td>  
-            <td contenteditable="true"> false </td>  
-            <td contenteditable="true"> true </td>  
-            <td><button type="button" onclick="delete_row(1)">X</button></td>  
-          </tr>  
-            <tr id="row2">  
-              <td contenteditable="true"> Negro </td>  
-              <td contenteditable="true"> Black </td>  
-              <td contenteditable="true"> true </td>
-              <td contenteditable="true"> true </td>
-              <td contenteditable="true"> true </td>    
-              <td><button type="button" onclick="delete_row(2)">X</button></td>  
-            </tr>  
-          <tr id="row3">  
-            <td contenteditable="true"> Nogeira Caiena </td>  
-            <td contenteditable="true"> #549001 </td>  
-            <td contenteditable="true"> true </td>  
-            <td contenteditable="true"> false </td>  
-            <td contenteditable="true"> true </td>  
-            <td><button type="button" onclick="delete_row(3)">X</button></td>  
-          </tr>  
+          </tr>
+           <% for (let index = 0; index < color.length; index++) { 
+           		var ID = color[index]._id.toString() %>
+			<tr id="row_<%= ID %>">  
+            	<td contenteditable="true" id="nombre_<%= ID %>"><%= color[index].nombre %></td>  
+            	<td contenteditable="true" id="codigo_<%= ID %>"><%= color[index].codigo %></td>  
+                <td><input type="checkbox" id="melamina_<%= ID %>" <%=(color[index].melamina == true)?'checked':'' %> /></td>
+                <td><input type="checkbox" id="tapacantos_<%= ID %>" <%=(color[index].tapacantos == true)?'checked':'' %> /></td>
+                <td><input type="checkbox" id="fondo_<%= ID %>" <%=(color[index].fondos == true)?'checked':'' %> /></td>
+            	<td>
+            		<button type="button" title="Guardar" id="g_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+            		<button type="button" title="Borrar" id="b_<%= ID %>"onclick="Borrar(this.id)">X</button>
+            	</td>  
+          	</tr>    
+           <% } %>
         </table>  
       </div>  
     </div>
   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
+    <script src="javascripts/preferencias.js"> </script> 
     <script>  
 	    var $TABLE = $('#table');  
 	    var $BTN = $('#export-btn');  
@@ -261,15 +244,46 @@
 		        data.push(h);  
 		      });  
         });
+
+
         function add_row() {
 		   var table = document.getElementById("data_table");
 		   var table_len = table.rows.length;
-		   var row = table.insertRow(table_len).outerHTML = "<tr id='row"+(table_len-1)+"'><td contenteditable='true'></td><td contenteditable='true'></td><td contenteditable='true'></td><td contenteditable='true'></td><td contenteditable='true'></td><td><button type='button' onclick='delete_row("+(table_len-1)+")'>X</button></td></tr>";
+		   var row = table.insertRow(table_len).outerHTML = "<tr id='row_"+(table_len-1)+"'><td id='nombre_"+(table_len-1)+"' contenteditable='true'></td><td id='codigo_"+(table_len-1)+"'contenteditable='true'></td><td><input id='melamina_"+(table_len-1)+"' type='checkbox'/></td><td><input id='tapacantos_"+(table_len-1)+"' type='checkbox'/></td><td><input id='fondo_"+(table_len-1)+"' type='checkbox'/></td><td><button type='button' title='Guardar' id='g_"+(table_len-1)+"' onclick='guardarNuevo(this.id)'>o</button><button type='button' title='Borrar' id='"+(table_len-1)+"' onclick='borrarNuevo("+(table_len-1)+")'>X</button></td></tr>";
 		}
-		function delete_row(row_number) {
-		   document.getElementById("row" + row_number).outerHTML = "";
+
+        function guardarNuevo(row_id) {
+        	row_id = row_id.substr(2);
+        	colorObj.att.nombre = document.getElementById("nombre_" + row_id).innerText;
+        	colorObj.att.codigo = document.getElementById("codigo_" + row_id).innerText;
+        	colorObj.att.melamina = document.getElementById("melamina_" + row_id).value;
+        	colorObj.att.tapacantos = document.getElementById("tapacantos_" + row_id).value;
+        	colorObj.att.fondo = document.getElementById("fondo_" + row_id).value;
+        	colorObj.guardarNuevo();
 		}
-    </script>  
+
+		function borrarNuevo(row_id) {
+		    document.getElementById("row_" + row_id).outerHTML = "";
+		}
+
+     	function guardarEditado(row_id) {
+            row_id = row_id.substr(2);
+            colorObj.nombre = document.getElementById("nombre_" + row_id).innerText;
+        	colorObj.codigo = document.getElementById("codigo_" + row_id).innerText;
+        	colorObj.melamina = document.getElementById("melamina_" + row_id).value;
+        	colorObj.tapacantos = document.getElementById("tapacantos_" + row_id).value;
+        	colorObj.fondo = document.getElementById("fondo_" + row_id).value;
+            colorObj.guardarEditado(row_id);
+		}
+
+		function borrar(row_id) {
+            row_id = row_id.substr(2);
+            colorObj.borrar(row_id);
+            //then
+		    document.getElementById("row_" + row_id).outerHTML = "";
+		}
+    </script>
+
 
 
 		<div id="melanina_add" class="col-md-4">
