@@ -10,6 +10,9 @@
 		#preferencias_menu {
 			background-color: bisque;
 		}
+		#booking {
+			height: 70vh!important;
+		}
 	</style>
 </head>
 
@@ -66,11 +69,16 @@
 							</div>
 							<div class="form-group">
 								<select class="form-control" required>
-									<option selected >Tipo de melanina</option>
+									<option selected >Colores existentes</option>
+									<option>Unidades existentes</option>
+									<option>Medidas Existentes</option>
+									<option>Marcas existentes</option>
 									<option>Operario</option>
 									<option>Cliente externo</option>
-									<option>Tamaños de Melanina</option>
-									<option>Tamaño de Cinta por unidad de melania</option>
+									<option>Catalogo melaminas</option>
+									<option>Catalogo tapacantos</option>
+									<option>Catalogo pegamentos</option>
+									<option>Catalogo Fondos</option>
 								</select>
 								<span class="select-arrow"></span>
 								<span class="form-label"><button class="form-btn" onclick="DisplayMelaninaEditForm(true); return false;">Editar</button></span>
@@ -87,7 +95,183 @@
 			</div>
 		</div>
 	</div>
-	
+	<!-- table secction -->	
+	<style>  
+	     /*@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500');  */
+	    .container_table {  
+	      /*font-family: 'Montserrat', sans-serif;  */
+	      padding: 0;  
+	      margin: 0;  
+	      text-align: center;
+	      background-color: rgba(133, 104, 73, 0.33);
+	      padding-bottom: 30px;
+	    }  
+	    tr:nth-of-type(odd) {   
+	        background: #eee;   
+	    }  
+	    th {   
+	        background: #3498db;   
+	        color: white;   
+	        font-weight: bold;   
+	    }  
+	      
+	    @import "compass/css3";  
+	    .table-editable {  
+	      position: relative;  
+	      .glyphicon {  
+	        font-size: 20px;  
+	      }  
+	    }  
+	    table {
+	    	background-color: white;
+	        width: 750px!important;   
+	        border-collapse: collapse;   
+	        margin:50px auto;  
+	    }  
+	    td, th {   
+	        padding: 10px;   
+	        border: 1px solid #ccc;   
+	        text-align: left;   
+	        font-size: 18px;  
+	    }  
+	    .table-remove {  
+	      color: #700;  
+	      cursor: pointer;  
+	      &:hover {  
+	        color: #f00;  
+	      }  
+	    }  
+	    .table-up {  
+	      color: #007;  
+	      cursor: pointer;  
+	      &:hover {  
+	        color: #00f;  
+	      }  
+	    }  
+	    .table-down {  
+	      color: #007;  
+	      cursor: pointer;  
+	      &:hover {  
+	        color: #00f;  
+	      }  
+	    }  
+	    .table-add {  
+	      color: #070;  
+	      cursor: pointer;  
+	      position: absolute;  
+	      top: 8px;  
+	      right: 0;  
+	      &:hover {  
+	        color: #0b0;  
+	      }  
+	    }  
+    </style>  
+    <div class="container_table">  
+      <span class="form-label"><h5>Colores   <button type="button" onclick="add_row()">+</button></h5></span>
+      <div id="table" class="table-editable">  
+        <table class="table" id="data_table">
+          <tr>  
+            <th> Nombre</th>  
+            <th> Codigo </th>  
+            <th> Melamina </th>  
+            <th> Tapacantos </th>  
+            <th> Fondos </th>
+            <th></th>
+          </tr>  
+          <tr id="row0">  
+            <td contenteditable="true"> Blanco </td>  
+            <td contenteditable="true"> White </td>  
+            <td contenteditable="true"> true </td>  
+            <td contenteditable="true"> false </td>  
+            <td contenteditable="true"> true </td>  
+            <td><button type="button" onclick="delete_row(0)">X</button></td>  
+          </tr>  
+          <tr id="row1">  
+            <td contenteditable="true"> Carvalo evora </td>  
+            <td contenteditable="true"> #44b121 </td>  
+            <td contenteditable="true"> true </td>  
+            <td contenteditable="true"> false </td>  
+            <td contenteditable="true"> true </td>  
+            <td><button type="button" onclick="delete_row(1)">X</button></td>  
+          </tr>  
+            <tr id="row2">  
+              <td contenteditable="true"> Negro </td>  
+              <td contenteditable="true"> Black </td>  
+              <td contenteditable="true"> true </td>
+              <td contenteditable="true"> true </td>
+              <td contenteditable="true"> true </td>    
+              <td><button type="button" onclick="delete_row(2)">X</button></td>  
+            </tr>  
+          <tr id="row3">  
+            <td contenteditable="true"> Nogeira Caiena </td>  
+            <td contenteditable="true"> #549001 </td>  
+            <td contenteditable="true"> true </td>  
+            <td contenteditable="true"> false </td>  
+            <td contenteditable="true"> true </td>  
+            <td><button type="button" onclick="delete_row(3)">X</button></td>  
+          </tr>  
+        </table>  
+      </div>  
+    </div>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>  
+    <script>  
+	    var $TABLE = $('#table');  
+	    var $BTN = $('#export-btn');  
+	    var $EXPORT = $('#export');  
+
+	    $('.table-add').click(function () {  
+	      var $clone = $TABLE.find('tr.hide').clone(true).removeClass('hide table-line');  
+	      $TABLE.find('table').append($clone);  
+	    });  
+
+	    $('.table-remove').click(function () {  
+	        $(this).parents('tr').detach();  
+	    });  
+
+	    $('.table-up').click(function () {  
+	      var $row = $(this).parents('tr');  
+	      if ($row.index() === 1) return;   
+	      $row.prev().before($row.get(0));  
+	    });  
+
+	    $('.table-down').click(function () {  
+	      var $row = $(this).parents('tr');  
+	      $row.next().after($row.get(0));  
+	    });  
+
+	    jQuery.fn.pop = [].pop;  
+	    jQuery.fn.shift = [].shift;  
+
+	    $BTN.click(function () {  
+		      var $rows = $TABLE.find('tr:not(:hidden)');  
+		      var headers = [];  
+		      var data = [];  
+		      
+		      $($rows.shift()).find('th:not(:empty)').each(function () {  
+		          headers.push($(this).text().toLowerCase());  
+		      });  
+		      
+		      $rows.each(function () {  
+		        var $td = $(this).find('td');  
+		        var h = {};  
+		        headers.forEach(function (header, i) {  
+		            h[header] = $td.eq(i).text();     
+		        });  
+		        data.push(h);  
+		      });  
+        });
+        function add_row() {
+		   var table = document.getElementById("data_table");
+		   var table_len = table.rows.length;
+		   var row = table.insertRow(table_len).outerHTML = "<tr id='row"+(table_len-1)+"'><td contenteditable='true'></td><td contenteditable='true'></td><td contenteditable='true'></td><td contenteditable='true'></td><td contenteditable='true'></td><td><button type='button' onclick='delete_row("+(table_len-1)+")'>X</button></td></tr>";
+		}
+		function delete_row(row_number) {
+		   document.getElementById("row" + row_number).outerHTML = "";
+		}
+    </script>  
+
+
 		<div id="melanina_add" class="col-md-4">
 			<div class="form-group">
 				<h1 class="form-label">Añadir Melanina</h1>
