@@ -402,9 +402,9 @@ function obtenerPrecioStandard() {
     .then(response => {
         if (response.ok) {
             document.getElementById(ids.PRECIO_ID).value = response.precio;
-            document.getElementById(this.PRECIO_MENSAJE).textContent = "";
+            document.getElementById(ids.PRECIO_MENSAJE).textContent = response.message;
         } else {
-            document.getElementById(this.PRECIO_MENSAJE).textContent = response.message;
+            document.getElementById(ids.PRECIO_MENSAJE).textContent = response.message;
         }
     })
     .catch(error => {
