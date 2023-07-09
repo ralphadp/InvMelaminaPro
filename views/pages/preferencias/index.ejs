@@ -185,7 +185,7 @@
             	<td contenteditable="true" id="codigo_<%= ID %>"><%= color[index].codigo %></td>  
                 <td><input type="checkbox" id="melamina_<%= ID %>" <%=(color[index].melamina == true)?'checked':'' %> /></td>
                 <td><input type="checkbox" id="tapacantos_<%= ID %>" <%=(color[index].tapacantos == true)?'checked':'' %> /></td>
-                <td><input type="checkbox" id="fondo_<%= ID %>" <%=(color[index].fondos == true)?'checked':'' %> /></td>
+                <td><input type="checkbox" id="fondo_<%= ID %>" <%=(color[index].fondo == true)?'checked':'' %> /></td>
             	<td>
             		<button type="button" title="Guardar" id="g_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
             		<button type="button" title="Borrar" id="b_<%= ID %>"onclick="Borrar(this.id)">X</button>
