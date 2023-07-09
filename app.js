@@ -10,7 +10,10 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-const uri = "mongodb+srv://ralph77:pulga77@melaminapro.1ukccah.mongodb.net/melaminaprodb?retryWrites=true&w=majority";
+const dotenv = require('dotenv');
+dotenv.config();
+const uri = `mongodb+srv://${process.env.ATLAS_USER}:${process.env.ATLAS_PASS}@${process.env.ATLAS_HOST}/${process.env.ATLAS_DB}?retryWrites=true&w=majority`;
+console.log("Connected to " + uri );
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
