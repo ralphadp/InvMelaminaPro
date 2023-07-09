@@ -15,6 +15,7 @@ dotenv.config();
 const uri = `mongodb+srv://${process.env.ATLAS_USER}:${process.env.ATLAS_PASS}@${process.env.ATLAS_HOST}/${process.env.ATLAS_DB}?retryWrites=true&w=majority`;
 console.log("Connected to " + uri );
 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
 
 let getFecha = function() {
     let fecha = new Date();
@@ -686,6 +688,63 @@ app.get('/preferencias', function(req, res) {
       .catch(error => console.error(error))
       .finally(data => client.close())
 });
+
+app.post('/nuevo_color',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    console.log("color",req.body);
+
+    let CollectionColor = client.db().collection("color");
+
+    CollectionColor.insertOne(req.body).then(results => {
+
+        console.log(results);
+        console.log(`Un color nuevo addicionado a catalogo...`);
+
+        res.status(200).json({ok: true, message: "Un color nuevo addicionado a catalogo....", action: "reload"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.put('/actualizar_color/:id',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();   
+
+    console.log("color: ", req.body);
+    let idc = new ObjectID(req.params.id);
+    console.log(req.params.id, idc);
+
+    let CollectionColor = client.db().collection("color");
+
+    CollectionColor.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        console.log(results);
+        console.log(`Color ${req.body.nombre} actualizado...`);
+        res.status(200).json({ok: true, message: "Color (" + req.body.nombre + ") actualizado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.delete('/delete_color/:id', (req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    
+    var CollectionColor = client.db().collection("color");
+    let cid = new ObjectID(req.params.id);
+
+    CollectionColor.deleteOne({"_id": cid }).then(result => {
+        console.log(result);
+        console.log(`Color ${req.params.id} borrado...`);
+        res.status(200).json({ok: true, message: "Color (" + req.params.id + ") borrado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+})
+
 
 // index page
 app.get('/inventario', function(req, res) {
