@@ -188,7 +188,7 @@
                 <td><input type="checkbox" id="fondo_<%= ID %>" <%=(color[index].fondo == true)?'checked':'' %> /></td>
             	<td>
             		<button type="button" title="Guardar" id="g_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-            		<button type="button" title="Borrar" id="b_<%= ID %>"onclick="Borrar(this.id)">X</button>
+            		<button type="button" title="Borrar" id="b_<%= ID %>"onclick="borrar(this.id)">X</button>
             	</td>  
           	</tr>    
            <% } %>
@@ -254,11 +254,11 @@
 
         function guardarNuevo(row_id) {
         	row_id = row_id.substr(2);
-        	colorObj.att.nombre = document.getElementById("nombre_" + row_id).innerText;
-        	colorObj.att.codigo = document.getElementById("codigo_" + row_id).innerText;
-        	colorObj.att.melamina = document.getElementById("melamina_" + row_id).value;
-        	colorObj.att.tapacantos = document.getElementById("tapacantos_" + row_id).value;
-        	colorObj.att.fondo = document.getElementById("fondo_" + row_id).value;
+        	colorObj.att.nombre =     document.getElementById("nombre_" + row_id).innerText;
+        	colorObj.att.codigo =     document.getElementById("codigo_" + row_id).innerText;
+        	colorObj.att.melamina =   $("#melamina_" + row_id).is(":checked");
+        	colorObj.att.tapacantos = $("#tapacantos_" + row_id).is(":checked");
+        	colorObj.att.fondo =      $("#fondo_" + row_id).is(":checked");
         	colorObj.guardarNuevo();
 		}
 
@@ -268,11 +268,11 @@
 
      	function guardarEditado(row_id) {
             row_id = row_id.substr(2);
-            colorObj.nombre = document.getElementById("nombre_" + row_id).innerText;
-        	colorObj.codigo = document.getElementById("codigo_" + row_id).innerText;
-        	colorObj.melamina = document.getElementById("melamina_" + row_id).value;
-        	colorObj.tapacantos = document.getElementById("tapacantos_" + row_id).value;
-        	colorObj.fondo = document.getElementById("fondo_" + row_id).value;
+            colorObj.att.nombre =     document.getElementById("nombre_" + row_id).innerText;
+        	colorObj.att.codigo =     document.getElementById("codigo_" + row_id).innerText;
+        	colorObj.att.melamina =   $("#melamina_" + row_id).is(":checked");
+        	colorObj.att.tapacantos = $("#tapacantos_" + row_id).is(":checked");
+        	colorObj.att.fondo =      $("#fondo_" + row_id).is(":checked");
             colorObj.guardarEditado(row_id);
 		}
 
@@ -280,7 +280,7 @@
             row_id = row_id.substr(2);
             colorObj.borrar(row_id);
             //then
-		    document.getElementById("row_" + row_id).outerHTML = "";
+		    //document.getElementById("row_" + row_id).outerHTML = "";
 		}
     </script>
 
