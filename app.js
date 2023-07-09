@@ -677,11 +677,11 @@ app.get('/inventario', function(req, res) {
 app.get('/preferencias', function(req, res) {
   const client = new MongoClient(uri);
   client.connect();
-  var Collection = client.db().collection("collectionmelamina");
+  var Collection = client.db().collection("color");
 
   Collection.find().toArray()
       .then(results => {
-          res.render('pages/preferencias/index', { inventario: results });
+          res.render('pages/preferencias/index', { color: results });
       })
       .catch(error => console.error(error))
       .finally(data => client.close())
