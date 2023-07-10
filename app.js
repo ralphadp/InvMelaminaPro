@@ -1295,6 +1295,31 @@ app.delete('/delete_pegamento/:id', (req, res) => {
     .finally(data => client.close())
 })
 
+app.post('/reporte_pedidos_cliente_interno_mes', function(req, res) {
+    const client = new MongoClient(uri);
+    client.connect();
+    var DB = client.db();
+    var SelectedMonth = '/' + req.body.mes + '/2023';
+
+    DB.collection("collectionCliente").find({
+        "tipo": "interno"
+      }).toArray().then(resultCliente => {
+            console.log(resultCliente);
+            DB.collection("historial").find({
+                "fecha": { $regex: SelectedMonth },
+                "tipo_entrada": "pedido"
+            }).toArray().then(resultHistorial => {
+                console.log(resultHistorial);
+                res.status(200).json({ok: true, message: "Encontrados", action: "none"});
+                res.end();
+            })
+            .catch(error => console.error(error))
+            .finally(data => client.close())
+    })
+    .catch(error => console.error(error))               
+});
+
+
 // index page
 app.get('/inventario', function(req, res) {
   res.render('pages/inventario');

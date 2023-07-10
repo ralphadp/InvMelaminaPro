@@ -7,6 +7,34 @@ var chartData = [
     {cliente:"(Externo)",Volume: 35},
 ];
 
+function getPedidosMes(mesElegido) {
+    let data = {
+        mes: Number(mesElegido)
+    };
+    fetch('/reporte_pedidos_cliente_interno_mes/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            console.log(response.message);
+            document.getElementById("message").style.background = "#a4f1a4";
+            document.getElementById("message").innerHTML = response.message + "<br>";
+        } else {
+            console.log(response.status, response.statusText);
+            document.getElementById("message").style.background = "red";
+            document.getElementById("message").innerHTML = response.message + "<br>";
+        }
+    })
+    .catch(error => {
+        document.getElementById("message").style.background = "red";
+        document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+        console.log(error.message);
+    });
+}
+
 
 function BarsData() {
     var margin = {top: 40, right: 20, bottom: 30, left: 60};
