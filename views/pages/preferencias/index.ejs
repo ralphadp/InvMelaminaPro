@@ -68,17 +68,18 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<select class="form-control" required>
-									<option selected >Colores existentes</option>
-									<option>Unidades existentes</option>
-									<option>Medidas Existentes</option>
-									<option>Marcas existentes</option>
-									<option>Operario</option>
-									<option>Cliente externo</option>
-									<option>Catalogo melaminas</option>
-									<option>Catalogo tapacantos</option>
-									<option>Catalogo pegamentos</option>
-									<option>Catalogo Fondos</option>
+								<select id="catalogos" class="form-control" required onchange="selectEditableTable(this)" >
+									<option selected value="color">Colores existentes</option>
+									<option value="marca">Marcas existentes</option>
+									<option value="unidad">Unidades existentes</option>
+									<option value="medidas">Medidas Existentes</option>
+									<option value="provedor">Provedor Existentes</option>
+									<option value="item">Productos Existentes</option>
+									<option value="Cliente">Clientes</option>
+									<option value="melamina">Catalogo Melaminas</option>
+									<option value="tapacantos">Catalogo Tapacantos</option>
+									<option value="pegamento">Catalogo Pegamentos</option>
+									<option value="fondo">Catalogo Fondos</option>
 								</select>
 								<span class="select-arrow"></span>
 								<!-- <span class="form-label"><button class="form-btn" onclick="DisplayMelaninaEditForm(true); return false;">Editar</button></span>
@@ -117,16 +118,14 @@
 	      
 	    @import "compass/css3";  
 	    .table-editable {  
-	      position: relative;  
-	      .glyphicon {  
-	        font-size: 20px;  
-	      }  
-	    }  
-	    table {
-	    	background-color: white;
+	        position: relative;
+		    background-color: white;
 	        width: 750px!important;   
 	        border-collapse: collapse;   
 	        margin:50px auto;  
+	      .glyphicon {  
+	        font-size: 20px;  
+	      }  
 	    }  
 	    td, th {   
 	        padding: 10px;   
@@ -165,13 +164,13 @@
 	        color: #0b0;  
 	      }  
 	    }  
-    </style>  
-    <div class="container_table">  
+    </style>
+    <div id="color" class="container_table">  
       <span class="form-label"><h5>Colores   <button type="button" onclick="add_row()">+</button></h5></span>
-      <div id="table" class="table-editable">  
-        <table class="table" id="data_table">
+      <div class="table-editable">  
+        <table class="table" id="color_data_table">
           <tr>  
-            <th> Nombre</th>  
+            <th> Nombre </th>  
             <th> Codigo </th>  
             <th> Melamina </th>  
             <th> Tapacantos </th>  
@@ -181,109 +180,104 @@
            <% for (let index = 0; index < color.length; index++) { 
            		var ID = color[index]._id.toString() %>
 			<tr id="row_<%= ID %>">  
-            	<td contenteditable="true" id="nombre_<%= ID %>"><%= color[index].nombre %></td>  
-            	<td contenteditable="true" id="codigo_<%= ID %>"><%= color[index].codigo %></td>  
-                <td><input type="checkbox" id="melamina_<%= ID %>" <%=(color[index].melamina == true)?'checked':'' %> /></td>
-                <td><input type="checkbox" id="tapacantos_<%= ID %>" <%=(color[index].tapacantos == true)?'checked':'' %> /></td>
-                <td><input type="checkbox" id="fondo_<%= ID %>" <%=(color[index].fondo == true)?'checked':'' %> /></td>
+            	<td contenteditable="true" id="c_nombre_<%= ID %>"><%= color[index].nombre %></td>  
+            	<td contenteditable="true" id="c_codigo_<%= ID %>"><%= color[index].codigo %></td>  
+                <td><input type="checkbox" id="c_melamina_<%= ID %>" <%=(color[index].melamina == true)?'checked':'' %> /></td>
+                <td><input type="checkbox" id="c_tapacantos_<%= ID %>" <%=(color[index].tapacantos == true)?'checked':'' %> /></td>
+                <td><input type="checkbox" id="c_fondo_<%= ID %>" <%=(color[index].fondo == true)?'checked':'' %> /></td>
             	<td>
-            		<button type="button" title="Guardar" id="g_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-            		<button type="button" title="Borrar" id="b_<%= ID %>"onclick="borrar(this.id)">X</button>
+            		<button type="button" title="Guardar" id="gc_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+            		<button type="button" title="Borrar" id="bc_<%= ID %>"onclick="borrar(this.id)">X</button>
             	</td>  
           	</tr>    
            <% } %>
         </table>  
       </div>  
     </div>
+	<div id="marca" class="container_table">
+		<span class="form-label"><h5>Marcas   <button type="button" onclick="add_row()">+</button></h5></span>
+		<div class="table-editable">
+		  <table class="table" id="marca_data_table">
+			<tr>
+			  <th> Nombre </th>  
+			  <th> Melamina </th>  
+			  <th> Tapacantos </th>  
+			  <th> Pegamento </th>  
+			  <th> Fondos </th>
+			  <th></th>
+			</tr>
+			 <% for (let index = 0; index < marcas.length; index++) {
+					 var ID = marcas[index]._id.toString() %>
+			  <tr id="row_<%= ID %>">
+				  <td contenteditable="true" id="m_nombre_<%= ID %>"><%= marcas[index].nombre %></td>  
+				  <td><input type="checkbox" id="m_melamina_<%= ID %>" <%=(marcas[index].melamina == true)?'checked':'' %> /></td>
+				  <td><input type="checkbox" id="m_tapacantos_<%= ID %>" <%=(marcas[index].tapacantos == true)?'checked':'' %> /></td>
+				  <td><input type="checkbox" id="m_tapacantos_<%= ID %>" <%=(marcas[index].pegamento == true)?'checked':'' %> /></td>
+				  <td><input type="checkbox" id="m_fondo_<%= ID %>" <%=(marcas[index].fondo == true)?'checked':'' %> /></td>
+				  <td>
+					  <button type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+					  <button type="button" title="Borrar" id="bm_<%= ID %>"onclick="borrar(this.id)">X</button>
+				  </td>
+				</tr>
+			 <% } %>
+		  </table>
+		</div>
+	  </div>
   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
-    <script src="javascripts/preferencias.js"> </script> 
-    <script>  
-	    var $TABLE = $('#table');  
-	    var $BTN = $('#export-btn');  
-	    var $EXPORT = $('#export');  
+    <script src="javascripts/preferencias.js"></script>
+    <script>
+		var CATALOGOS = ["color","marca"/*,"unidad","medidas","provedor","item","Cliente","melamina","tapacantos","pegamento","fondo"*/];
+		var SELECTED_CATALOGO = "color";
+		var objCatalog = null;
+	
+		$(function() {
+			selectEditableTable({value:"color"});
+		});
 
-	    $('.table-add').click(function () {  
-	      var $clone = $TABLE.find('tr.hide').clone(true).removeClass('hide table-line');  
-	      $TABLE.find('table').append($clone);  
-	    });  
-
-	    $('.table-remove').click(function () {  
-	        $(this).parents('tr').detach();  
-	    });  
-
-	    $('.table-up').click(function () {  
-	      var $row = $(this).parents('tr');  
-	      if ($row.index() === 1) return;   
-	      $row.prev().before($row.get(0));  
-	    });  
-
-	    $('.table-down').click(function () {  
-	      var $row = $(this).parents('tr');  
-	      $row.next().after($row.get(0));  
-	    });  
-
-	    jQuery.fn.pop = [].pop;  
-	    jQuery.fn.shift = [].shift;  
-
-	    $BTN.click(function () {  
-		      var $rows = $TABLE.find('tr:not(:hidden)');  
-		      var headers = [];  
-		      var data = [];  
-		      
-		      $($rows.shift()).find('th:not(:empty)').each(function () {  
-		          headers.push($(this).text().toLowerCase());  
-		      });  
-		      
-		      $rows.each(function () {  
-		        var $td = $(this).find('td');  
-		        var h = {};  
-		        headers.forEach(function (header, i) {  
-		            h[header] = $td.eq(i).text();     
-		        });  
-		        data.push(h);  
-		      });  
-        });
-
+		function selectEditableTable(selectBox) {
+			let selectedCatalogo = selectBox.value;
+			CATALOGOS.forEach((name) => {
+				if (selectedCatalogo == name) {
+					SELECTED_CATALOGO = name;
+					let obj = SELECTED_CATALOGO.capitalizeFirst();
+					console.log(obj);
+					objCatalog = new window[obj]();
+					document.getElementById(name).style.display = "block";
+				} else {
+					document.getElementById(name).style.display = "none";
+				}
+			});
+		}
 
         function add_row() {
-		   var table = document.getElementById("data_table");
-		   var table_len = table.rows.length;
-		   var row = table.insertRow(table_len).outerHTML = "<tr id='row_"+(table_len-1)+"'><td id='nombre_"+(table_len-1)+"' contenteditable='true'></td><td id='codigo_"+(table_len-1)+"'contenteditable='true'></td><td><input id='melamina_"+(table_len-1)+"' type='checkbox'/></td><td><input id='tapacantos_"+(table_len-1)+"' type='checkbox'/></td><td><input id='fondo_"+(table_len-1)+"' type='checkbox'/></td><td><button type='button' title='Guardar' id='g_"+(table_len-1)+"' onclick='guardarNuevo(this.id)'>o</button><button type='button' title='Borrar' id='"+(table_len-1)+"' onclick='borrarNuevo("+(table_len-1)+")'>X</button></td></tr>";
+		    var table = document.getElementById(SELECTED_CATALOGO + "_data_table");
+		    var table_len = table.rows.length;
+		    var row = table.insertRow(table_len).outerHTML = objCatalog.getRowBuild(table_len - 1);
 		}
 
         function guardarNuevo(row_id) {
-        	row_id = row_id.substr(2);
-        	colorObj.att.nombre =     document.getElementById("nombre_" + row_id).innerText;
-        	colorObj.att.codigo =     document.getElementById("codigo_" + row_id).innerText;
-        	colorObj.att.melamina =   $("#melamina_" + row_id).is(":checked");
-        	colorObj.att.tapacantos = $("#tapacantos_" + row_id).is(":checked");
-        	colorObj.att.fondo =      $("#fondo_" + row_id).is(":checked");
-        	colorObj.guardarNuevo();
+        	row_id = row_id.substr(3);
+        	objCatalog.assignar(row_id);
+        	objCatalog.guardarNuevo();
 		}
 
 		function borrarNuevo(row_id) {
+			row_id = row_id.substr(3);
 		    document.getElementById("row_" + row_id).outerHTML = "";
 		}
 
      	function guardarEditado(row_id) {
-            row_id = row_id.substr(2);
-            colorObj.att.nombre =     document.getElementById("nombre_" + row_id).innerText;
-        	colorObj.att.codigo =     document.getElementById("codigo_" + row_id).innerText;
-        	colorObj.att.melamina =   $("#melamina_" + row_id).is(":checked");
-        	colorObj.att.tapacantos = $("#tapacantos_" + row_id).is(":checked");
-        	colorObj.att.fondo =      $("#fondo_" + row_id).is(":checked");
-            colorObj.guardarEditado(row_id);
+            row_id = row_id.substr(3);
+            objCatalog.assignar(row_id);
+            objCatalog.guardarEditado(row_id);
 		}
 
 		function borrar(row_id) {
-            row_id = row_id.substr(2);
-            colorObj.borrar(row_id);
-            //then
-		    //document.getElementById("row_" + row_id).outerHTML = "";
+            row_id = row_id.substr(3);
+            objCatalog.borrar(row_id);
 		}
     </script>
-
 
 
 		<div id="melanina_add" class="col-md-4">

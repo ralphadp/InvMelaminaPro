@@ -677,16 +677,22 @@ app.get('/inventario', function(req, res) {
 
 // preferencias page
 app.get('/preferencias', function(req, res) {
-  const client = new MongoClient(uri);
-  client.connect();
-  var Collection = client.db().collection("color");
+    const client = new MongoClient(uri);
+    client.connect();
+    var CollectionColor = client.db().collection("color");
+    var CollectionMarcas = client.db().collection("marcas");
 
-  Collection.find().toArray()
-      .then(results => {
-          res.render('pages/preferencias/index', { color: results });
-      })
-      .catch(error => console.error(error))
-      .finally(data => client.close())
+    CollectionColor.find().toArray().then(resultsColor => {
+        CollectionMarcas.find().toArray().then(resultsMarcas => {
+            res.render('pages/preferencias/index', {
+                color: resultsColor,
+                marcas: resultsMarcas,
+            });
+        })
+        .catch(error => console.error(error))
+        .finally(data => client.close())
+    })
+    .catch(error => console.error(error))
 });
 
 app.post('/nuevo_color',(req, res) => {
@@ -745,6 +751,61 @@ app.delete('/delete_color/:id', (req, res) => {
     .finally(data => client.close())
 })
 
+app.post('/nueva_marca',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    console.log("marca",req.body);
+
+    let CollectionColor = client.db().collection("marcas");
+
+    CollectionColor.insertOne(req.body).then(results => {
+
+        console.log(results);
+        console.log(`Uns marca nuevo addicionado a catalogo...`);
+
+        res.status(200).json({ok: true, message: "Una marca nuevo addicionado a catalogo....", action: "reload"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.put('/actualizar_marca/:id',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();   
+
+    console.log("marca: ", req.body);
+    let idc = new ObjectID(req.params.id);
+    console.log(req.params.id, idc);
+
+    let CollectionColor = client.db().collection("marcas");
+
+    CollectionColor.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        console.log(results);
+        console.log(`Marca ${req.body.nombre} actualizado...`);
+        res.status(200).json({ok: true, message: "Marca (" + req.body.nombre + ") actualizado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.delete('/delete_marca/:id', (req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    
+    var CollectionColor = client.db().collection("marca");
+    let cid = new ObjectID(req.params.id);
+
+    CollectionColor.deleteOne({"_id": cid }).then(result => {
+        console.log(result);
+        console.log(`Marca ${req.params.id} borrado...`);
+        res.status(200).json({ok: true, message: "Marca (" + req.params.id + ") borrado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+})
 
 // index page
 app.get('/inventario', function(req, res) {
