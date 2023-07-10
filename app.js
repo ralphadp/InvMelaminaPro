@@ -681,16 +681,56 @@ app.get('/preferencias', function(req, res) {
     client.connect();
     var CollectionColor = client.db().collection("color");
     var CollectionMarcas = client.db().collection("marcas");
+    var CollectionMedidas = client.db().collection("medidas");
+    var CollectionProvedor = client.db().collection("collectionprovedor");
+    var CollectionItem = client.db().collection("item");
+    var CollectionCliente = client.db().collection("collectionCliente");
+    var CollectionMelamina = client.db().collection("collectionmelamina");
+    var CollectionTapacantos = client.db().collection("collectiontapacantos");
+    var CollectionPegamento = client.db().collection("collectionpegamento");
+    var CollectionFondo = client.db().collection("collectionfondo");
 
     CollectionColor.find().toArray().then(resultsColor => {
         CollectionMarcas.find().toArray().then(resultsMarcas => {
-            res.render('pages/preferencias/index', {
-                color: resultsColor,
-                marcas: resultsMarcas,
-            });
+            CollectionMedidas.find().toArray().then(resultsMedidas => {
+                CollectionProvedor.find().toArray().then(resultsProvedor => {
+                    CollectionItem.find().toArray().then(resultsItem => {
+                        CollectionCliente.find().toArray().then(resultsCliente => {
+                            CollectionMelamina.find().toArray().then(resultsMelamina => {
+                                CollectionTapacantos.find().toArray().then(resultsTapacantos => {
+                                    CollectionPegamento.find().toArray().then(resultsPegamento => {
+                                        CollectionFondo.find().toArray().then(resultsFondo => {
+                                            res.render('pages/preferencias/index', {
+                                                color: resultsColor,
+                                                marcas: resultsMarcas,
+                                                medidas: resultsMedidas,
+                                                provedor: resultsProvedor,
+                                                item: resultsItem,
+                                                cliente: resultsCliente,
+                                                melamina: resultsMelamina,
+                                                tapacantos: resultsTapacantos,
+                                                pegamento: resultsPegamento,
+                                                fondo: resultsFondo,
+                                            });
+                                        })
+                                        .catch(error => console.error(error))
+                                        .finally(data => client.close())
+                                    })
+                                    .catch(error => console.error(error))
+                                })
+                                .catch(error => console.error(error))
+                            })
+                            .catch(error => console.error(error))
+                        })
+                        .catch(error => console.error(error))
+                    })
+                    .catch(error => console.error(error))
+                })
+                .catch(error => console.error(error))
+            })
+            .catch(error => console.error(error))
         })
         .catch(error => console.error(error))
-        .finally(data => client.close())
     })
     .catch(error => console.error(error))
 });
@@ -756,9 +796,9 @@ app.post('/nueva_marca',(req, res) => {
     client.connect();
     console.log("marca",req.body);
 
-    let CollectionColor = client.db().collection("marcas");
+    let CollectionMarca = client.db().collection("marcas");
 
-    CollectionColor.insertOne(req.body).then(results => {
+    CollectionMarca.insertOne(req.body).then(results => {
 
         console.log(results);
         console.log(`Uns marca nuevo addicionado a catalogo...`);
@@ -778,9 +818,9 @@ app.put('/actualizar_marca/:id',(req, res) => {
     let idc = new ObjectID(req.params.id);
     console.log(req.params.id, idc);
 
-    let CollectionColor = client.db().collection("marcas");
+    let CollectionMarca = client.db().collection("marcas");
 
-    CollectionColor.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+    CollectionMarca.updateOne({"_id": idc}, {$set: req.body}).then(results => {
         console.log(results);
         console.log(`Marca ${req.body.nombre} actualizado...`);
         res.status(200).json({ok: true, message: "Marca (" + req.body.nombre + ") actualizado.", action: "none"});
@@ -794,13 +834,461 @@ app.delete('/delete_marca/:id', (req, res) => {
     const client = new MongoClient(uri);
     client.connect();
     
-    var CollectionColor = client.db().collection("marca");
+    var CollectionMarca = client.db().collection("marca");
     let cid = new ObjectID(req.params.id);
 
-    CollectionColor.deleteOne({"_id": cid }).then(result => {
+    CollectionMarca.deleteOne({"_id": cid }).then(result => {
         console.log(result);
         console.log(`Marca ${req.params.id} borrado...`);
         res.status(200).json({ok: true, message: "Marca (" + req.params.id + ") borrado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+})
+
+app.post('/nueva_medida',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    console.log("medida",req.body);
+
+    let CollectionMedida = client.db().collection("medidas");
+
+    CollectionMedida.insertOne(req.body).then(results => {
+
+        console.log(results);
+        console.log(`Una medida nueva fue addicionada al catalogo...`);
+
+        res.status(200).json({ok: true, message: "Una medida nueva addicionada al catalogo....", action: "reload"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.put('/actualizar_medida/:id',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();   
+
+    console.log("medida: ", req.body);
+    let idc = new ObjectID(req.params.id);
+    console.log(req.params.id, idc);
+
+    let CollectionMedida = client.db().collection("medidas");
+
+    CollectionMedida.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        console.log(results);
+        console.log(`Medida ${req.body.nombre} actualizado...`);
+        res.status(200).json({ok: true, message: "Medida (" + req.body.nombre + ") actualizado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.delete('/delete_medida/:id', (req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    
+    var CollectionMedida = client.db().collection("medidas");
+    let cid = new ObjectID(req.params.id);
+
+    CollectionMedida.deleteOne({"_id": cid }).then(result => {
+        console.log(result);
+        console.log(`Medida ${req.params.id} borrado...`);
+        res.status(200).json({ok: true, message: "Medida (" + req.params.id + ") borrado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+})
+
+app.post('/nuevo_provedor',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    console.log("provedor",req.body);
+
+    let CollectionProvedor = client.db().collection("collectionprovedor");
+
+    CollectionProvedor.insertOne(req.body).then(results => {
+
+        console.log(results);
+        console.log(`Un provedor nuevo fue addicionado al catalogo...`);
+
+        res.status(200).json({ok: true, message: "Un provedor nuevo fue addicionado al catalogo....", action: "reload"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.put('/actualizar_provedor/:id',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();   
+
+    console.log("provedor: ", req.body);
+    let idc = new ObjectID(req.params.id);
+    console.log(req.params.id, idc);
+
+    let CollectionProvedor = client.db().collection("collectionprovedor");
+
+    CollectionProvedor.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        console.log(results);
+        console.log(`Provedor ${req.body.nombre} actualizado...`);
+        res.status(200).json({ok: true, message: "Provedor (" + req.body.nombre + ") actualizado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.delete('/delete_provedor/:id', (req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    
+    var CollectionProvedor = client.db().collection("collectionprovedor");
+    let cid = new ObjectID(req.params.id);
+
+    CollectionProvedor.deleteOne({"_id": cid }).then(result => {
+        console.log(result);
+        console.log(`Provedor ${req.params.id} borrado...`);
+        res.status(200).json({ok: true, message: "Provedor (" + req.params.id + ") borrado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+})
+
+app.post('/nuevo_item',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    console.log("item",req.body);
+
+    let CollectionItem = client.db().collection("item");
+
+    CollectionItem.insertOne(req.body).then(results => {
+
+        console.log(results);
+        console.log(`Un item nuevo fue addicionado al catalogo...`);
+
+        res.status(200).json({ok: true, message: "Un item nuevo fue addicionado al catalogo....", action: "reload"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.put('/actualizar_item/:id',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();   
+
+    console.log("item: ", req.body);
+    let idc = new ObjectID(req.params.id);
+    console.log(req.params.id, idc);
+
+    let CollectionItem = client.db().collection("item");
+
+    CollectionItem.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        console.log(results);
+        console.log(`Item ${req.body.nombre} actualizado...`);
+        res.status(200).json({ok: true, message: "Item (" + req.body.nombre + ") actualizado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.delete('/delete_item/:id', (req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    
+    var CollectionItem = client.db().collection("item");
+    let cid = new ObjectID(req.params.id);
+
+    CollectionItem.deleteOne({"_id": cid }).then(result => {
+        console.log(result);
+        console.log(`Item ${req.params.id} borrado...`);
+        res.status(200).json({ok: true, message: "Item (" + req.params.id + ") borrado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+})
+
+app.post('/nuevo_cliente',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    console.log("cliente",req.body);
+
+    let CollectionCliente = client.db().collection("cliente");
+
+    CollectionCliente.insertOne(req.body).then(results => {
+
+        console.log(results);
+        console.log(`Un Cliente nuevo fue addicionado al catalogo...`);
+
+        res.status(200).json({ok: true, message: "Un Cliente nuevo fue addicionado al catalogo....", action: "reload"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.put('/actualizar_cliente/:id',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();   
+
+    console.log("cliente: ", req.body);
+    let idc = new ObjectID(req.params.id);
+    console.log(req.params.id, idc);
+
+    let CollectionCliente = client.db().collection("cliente");
+
+    CollectionCliente.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        console.log(results);
+        console.log(`Cliente ${req.body.nombre} actualizado...`);
+        res.status(200).json({ok: true, message: "Cliente (" + req.body.nombre + ") actualizado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.delete('/delete_cliente/:id', (req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    
+    var CollectionCliente = client.db().collection("cliente");
+    let cid = new ObjectID(req.params.id);
+
+    CollectionCliente.deleteOne({"_id": cid }).then(result => {
+        console.log(result);
+        console.log(`Cliente ${req.params.id} borrado...`);
+        res.status(200).json({ok: true, message: "Cliente (" + req.params.id + ") borrado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+})
+
+app.post('/nuevo_melamina',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    console.log("melamina",req.body);
+
+    let CollectionMelamina = client.db().collection("collectionmelamina");
+
+    CollectionMelamina.insertOne(req.body).then(results => {
+
+        console.log(results);
+        console.log(`Una melamina nueva fue adicionada al catalogo...`);
+
+        res.status(200).json({ok: true, message: "Una melamina nueva fue adicionada al catalogo....", action: "reload"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.put('/actualizar_melamina/:id',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();   
+
+    console.log("melamina: ", req.body);
+    let idc = new ObjectID(req.params.id);
+    console.log(req.params.id, idc);
+
+    let CollectionMelamina = client.db().collection("collectionmelamina");
+
+    CollectionMelamina.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        console.log(results);
+        console.log(`Melamina ${req.body.nombre} actualizada...`);
+        res.status(200).json({ok: true, message: "Melamina (" + req.body.nombre + ") actualizada.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.delete('/delete_melamina/:id', (req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+
+    var CollectionMelamina = client.db().collection("collectionmelamina");
+    let cid = new ObjectID(req.params.id);
+
+    CollectionMelamina.deleteOne({"_id": cid }).then(result => {
+        console.log(result);
+        console.log(`Melamina ${req.params.id} borrada...`);
+        res.status(200).json({ok: true, message: "Melamina (" + req.params.id + ") borrada.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+})
+
+app.post('/nuevo_tapacantos',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    console.log("tapacantos",req.body);
+
+    let CollectionTapacantos = client.db().collection("collectiontapacantos");
+
+    CollectionTapacantos.insertOne(req.body).then(results => {
+
+        console.log(results);
+        console.log(`Un tapacantos nuevo fue adicionado al catalogo...`);
+
+        res.status(200).json({ok: true, message: "Un tapacantos nuevo fue adicionado al catalogo....", action: "reload"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.put('/actualizar_tapacantos/:id',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();   
+
+    console.log("tapacantos: ", req.body);
+    let idc = new ObjectID(req.params.id);
+    console.log(req.params.id, idc);
+
+    let CollectionTapacantos = client.db().collection("collectiontapacantos");
+
+    CollectionTapacantos.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        console.log(results);
+        console.log(`Tapacantos ${req.body.nombre} actualizado...`);
+        res.status(200).json({ok: true, message: "Tapacantos (" + req.body.nombre + ") actualizado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.delete('/delete_tapacantos/:id', (req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+
+    var CollectionTapacantos = client.db().collection("collectiontapacantos");
+    let cid = new ObjectID(req.params.id);
+
+    CollectionTapacantos.deleteOne({"_id": cid }).then(result => {
+        console.log(result);
+        console.log(`Tapacantos ${req.params.id} borrado...`);
+        res.status(200).json({ok: true, message: "Tapacantos (" + req.params.id + ") borrado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+})
+
+app.post('/nuevo_pegamento',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    console.log("pegamento",req.body);
+
+    let CollectionPegamento = client.db().collection("collectionpegamento");
+
+    CollectionPegamento.insertOne(req.body).then(results => {
+
+        console.log(results);
+        console.log(`Un pegamento nuevo fue adicionado al catalogo...`);
+
+        res.status(200).json({ok: true, message: "Un pegamento nuevo fue adicionado al catalogo....", action: "reload"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.put('/actualizar_pegamento/:id',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();   
+
+    console.log("pegamento: ", req.body);
+    let idc = new ObjectID(req.params.id);
+    console.log(req.params.id, idc);
+
+    let CollectionPegamento = client.db().collection("collectionpegamento");
+
+    CollectionPegamento.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        console.log(results);
+        console.log(`Pegamento ${req.body.nombre} actualizado...`);
+        res.status(200).json({ok: true, message: "Pegamento (" + req.body.nombre + ") actualizado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.delete('/delete_pegamento/:id', (req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+
+    var CollectionPegamento = client.db().collection("collectionpegamento");
+    let cid = new ObjectID(req.params.id);
+
+    CollectionPegamento.deleteOne({"_id": cid }).then(result => {
+        console.log(result);
+        console.log(`Pegamento ${req.params.id} borrado...`);
+        res.status(200).json({ok: true, message: "Pegamento (" + req.params.id + ") borrado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+})
+
+app.post('/nuevo_pegamento',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    console.log("pegamento",req.body);
+
+    let CollectionPegamento = client.db().collection("collectionpegamento");
+
+    CollectionPegamento.insertOne(req.body).then(results => {
+
+        console.log(results);
+        console.log(`Un pegamento nuevo fue adicionado al catalogo...`);
+
+        res.status(200).json({ok: true, message: "Un pegamento nuevo fue adicionado al catalogo....", action: "reload"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.put('/actualizar_pegamento/:id',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();   
+
+    console.log("pegamento: ", req.body);
+    let idc = new ObjectID(req.params.id);
+    console.log(req.params.id, idc);
+
+    let CollectionPegamento = client.db().collection("collectionpegamento");
+
+    CollectionPegamento.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        console.log(results);
+        console.log(`Pegamento ${req.body.nombre} actualizado...`);
+        res.status(200).json({ok: true, message: "Pegamento (" + req.body.nombre + ") actualizado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.delete('/delete_pegamento/:id', (req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+
+    var CollectionPegamento = client.db().collection("collectionpegamento");
+    let cid = new ObjectID(req.params.id);
+
+    CollectionPegamento.deleteOne({"_id": cid }).then(result => {
+        console.log(result);
+        console.log(`Pegamento ${req.params.id} borrado...`);
+        res.status(200).json({ok: true, message: "Pegamento (" + req.params.id + ") borrado.", action: "none"});
         res.end();
     })
     .catch(error => console.error(error))

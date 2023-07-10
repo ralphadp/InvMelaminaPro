@@ -71,11 +71,10 @@
 								<select id="catalogos" class="form-control" required onchange="selectEditableTable(this)" >
 									<option selected value="color">Colores existentes</option>
 									<option value="marca">Marcas existentes</option>
-									<option value="unidad">Unidades existentes</option>
 									<option value="medidas">Medidas Existentes</option>
 									<option value="provedor">Provedor Existentes</option>
 									<option value="item">Productos Existentes</option>
-									<option value="Cliente">Clientes</option>
+									<option value="cliente">Clientes</option>
 									<option value="melamina">Catalogo Melaminas</option>
 									<option value="tapacantos">Catalogo Tapacantos</option>
 									<option value="pegamento">Catalogo Pegamentos</option>
@@ -212,8 +211,256 @@
 				  <td contenteditable="true" id="m_nombre_<%= ID %>"><%= marcas[index].nombre %></td>  
 				  <td><input type="checkbox" id="m_melamina_<%= ID %>" <%=(marcas[index].melamina == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="m_tapacantos_<%= ID %>" <%=(marcas[index].tapacantos == true)?'checked':'' %> /></td>
-				  <td><input type="checkbox" id="m_tapacantos_<%= ID %>" <%=(marcas[index].pegamento == true)?'checked':'' %> /></td>
+				  <td><input type="checkbox" id="m_pegamento_<%= ID %>" <%=(marcas[index].pegamento == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="m_fondo_<%= ID %>" <%=(marcas[index].fondo == true)?'checked':'' %> /></td>
+				  <td>
+					  <button type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+					  <button type="button" title="Borrar" id="bm_<%= ID %>"onclick="borrar(this.id)">X</button>
+				  </td>
+				</tr>
+			 <% } %>
+		  </table>
+		</div>
+	  </div>
+	  <div id="medidas" class="container_table">
+		<span class="form-label"><h5>Medidas   <button type="button" onclick="add_row()">+</button></h5></span>
+		<div class="table-editable">
+		  <table class="table" id="medidas_data_table">
+			<tr>
+			  <th> Nombre </th>  
+			  <th> Melamina </th>  
+			  <th> Tapacantos </th>  
+			  <th> Fondos </th>
+			  <th></th>
+			</tr>
+			 <% for (let index = 0; index < medidas.length; index++) {
+					 var ID = medidas[index]._id.toString() %>
+			  <tr id="row_<%= ID %>">
+				  <td contenteditable="true" id="e_nombre_<%= ID %>"><%= medidas[index].nombre %></td>  
+				  <td><input type="checkbox" id="e_melamina_<%= ID %>" <%=(medidas[index].melamina == true)?'checked':'' %> /></td>
+				  <td><input type="checkbox" id="e_tapacantos_<%= ID %>" <%=(medidas[index].tapacantos == true)?'checked':'' %> /></td>
+				  <td><input type="checkbox" id="e_fondo_<%= ID %>" <%=(medidas[index].fondo == true)?'checked':'' %> /></td>
+				  <td>
+					  <button type="button" title="Guardar" id="ge_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+					  <button type="button" title="Borrar" id="be_<%= ID %>"onclick="borrar(this.id)">X</button>
+				  </td>
+				</tr>
+			 <% } %>
+		  </table>
+		</div>
+	  </div>
+	  <div id="provedor" class="container_table">
+		<span class="form-label"><h5>Provedor   <button type="button" onclick="add_row()">+</button></h5></span>
+		<div class="table-editable">
+		  <table class="table" id="provedor_data_table">
+			<tr>
+			  <th> Nombre </th>  
+			  <th> Direccion </th>  
+			  <th> Celular </th>
+			  <th> Email </th>
+			  <th> Items </th>
+			  <th></th>
+			</tr>
+			 <% for (let index = 0; index < provedor.length; index++) {
+					 var ID = provedor[index]._id.toString() %>
+			  <tr id="row_<%= ID %>">
+				  <td contenteditable="true" id="p_nombre_<%= ID %>"><%= provedor[index].nombre %></td>
+				  <td contenteditable="true" id="p_direccion_<%= ID %>"><%= provedor[index].direccion %></td>
+				  <td contenteditable="true" id="p_celular_<%= ID %>"><%= provedor[index].celular %></td>
+				  <td contenteditable="true" id="p_email_<%= ID %>"><%= provedor[index].email %></td>
+				  <td contenteditable="true" id="p_items_<%= ID %>"><%= provedor[index].items %></td>
+				  <td>
+					  <button type="button" title="Guardar" id="gp_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+					  <button type="button" title="Borrar" id="bp_<%= ID %>"onclick="borrar(this.id)">X</button>
+				  </td>
+				</tr>
+			 <% } %>
+		  </table>
+		</div>
+	  </div>
+	  <div id="item" class="container_table">
+		<span class="form-label"><h5>Producto(item)   <button type="button" onclick="add_row()">+</button></h5></span>
+		<div class="table-editable">
+		  <table class="table" id="item_data_table">
+			<tr>
+			  <th> Nombre </th>  
+			  <th> Unidad </th>  
+			  <th> Embalaje </th>
+			  <th></th>
+			</tr>
+			 <% for (let index = 0; index < item.length; index++) {
+					 var ID = item[index]._id.toString() %>
+			  <tr id="row_<%= ID %>">
+				  <td contenteditable="true" id="i_nombre_<%= ID %>"><%= item[index].nombre %></td>
+				  <td contenteditable="true" id="i_unidad_<%= ID %>"><%= item[index].unidad %></td>
+				  <td contenteditable="true" id="i_embalaje_<%= ID %>"><%= item[index].embalaje %></td>
+				  <td>
+					  <button type="button" title="Guardar" id="gi_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+					  <button type="button" title="Borrar" id="bi_<%= ID %>"onclick="borrar(this.id)">X</button>
+				  </td>
+				</tr>
+			 <% } %>
+		  </table>
+		</div>
+	  </div>
+	  <div id="cliente" class="container_table">
+		<span class="form-label"><h5>Cliente   <button type="button" onclick="add_row()">+</button></h5></span>
+		<div class="table-editable">
+		  <table class="table" id="cliente_data_table">
+			<tr>
+			  <th> Nombre </th>  
+			  <th> CI </th>  
+			  <th> NIT </th>
+			  <th> Direccion </th>
+			  <th> Celular </th>
+			  <th> Email </th>
+			  <th> Empresa </th>
+			  <th> Tipo </th>
+			  <th></th>
+			</tr>
+			 <% for (let index = 0; index < cliente.length; index++) {
+					 var ID = cliente[index]._id.toString() %>
+			  <tr id="row_<%= ID %>">
+				  <td contenteditable="true" id="l_nombre_<%= ID %>"><%= cliente[index].nombre %></td>
+				  <td contenteditable="true" id="l_ci_<%= ID %>"><%= cliente[index].ci %></td>
+				  <td contenteditable="true" id="l_nit_<%= ID %>"><%= cliente[index].nit %></td>
+				  <td contenteditable="true" id="l_direccion_<%= ID %>"><%= cliente[index].direccion %></td>
+				  <td contenteditable="true" id="l_celular_<%= ID %>"><%= cliente[index].celular %></td>
+				  <td contenteditable="true" id="l_email_<%= ID %>"><%= cliente[index].email %></td>
+				  <td contenteditable="true" id="l_empresa_<%= ID %>"><%= cliente[index].empresa %></td>
+				  <td contenteditable="true" id="l_tipo_<%= ID %>"><%= cliente[index].tipo %></td>
+				  <td>
+					  <button type="button" title="Guardar" id="gl_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+					  <button type="button" title="Borrar" id="bl_<%= ID %>"onclick="borrar(this.id)">X</button>
+				  </td>
+				</tr>
+			 <% } %>
+		  </table>
+		</div>
+	  </div>
+	  <div id="melamina" class="container_table">
+		<span class="form-label"><h5>Melamina   <button type="button" onclick="add_row()">+</button></h5></span>
+		<div class="table-editable">
+		  <table class="table" id="melamina_data_table">
+			<tr>
+			  <th> Color </th>  
+			  <th> Provedor </th>  
+			  <th> Medidas </th>
+			  <th> Marca </th>
+			  <th> Precio Compra </th>
+			  <th> Precio Venta </th>
+			  <th> Lamina x Paquete </th>
+			  <th></th>
+			</tr>
+			 <% for (let index = 0; index < melamina.length; index++) {
+					 var ID = melamina[index]._id.toString() %>
+			  <tr id="row_<%= ID %>">
+				  <td contenteditable="true" id="a_color_<%= ID %>"><%= melamina[index].color %></td>
+				  <td contenteditable="true" id="a_provedor_<%= ID %>"><%= melamina[index].provedor %></td>
+				  <td contenteditable="true" id="a_medidas_<%= ID %>"><%= melamina[index].medidas %></td>
+				  <td contenteditable="true" id="a_marca_<%= ID %>"><%= melamina[index].marca %></td>
+				  <td contenteditable="true" id="a_precio_compra_<%= ID %>"><%= melamina[index].precio_compra %></td>
+				  <td contenteditable="true" id="a_precio_venta_<%= ID %>"><%= melamina[index].precio_venta %></td>
+				  <td contenteditable="true" id="a_laminaxpaquete_<%= ID %>"><%= melamina[index].laminaxpaquete %></td>
+				  <td>
+					  <button type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+					  <button type="button" title="Borrar" id="bm_<%= ID %>"onclick="borrar(this.id)">X</button>
+				  </td>
+				</tr>
+			 <% } %>
+		  </table>
+		</div>
+	  </div>
+	  <div id="tapacantos" class="container_table">
+		<span class="form-label"><h5>Tapacantos   <button type="button" onclick="add_row()">+</button></h5></span>
+		<div class="table-editable">
+		  <table class="table" id="tapacantos_data_table">
+			<tr>
+			  <th> Color </th>  
+			  <th> Provedor </th>  
+			  <th> Medidas </th>
+			  <th> Marca </th>
+			  <th> Precio Compra </th>
+			  <th> Precio Venta </th>
+			  <th> Metros x Rollo </th>
+			  <th> Rollos x Caja </th>
+			  <th> Precio Venta(metros) </th>
+			  <th> Precio Compra(metros) </th>
+			  <th></th>
+			</tr>
+			 <% for (let index = 0; index < tapacantos.length; index++) {
+					 var ID = tapacantos[index]._id.toString() %>
+			  <tr id="row_<%= ID %>">
+				  <td contenteditable="true" id="t_color_<%= ID %>"><%= tapacantos[index].color %></td>
+				  <td contenteditable="true" id="t_provedor_<%= ID %>"><%= tapacantos[index].provedor %></td>
+				  <td contenteditable="true" id="t_medidas_<%= ID %>"><%= tapacantos[index].medidas %></td>
+				  <td contenteditable="true" id="t_marca_<%= ID %>"><%= tapacantos[index].marca %></td>
+				  <td contenteditable="true" id="t_precio_compra_<%= ID %>"><%= tapacantos[index].precio_compra %></td>
+				  <td contenteditable="true" id="t_precio_venta_<%= ID %>"><%= tapacantos[index].precio_venta %></td>
+				  <td contenteditable="true" id="t_metrosxrollo_<%= ID %>"><%= tapacantos[index].metrosxrollo %></td>
+				  <td contenteditable="true" id="t_rollosxcaja_<%= ID %>"><%= tapacantos[index].rollosxcaja %></td>
+				  <td contenteditable="true" id="t_precio_venta_metros_<%= ID %>"><%= tapacantos[index].precio_venta_metros %></td>
+				  <td contenteditable="true" id="t_precio_compra_metros_<%= ID %>"><%= tapacantos[index].precio_compra_metros %></td>
+				  <td>
+					  <button type="button" title="Guardar" id="gt_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+					  <button type="button" title="Borrar" id="bt_<%= ID %>"onclick="borrar(this.id)">X</button>
+				  </td>
+				</tr>
+			 <% } %>
+		  </table>
+		</div>
+	  </div>
+	  <div id="pegamento" class="container_table">
+		<span class="form-label"><h5>Pegamento   <button type="button" onclick="add_row()">+</button></h5></span>
+		<div class="table-editable">
+		  <table class="table" id="pegamento_data_table">
+			<tr>
+			  <th> Provedor </th>  
+			  <th> Marca </th>
+			  <th> Precio Compra </th>
+			  <th> Precio Venta </th>
+			  <th></th>
+			</tr>
+			 <% for (let index = 0; index < pegamento.length; index++) {
+					 var ID = pegamento[index]._id.toString() %>
+			  <tr id="row_<%= ID %>">
+				  <td contenteditable="true" id="p_provedor_<%= ID %>"><%= pegamento[index].provedor %></td>
+				  <td contenteditable="true" id="p_marca_<%= ID %>"><%= pegamento[index].marca %></td>
+				  <td contenteditable="true" id="p_precio_compra_<%= ID %>"><%= pegamento[index].precio_compra %></td>
+				  <td contenteditable="true" id="p_precio_venta_<%= ID %>"><%= pegamento[index].precio_venta %></td>
+				  <td>
+					  <button type="button" title="Guardar" id="gp_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+					  <button type="button" title="Borrar" id="bp_<%= ID %>"onclick="borrar(this.id)">X</button>
+				  </td>
+				</tr>
+			 <% } %>
+		  </table>
+		</div>
+	  </div>
+	  <div id="fondo" class="container_table">
+		<span class="form-label"><h5>Fondo   <button type="button" onclick="add_row()">+</button></h5></span>
+		<div class="table-editable">
+		  <table class="table" id="fondo_data_table">
+			<tr>
+			  <th> Color </th>  
+			  <th> Provedor </th>  
+			  <th> Medidas </th>
+			  <th> Marca </th>
+			  <th> Precio Compra </th>
+			  <th> Precio Venta </th>
+			  <th> Lamina x Paquete </th>
+			  <th></th>
+			</tr>
+			 <% for (let index = 0; index < fondo.length; index++) {
+					 var ID = fondo[index]._id.toString() %>
+			  <tr id="row_<%= ID %>">
+				  <td contenteditable="true" id="a_color_<%= ID %>"><%= fondo[index].color %></td>
+				  <td contenteditable="true" id="a_provedor_<%= ID %>"><%= fondo[index].provedor %></td>
+				  <td contenteditable="true" id="a_medidas_<%= ID %>"><%= fondo[index].medidas %></td>
+				  <td contenteditable="true" id="a_marca_<%= ID %>"><%= fondo[index].marca %></td>
+				  <td contenteditable="true" id="a_precio_compra_<%= ID %>"><%= fondo[index].precio_compra %></td>
+				  <td contenteditable="true" id="a_precio_venta_<%= ID %>"><%= fondo[index].precio_venta %></td>
+				  <td contenteditable="true" id="a_laminaxpaquete_<%= ID %>"><%= fondo[index].laminaxpaquete %></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="bm_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -227,7 +474,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
     <script src="javascripts/preferencias.js"></script>
     <script>
-		var CATALOGOS = ["color","marca"/*,"unidad","medidas","provedor","item","Cliente","melamina","tapacantos","pegamento","fondo"*/];
+		var CATALOGOS = ["color","marca","medidas","provedor","item","cliente","melamina","tapacantos","pegamento","fondo"];
 		var SELECTED_CATALOGO = "color";
 		var objCatalog = null;
 	
