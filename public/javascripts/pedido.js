@@ -350,9 +350,12 @@ function PrePrintCarrito() {
     newCell.style.width = "70px";
     newCell = newRow.insertCell();
     newCell.style.width = "70px";
+    newCell.style.fontWeight = "Bold";
     newCell.className = "num";
+    newCell.appendChild(document.createTextNode("TOTAL: "));
     newCell = newRow.insertCell();
     newCell.style.width = "100px";
+    newCell.style.fontWeight = "Bold";
     newCell.className = "num";
     newCell.appendChild(document.createTextNode(TotalPrecio + " Bs"));
 }
