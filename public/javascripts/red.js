@@ -1,15 +1,9 @@
-// The every data variable. for both Clientes charts
-var chartData = [
-    {cliente:"Hector",   Volume: 29},
-    {cliente:"Jose",     Volume: 20},
-    {cliente:"Maria",    Volume: 15},
-    {cliente:"Moises",   Volume: 7},
-    {cliente:"(Externo)",Volume: 35},
-];
+const nombreMes = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-function getPedidosMes(mesElegido) {
+//--------------REQUESTS---------------------------
+function getReportesPedidosClienteMes(mesElegido) {
     let data = {
-        mes: Number(mesElegido)
+        mes: mesElegido
     };
     fetch('/reporte_pedidos_cliente_interno_mes/', {
         method: 'POST',
@@ -20,23 +14,89 @@ function getPedidosMes(mesElegido) {
     .then(response => {
         if (response.ok) {
             console.log(response.message);
-            document.getElementById("message").style.background = "#a4f1a4";
-            document.getElementById("message").innerHTML = response.message + "<br>";
+            clearSVG()
+            BarsData(response.chartData,"cliente_bars");
+            PieLegend(response.chartData,"cliente_pie");
         } else {
             console.log(response.status, response.statusText);
-            document.getElementById("message").style.background = "red";
-            document.getElementById("message").innerHTML = response.message + "<br>";
         }
     })
     .catch(error => {
-        document.getElementById("message").style.background = "red";
-        document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
         console.log(error.message);
     });
 }
 
+function getReportesPedidosMes(mesElegido) {
+    let data = {
+        mes: mesElegido
+    };
+    fetch('/reporte_producto_pedido_mes/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            console.log(response.message);
+            clearSVG()
+            BarsData(response.chartData, "producto_bars");
+            PieLegend(response.chartData, "producto_pie");
+        } else {
+            console.log(response.status, response.statusText);
+        }
+    })
+    .catch(error => {
+        console.log(error.message);
+    });
+}
 
-function BarsData() {
+function lightSelectedMenu(index, mes) {
+    //clean
+    nombreMes.forEach((mesName)=> {
+        document.getElementById("b"+index+"_click" + mesName).style.background = "white";
+        document.getElementById("p"+index+"_click" + mesName).style.background = "white";
+    });
+    //set the right
+    document.getElementById("b"+index+"_click" + nombreMes[mes]).style.background = "bisque";
+    document.getElementById("p"+index+"_click" + nombreMes[mes]).style.background = "bisque";
+}
+
+function lightLeftMenu(index, title) {
+    var frameNames = ["frame-pedidos-cliente", "frame-pedidos"];
+    document.getElementById("frame-title").innerHTML = title;
+    frameNames.forEach((nameID)=> {
+        document.getElementById(nameID).style.display = "none";
+        document.getElementById(nameID+"-b").style.background = "white";
+    });
+    document.getElementById(frameNames[index]).style.display = "block";
+    document.getElementById(frameNames[index]+"-b").style.background = "bisque";
+}
+
+//--------------PRE REQUESTS CONFIG ---------------------------
+function getPedidosClienteDelMes(mes) {
+    lightSelectedMenu(0, mes);
+    mes++;
+    mes = (mes < 10) ? ('0' + mes) : mes;
+
+    getReportesPedidosClienteMes(mes);
+}
+
+function getPedidosMes(mes) {
+    lightSelectedMenu(1, mes);
+    mes++;
+    mes = (mes < 10) ? ('0' + mes) : mes;
+
+    getReportesPedidosMes(mes);
+}
+
+/////////////////// D3  functions ///////////////////
+
+function clearSVG() {
+    d3.selectAll("svg").remove();
+}
+
+function BarsData(chartData, canvas_id) {
     var margin = {top: 40, right: 20, bottom: 30, left: 60};
     var width = 750 - margin.left - margin.right;
     var height = 400 - margin.top - margin.bottom;
@@ -67,7 +127,7 @@ function BarsData() {
     })
 
     var svg = d3
-        .select("#cliente_bars")
+        .select("#"+canvas_id)
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -94,11 +154,11 @@ function BarsData() {
         .attr("dy", ".41em")
         .style("text-anchor", "end")
         .text("Volumen")
-        .style("font-size", "12px");
+        .style("font-size", "10px");
 
     svg.selectAll(".bar")
         .data(chartData)
-    .enter().append("rect")
+        .enter().append("rect")
         .attr("class", "bar")
         .attr("x", function(d) { return x(d.cliente); })
         .attr("width", x.rangeBand()-40)
@@ -116,7 +176,7 @@ function BarsData() {
     }
 }
 
-function PieLegend() {
+function PieLegend(chartData, canvas_id) {
     var width = 650;
     var height = 400;
     
@@ -131,7 +191,7 @@ function PieLegend() {
 
     var color = d3.scale.category20();
 
-    var chart = d3.select("#cliente_pie")
+    var chart = d3.select("#"+canvas_id)
         .append('svg')
         .attr('width', width)
         .attr('height', height)
@@ -220,7 +280,7 @@ function PieLegend() {
     legend.append('text')
         .attr('x', legendRectSize + legendSpacing - 100) // legend(x,y)
         .attr('y', legendRectSize - legendSpacing + 2)// legend(x,y)
-        .style("font-size", "14px")
+        .style("font-size", "12px")
         .text(function(d) { return d; });
 
         path.transition()
@@ -315,9 +375,25 @@ function PieLegend() {
             .text(function (d, i) { return ((d.Volume / sum) * 100).toFixed(0) + "%"; });
     });
 }
+///*************** INTERFACE BUTTONS *** */
 
-$(function(){
-    $("#form-total").steps({
+
+function generarPedidosCliente() {
+    lightLeftMenu(0, "Reporte: Volumen de Pedidos por Cliente (mes)");
+    
+    let mes = (new Date()).getMonth();
+    getPedidosClienteDelMes(mes);
+}
+
+function generarProductos() {
+    lightLeftMenu(1, "Reporte: Volumen de Pedidos por mes");
+
+    let mes = (new Date()).getMonth();
+    getPedidosMes(mes);
+}
+
+$(function() {
+    $("#form-total-0").steps({
         headerTag: "h2",
         bodyTag: "section",
         transitionEffect: "fade",
@@ -332,12 +408,31 @@ $(function(){
             current : ''
         },
         onStepChanging: function (event, currentIndex, newIndex) { 
-      
+            return true;
+        }
+    });
+    $("#form-total-1").steps({
+        headerTag: "h2",
+        bodyTag: "section",
+        transitionEffect: "fade",
+        enableAllSteps: true,
+        autoFocus: true,
+        transitionEffectSpeed: 500,
+        titleTemplate : '<div class="title">#title#</div>',
+        labels: {
+            previous : 'Anterior',
+            next : 'Proximo',
+            finish : 'Salir',
+            current : ''
+        },
+        onStepChanging: function (event, currentIndex, newIndex) { 
             return true;
         }
     });
 
-    BarsData();
 
-    PieLegend();
+    lightLeftMenu(0, "Reporte: Volumen de Pedidos por Cliente (mes)");
+    let mes = (new Date()).getMonth();
+    getPedidosClienteDelMes(mes);
+
 });
