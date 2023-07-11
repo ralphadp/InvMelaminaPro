@@ -549,15 +549,14 @@ console.log('result:', result);
                 res.end();
                 throw "("+req.body.unidad + ") es una unidad desconocida";
             }
-        } else {
-            //pegamento
+        } else if (tipoItem == "pegamento") {
             producto = {bolsa:0};
             producto.bolsa = req.body.cantidad;
             precio = req.body.cantidad * precio;
-
+        } else {
             res.status(200).json({ok: true, precio: precio, message: "["+tipoItem + "] es un producto no conocido."});
             res.end();
-            throw tipoItem + " no es un producto conocido";
+            throw tipoItem + " es un producto desconocido";
         }
 
         res.status(200).json({ok: true, precio: precio, detalle: producto, message: ""});
@@ -1071,7 +1070,7 @@ app.delete('/delete_cliente/:id', (req, res) => {
     .finally(data => client.close())
 })
 
-app.post('/nuevo_melamina',(req, res) => {
+app.post('/nueva_melamina',(req, res) => {
     const client = new MongoClient(uri);
     client.connect();
     console.log("melamina",req.body);
@@ -1102,8 +1101,8 @@ app.put('/actualizar_melamina/:id',(req, res) => {
 
     CollectionMelamina.updateOne({"_id": idc}, {$set: req.body}).then(results => {
         console.log(results);
-        console.log(`Melamina ${req.body.nombre} actualizada...`);
-        res.status(200).json({ok: true, message: "Melamina (" + req.body.nombre + ") actualizada.", action: "none"});
+        console.log(`Melamina color ${req.body.color} actualizada...`);
+        res.status(200).json({ok: true, message: "Melamina (" + req.body.color + ") actualizada.", action: "none"});
         res.end();
     })
     .catch(error => console.error(error))
