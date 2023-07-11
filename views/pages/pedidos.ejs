@@ -36,11 +36,17 @@
 				border-spacing: 0px;
 			}
 			#pedido-body tr td {
-				border: 1px solid #262626c7;
+				border-top: 1px solid #262626c7;
 			}
 			#pedido-body tr th {
-				border: 1px solid #262626c7;
-				background-color: cornflowerblue;
+				border-top: 1px solid #262626c7;
+				background-color: rgb(139, 173, 234);
+				text-align: left;
+				-webkit-print-color-adjust: exact;
+				print-color-adjust: exact;
+			}
+			.num {
+				text-align: center!important;
 			}
 			#option_1  {
 				background-color: beige;
@@ -85,7 +91,12 @@
 					<td style="width: 100px;"></td>
 					<td>NOTA DE ENTREGA</td>
 					<td style="width: 100px;"></td>
-					<td style="border: black 1px;"><p id="timestamp-print"></p></td>
+					<td style="border: black 1px;">
+						<div style="border: 1px solid grey; border-radius:6px; padding:4px; font-size:13px;">
+							<span style="border-bottom: 1px solid grey;">Fecha: <span id="timestamp-print"></span></span><br>
+							<span>Hora:  <span id="timestamp-print-2"></span></span>
+						</div>
+					</td>
 				</tr>
 			</table>
 			<br>
@@ -109,9 +120,9 @@
 						<th style="width: 100px;">Medida</th>
 						<th style="width: 100px;">Color</th>
 						<th style="width: 100px;">Marca</th>
-						<th style="width: 100px;">Unidad</th>
-						<th style="width: 100px;">Cantidad</th>
-						<th style="width: 100px;">Precio</th>
+						<th style="width: 70px;">Unidad</th>
+						<th class="num" style="width: 70px;">Cantidad</th>
+						<th class="num" style="width: 100px;">Precio</th>
 					</tr>
 				</thead>
 				<tbody>

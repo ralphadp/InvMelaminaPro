@@ -288,7 +288,10 @@ function PrePrintCarrito() {
         NotaVenta.nit           = document.getElementById("nit").value;
         NotaVenta.empresa       = document.getElementById("empresa").value;
     }
-    $('#timestamp-print').text($('#'+ids.TIME_ID).val());
+    var datenow=$('#'+ids.TIME_ID).val();
+    var [fecha,hora] = datenow.split(" ");
+    $('#timestamp-print').text(fecha);
+    $('#timestamp-print-2').text(hora);
     $('#cliente-print').text(NotaVenta.NombreCliente);
     $('#direccion-print').text(NotaVenta.direccion);
     $('#celular-print').text(NotaVenta.celular);
@@ -320,13 +323,15 @@ function PrePrintCarrito() {
         newCell.style.width = "100px";
         newCell.appendChild(document.createTextNode(carrito.marca));
         newCell = newRow.insertCell();
-        newCell.style.width = "100px";
+        newCell.style.width = "70px";
         newCell.appendChild(document.createTextNode(carrito.nombreDeUnidad));
         newCell = newRow.insertCell();
-        newCell.style.width = "100px";
+        newCell.style.width = "70px";
+        newCell.className = "num";
         newCell.appendChild(document.createTextNode(carrito.cantidad));
         newCell = newRow.insertCell();
         newCell.style.width = "100px";
+        newCell.className = "num";
         newCell.appendChild(document.createTextNode(carrito.precioVenta + " Bs"));
         TotalPrecio = TotalPrecio + Number(carrito.precioVenta);
     }
@@ -342,11 +347,13 @@ function PrePrintCarrito() {
     newCell = newRow.insertCell();
     newCell.style.width = "100px";
     newCell = newRow.insertCell();
-    newCell.style.width = "100px";
+    newCell.style.width = "70px";
+    newCell = newRow.insertCell();
+    newCell.style.width = "70px";
+    newCell.className = "num";
     newCell = newRow.insertCell();
     newCell.style.width = "100px";
-    newCell = newRow.insertCell();
-    newCell.style.width = "100px";
+    newCell.className = "num";
     newCell.appendChild(document.createTextNode(TotalPrecio + " Bs"));
 }
 
