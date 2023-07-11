@@ -675,3 +675,7 @@ span.row-small {
     padding: 3px;
     border-radius: 5px;
 }
+#precio-mensaje {
+    color: red;
+    font-size: 12px;
+}
