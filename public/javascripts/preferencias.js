@@ -934,21 +934,21 @@ function Pegamento() {
 
 	this.getRowBuild = function(next_index) {
 		return `<tr id='row_${next_index}'>
-					<td id='e_provedor_${next_index}' contenteditable='true'></td>
-					<td id='e_marca_${next_index}' contenteditable='true'></td>
-					<td id='e_precio_compra_${next_index}' contenteditable='true'></td>
-					<td id='e_precio_venta_${next_index}' contenteditable='true'></td>
-					<td><button type='button' title='Guardar' id='ge_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
-						<button type='button' title='Borrar' id='be_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					<td id='p_provedor_${next_index}' contenteditable='true'></td>
+					<td id='p_marca_${next_index}' contenteditable='true'></td>
+					<td id='p_precio_compra_${next_index}' contenteditable='true'></td>
+					<td id='p_precio_venta_${next_index}' contenteditable='true'></td>
+					<td><button type='button' title='Guardar' id='gp_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
+						<button type='button' title='Borrar' id='bp_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
 				</tr>`;
 	}
 
 	this.assignar = function(row_id) {
-		this.att.provedor = document.getElementById("e_provedor_" + row_id).innerText;
-		this.att.marca = document.getElementById("e_marca_" + row_id).innerText;
-		this.att.precio_compra = document.getElementById("e_precio_compra_" + row_id).innerText;
-		this.att.precio_venta = document.getElementById("e_precio_venta_" + row_id).innerText;
+		this.att.provedor = document.getElementById("p_provedor_" + row_id).innerText;
+		this.att.marca = document.getElementById("p_marca_" + row_id).innerText;
+		this.att.precio_compra = document.getElementById("p_precio_compra_" + row_id).innerText;
+		this.att.precio_venta = document.getElementById("p_precio_venta_" + row_id).innerText;
 	}
 
 /*UPDATE*/

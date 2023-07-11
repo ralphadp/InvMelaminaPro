@@ -384,8 +384,8 @@
 			  <th> Precio Venta </th>
 			  <th> Metros x Rollo </th>
 			  <th> Rollos x Caja </th>
-			  <th> Precio Venta(metros) </th>
-			  <th> Precio Compra(metros) </th>
+			  <th> Precio Venta (metros) </th>
+			  <th> Precio Compra (metros) </th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < tapacantos.length; index++) {
@@ -454,16 +454,16 @@
 			 <% for (let index = 0; index < fondo.length; index++) {
 					 var ID = fondo[index]._id.toString() %>
 			  <tr id="row_<%= ID %>">
-				  <td contenteditable="true" id="a_color_<%= ID %>"><%= fondo[index].color %></td>
-				  <td contenteditable="true" id="a_provedor_<%= ID %>"><%= fondo[index].provedor %></td>
-				  <td contenteditable="true" id="a_medidas_<%= ID %>"><%= fondo[index].medidas %></td>
-				  <td contenteditable="true" id="a_marca_<%= ID %>"><%= fondo[index].marca %></td>
-				  <td contenteditable="true" id="a_precio_compra_<%= ID %>"><%= fondo[index].precio_compra %></td>
-				  <td contenteditable="true" id="a_precio_venta_<%= ID %>"><%= fondo[index].precio_venta %></td>
-				  <td contenteditable="true" id="a_laminaxpaquete_<%= ID %>"><%= fondo[index].laminaxpaquete %></td>
+				  <td contenteditable="true" id="f_color_<%= ID %>"><%= fondo[index].color %></td>
+				  <td contenteditable="true" id="f_provedor_<%= ID %>"><%= fondo[index].provedor %></td>
+				  <td contenteditable="true" id="f_medidas_<%= ID %>"><%= fondo[index].medidas %></td>
+				  <td contenteditable="true" id="f_marca_<%= ID %>"><%= fondo[index].marca %></td>
+				  <td contenteditable="true" id="f_precio_compra_<%= ID %>"><%= fondo[index].precio_compra %></td>
+				  <td contenteditable="true" id="f_precio_venta_<%= ID %>"><%= fondo[index].precio_venta %></td>
+				  <td contenteditable="true" id="f_laminaxpaquete_<%= ID %>"><%= fondo[index].laminaxpaquete %></td>
 				  <td>
-					  <button type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-					  <button type="button" title="Borrar" id="bm_<%= ID %>"onclick="borrar(this.id)">X</button>
+					  <button type="button" title="Guardar" id="gf_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+					  <button type="button" title="Borrar" id="bf_<%= ID %>"onclick="borrar(this.id)">X</button>
 				  </td>
 				</tr>
 			 <% } %>

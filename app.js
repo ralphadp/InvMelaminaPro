@@ -1157,8 +1157,8 @@ app.put('/actualizar_tapacantos/:id',(req, res) => {
 
     CollectionTapacantos.updateOne({"_id": idc}, {$set: req.body}).then(results => {
         console.log(results);
-        console.log(`Tapacantos ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Tapacantos (" + req.body.nombre + ") actualizado.", action: "none"});
+        console.log(`Tapacantos de color ${req.body.color} actualizado...`);
+        res.status(200).json({ok: true, message: "Tapacantos color (" + req.body.color + ") actualizado.", action: "none"});
         res.end();
     })
     .catch(error => console.error(error))
@@ -1213,8 +1213,8 @@ app.put('/actualizar_pegamento/:id',(req, res) => {
 
     CollectionPegamento.updateOne({"_id": idc}, {$set: req.body}).then(results => {
         console.log(results);
-        console.log(`Pegamento ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Pegamento (" + req.body.nombre + ") actualizado.", action: "none"});
+        console.log(`Pegamento ${req.body.marca} actualizado...`);
+        res.status(200).json({ok: true, message: "Pegamento (" + req.body.marca + ") actualizado.", action: "none"});
         res.end();
     })
     .catch(error => console.error(error))
@@ -1238,56 +1238,56 @@ app.delete('/delete_pegamento/:id', (req, res) => {
     .finally(data => client.close())
 })
 
-app.post('/nuevo_pegamento',(req, res) => {
+app.post('/nuevo_fondo',(req, res) => {
     const client = new MongoClient(uri);
     client.connect();
-    console.log("pegamento",req.body);
+    console.log("fondo",req.body);
 
-    let CollectionPegamento = client.db().collection("collectionpegamento");
+    let CollectionPegamento = client.db().collection("collectionfondo");
 
     CollectionPegamento.insertOne(req.body).then(results => {
 
         console.log(results);
-        console.log(`Un pegamento nuevo fue adicionado al catalogo...`);
+        console.log(`Un fondo nuevo fue adicionado al catalogo...`);
 
-        res.status(200).json({ok: true, message: "Un pegamento nuevo fue adicionado al catalogo....", action: "reload"});
+        res.status(200).json({ok: true, message: "Un fondo nuevo fue adicionado al catalogo....", action: "reload"});
         res.end();
     })
     .catch(error => console.error(error))
     .finally(data => client.close());
 })
 
-app.put('/actualizar_pegamento/:id',(req, res) => {
+app.put('/actualizar_fondo/:id',(req, res) => {
     const client = new MongoClient(uri);
     client.connect();   
 
-    console.log("pegamento: ", req.body);
+    console.log("fondo: ", req.body);
     let idc = new ObjectID(req.params.id);
     console.log(req.params.id, idc);
 
-    let CollectionPegamento = client.db().collection("collectionpegamento");
+    let CollectionPegamento = client.db().collection("collectionfondo");
 
     CollectionPegamento.updateOne({"_id": idc}, {$set: req.body}).then(results => {
         console.log(results);
-        console.log(`Pegamento ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Pegamento (" + req.body.nombre + ") actualizado.", action: "none"});
+        console.log(`Fondo ${req.body.color} actualizado...`);
+        res.status(200).json({ok: true, message: "Fondo (" + req.body.color + ") actualizado.", action: "none"});
         res.end();
     })
     .catch(error => console.error(error))
     .finally(data => client.close());
 })
 
-app.delete('/delete_pegamento/:id', (req, res) => {
+app.delete('/delete_fondo/:id', (req, res) => {
     const client = new MongoClient(uri);
     client.connect();
 
-    var CollectionPegamento = client.db().collection("collectionpegamento");
+    var CollectionPegamento = client.db().collection("collectionfondo");
     let cid = new ObjectID(req.params.id);
 
     CollectionPegamento.deleteOne({"_id": cid }).then(result => {
         console.log(result);
-        console.log(`Pegamento ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Pegamento (" + req.params.id + ") borrado.", action: "none"});
+        console.log(`Fondo ${req.params.id} borrado...`);
+        res.status(200).json({ok: true, message: "Fondo (" + req.params.id + ") borrado.", action: "none"});
         res.end();
     })
     .catch(error => console.error(error))
