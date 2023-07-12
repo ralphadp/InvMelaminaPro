@@ -11,9 +11,21 @@
 			background-color: rgb(87, 19, 19);
 			color: white;
 			padding: 7px;
-			position: fixed;
-			top: 12%;
-			left: 90%;
+			float: right;
+			border-radius: 6px;
+		}
+		#imprimir-historial:hover {
+			background-color: brown;
+		}
+		#historial-header-printer {
+			display: none;
+		}
+		input {
+    		display: initial!important;
+		}
+		select {
+			padding: 9px;
+			border-radius: 6px;
 		}
 	</style>
 </head>
@@ -25,11 +37,26 @@
 		<div class="container-table100">
 			<div class="wrap-table100" id="historial">
 				<span><%-historial.length %> transacciones</span>
-				<input class="search" placeholder="Search" />
+				<input class="search" placeholder="Filtro" />
+				<select id="select-mes" placeholder="Filtro por mes" onchange="selectMes(this)">
+					<option value="">(Elija un mes)</option>
+					<option value="01">Enero</option>
+					<option value="02">Febrero</option>
+					<option value="03">Marzo</option>
+					<option value="04">Abril</option>
+					<option value="05">Mayo</option>
+					<option value="06">Junio</option>
+					<option value="07">Julio</option>
+					<option value="08">Agosto</option>
+					<option value="09">Septiembre</option>
+					<option value="10">Octubre</option>
+					<option value="11">Noviembre</option>
+					<option value="12">Diciembre</option>
+				</select>
 				<button type="button" id="imprimir-historial" onclick="imprimirHistorial()">Imprimir</button>
 				<div class="table100 ver3 m-b-110" id="historial-frame">
 					<div class="table100-head">
-						<table>
+						<table id="head-sort">
 							<thead>
 							<tr class="row100 head">
 								<th class="cell100 column6"><button class="sort" data-sort="Cliente">Cliente</button></th>
@@ -47,10 +74,27 @@
 						</table>
 					</div>
 					<div class="table100-body js-pscroll ps ps--active-y">
-						<table>
+						<table id="historial-table">
+							<thead id="historial-header-printer">
+								<tr class="row100 head">
+									<th class="cell100 column6">Cliente</th>
+									<th class="cell100 column6">Item</th>
+									<th class="cell100 column6">Tipo</th>
+									<th class="cell100 column6">Timestamp</th>
+									<th class="cell100 column6">Color</th>
+									<th class="cell100 column6">Medida</th>
+									<th class="cell100 column6">Marca</th>
+									<th class="cell100 column6">Unidad</th>
+									<th class="cell100 column6">Cantidad</th>
+									<th class="cell100 column6">Precio</th>
+								</tr>
+							</thead>
 							<tbody class="list">
-							<% for (let index = historial.length-1; index >= 0; index--) {%>
-								<tr class="row100 body">
+							<% for (let index = historial.length-1; index >= 0; index--) {
+									var [fecha,hora] = (historial[index].fecha).split(" ");
+									var [dia,mes,annio] = fecha.split("/");
+								%>
+								<tr class="row100 body <%= 'Hist' + mes %>">
 									<td class="cell100 column6 Cliente"><%= historial[index].cliente %></td>
 									<td class="cell100 column6 Item"><%= historial[index].item %></td>
 									<td class="cell100 column6 Tipo"><%= (historial[index].tipo_entrada == 'ingreso')?'Compra':'Venta' %></td>
@@ -115,12 +159,37 @@
 		var userList = new List('historial', options);
 
 		function imprimirHistorial() {
+			document.getElementById("head-sort").style.display="none";
+			document.getElementById("historial-header-printer").style.display="table-header-group";
+
 			var printData = document.getElementById("historial-frame");
 			newWindow = window.open("");
 			newWindow.document.write(printData.outerHTML);
 			newWindow.print();
 			newWindow.close();
+
+			document.getElementById("historial-header-printer").style.display="none";
+			document.getElementById("head-sort").style.display="block";
 		}
+
+		function selectMes(selectBox) {
+			var mes = selectBox.value;
+			var mesCodes=["01","02","03","04","05","06","07","08","09","10","11","12"];
+
+			mesCodes.forEach((mesCode) => {
+				var Row = document.getElementsByClassName("Hist" + mesCode);
+				for (var index = 0; index < Row.length; index++) {
+					var filterCondition = (mesCode == mes) || (mes == "");
+					Row[index].style.visibility = filterCondition ? "visible" : "hidden";
+					Row[index].style.display = filterCondition ? "table-row" : "none";
+				}
+			});
+		}
+
+		$(function() {
+			console.log("go historial");
+		});
+
 	</script>
 	<footer>
 		<%- include('../partials/footer'); %>
