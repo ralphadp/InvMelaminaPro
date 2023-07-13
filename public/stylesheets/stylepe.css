@@ -629,7 +629,8 @@ span.row-header {
 
 span.row {
     background-color: white;
-    color: crimson;
+    color: rgb(141, 5, 30);
+    font-weight: bold;
     width: 105px;
     padding: 1px;
     border: inset;
@@ -653,7 +654,8 @@ span.row-small-header {
 
 span.row-small {
     background-color: white;
-    color: crimson;
+    color: rgb(141, 5, 30);
+    font-weight: bold;
     width: 65px;
     padding: 1px;
     border: inset;
