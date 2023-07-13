@@ -619,7 +619,8 @@
                         <span class="row-header">Cliente</span>
                         <span class="row-small-header">Item</span>
                         <span class="row-header">Color</span>
-                        <span class="row-header">Medida</span>
+                        <span class="row-small-header">Medida</span>
+						<span class="row-small-header">Marca</span>
 						<span class="row-small-header">Unidad</span>
                         <span class="row-small-header">Cantidad</span>
 						<span class="row-small-header">Venta</span>
@@ -635,7 +636,8 @@
                             <span class="row"><%= historial[i].cliente %></span>
                             <span class="row-small"><%= historial[i].item %></span>
                             <span class="row"><%= historial[i].color %></span>
-                            <span class="row"><%= historial[i].medida %></span>
+                            <span class="row-small"><%= historial[i].medida %></span>
+							<span class="row-small"><%= historial[i].marca %></span>
 							<span class="row-small"><%= historial[i].nombreDeUnidad %></span>
                             <span class="row-small"><%= historial[i].cantidad %></span>
 							<span class="row-small"><%= historial[i].precioVenta %> Bs</span>
@@ -649,7 +651,8 @@
 							<span class="row-invisible"></span>
 							<span class="row-small-invisible"></span>
 							<span class="row-invisible"></span>
-							<span class="row-invisible"></span>
+							<span class="row-small-invisible"></span>
+							<span class="row-small-invisible"></span>
 							<span class="row-small-invisible"></span>
 							<span class="row-small-invisible"></span>
 							<span class="row-small"><%=ventaTotal %> Bs</span>

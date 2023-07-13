@@ -603,13 +603,16 @@ span.row-invisible {
     padding: 1px;
     border: dotted;
     display: inline-block;
+    margin: -2px;
 }
+
 span.row-small-invisible {
     color: #136889;
     width: 65px;
     padding: 1px;
     border: dotted;
     display: inline-block;
+    margin: -2px;
 }
 
 span.row-header {
@@ -621,6 +624,7 @@ span.row-header {
     display: inline-block;
     font-family: 'Open Sans', sans-serif;
     font-size: 15px;
+    margin: -2px;
 }
 
 span.row {
@@ -631,7 +635,8 @@ span.row {
     border: inset;
     display: inline-block;
     font-family: 'Open Sans', sans-serif;
-    font-size: 12px;
+    font-size: 10px;
+    margin: -2px;
 }
 
 span.row-small-header {
@@ -643,6 +648,7 @@ span.row-small-header {
     display: inline-block;
     font-family: 'Open Sans', sans-serif;
     font-size: 15px;
+    margin: -2px;
 }
 
 span.row-small {
@@ -653,7 +659,8 @@ span.row-small {
     border: inset;
     display: inline-block;
     font-family: 'Open Sans', sans-serif;
-    font-size: 12px;
+    font-size: 10px;
+    margin: -2px;
 }
 
 .precio {
