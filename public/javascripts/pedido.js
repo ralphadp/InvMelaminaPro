@@ -416,8 +416,10 @@ function obtenerPrecioStandard() {
     .then(response => {
         if (response.ok) {
             document.getElementById(ids.PRECIO_ID).value = response.precio;
+            document.getElementById(ids.PRECIO_MENSAJE).style.color = "#90ee90";
             document.getElementById(ids.PRECIO_MENSAJE).textContent = response.message;
         } else {
+            document.getElementById(ids.PRECIO_MENSAJE).style.color = "red";
             document.getElementById(ids.PRECIO_MENSAJE).textContent = response.message;
         }
     })

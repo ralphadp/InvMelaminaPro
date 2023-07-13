@@ -382,6 +382,7 @@ console.log("1",req.body);
                 cantidad = Number(req.body.cantidad);
             } else if (tipoUnidad == "paquetes") {
                 var NUM_LAMINAS = item[0].laminaxpaquete;
+               
                 cantidad = (Number(req.body.cantidad) * NUM_LAMINAS);
                 req.body.laminaxpaquete = NUM_LAMINAS;
             } else if (tipoUnidad == "cajas") {
@@ -512,11 +513,11 @@ console.log('result:', result);
             precio_metros = result.precio_venta_metros;
         }
 
+        let EXPLICACION = "";
         var producto;
         if (tipoItem == "tapacantos") {
             producto = {rollos:0, cajas:0, metros:0};
             if (req.body.unidad == "metros") {
-                var rollos;
                 producto.rollos = Math.trunc(req.body.cantidad / result.metrosxrollo);
 
                 producto.cajas = Math.trunc(producto.rollos / result.rollosxcaja);
@@ -538,6 +539,7 @@ console.log('result:', result);
                 producto.rollos = 0;
                 producto.metros =  0;
                 precio = (req.body.cantidad * result.rollosxcaja) * precio;
+                EXPLICACION = `${req.body.cantidad} x ${result.rollosxcaja} x ${precio} Bs`;
             } else {
                 res.status(404).json({ok: true, precio: precio, message: "Unidad desconocida [" + req.body.unidad + "]."});
                 res.end();
@@ -558,6 +560,7 @@ console.log('result:', result);
                 producto.laminas = 0;
                 producto.paquetes = req.body.cantidad;
                 precio = (req.body.cantidad * result.laminaxpaquete) * precio;
+                EXPLICACION = `${req.body.cantidad} x ${result.laminaxpaquete} x ${precio} Bs`;
             } else {
                 res.status(404).json({ok: true, precio: precio, message: "Unidad desconocida [" + req.body.unidad + "]"});
                 res.end();
@@ -567,13 +570,14 @@ console.log('result:', result);
             producto = {bolsa:0};
             producto.bolsa = req.body.cantidad;
             precio = req.body.cantidad * precio;
+            EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
         } else {
             res.status(200).json({ok: true, precio: precio, message: "["+tipoItem + "] es un producto no conocido."});
             res.end();
             throw tipoItem + " es un producto desconocido";
         }
 
-        res.status(200).json({ok: true, precio: precio, detalle: producto, message: ""});
+        res.status(200).json({ok: true, precio: precio, detalle: producto, message: EXPLICACION});
         res.end();
     })
     .catch(error => console.error(error))
