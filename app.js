@@ -159,13 +159,11 @@ console.log(item);
             res.end();
             throw "Error: No hubo match del objeto con collection" + tipoItem;
         }
-        var codigo = item[0]._id.toString();
-        let CollectionInventario = client.db().collection("inventario");
-        CollectionInventario.find({"codigo": codigo}).toArray().then(result => {
-console.log(result);
+        var codigo = item[0]._id;
+            let resultTotal = {existencia: 0};
             let cantidad = 0;
-            let metros = result[0].metraje;
-            let cantidadExistente = result[0].existencia;
+            let cantidadExistente = item[0].existencia;
+
             //Calcular entrada en base a unidad
             if (tipoUnidad == "laminas" || tipoUnidad == "rollos" || tipoUnidad == "bolsas") {
                 cantidad = Number(req.body.cantidad);
@@ -178,26 +176,28 @@ console.log(result);
                 cantidad = (Number(req.body.cantidad) * NUM_ROLLOS);
                 req.body.rollosxcaja = NUM_ROLLOS;
             } else if (tipoUnidad == "metros") {
+                let metros = item[0].metraje;
                 let metrosExistentes = metros;
                 var MTS_ROLLO = item[0].metrosxrollo;
                 req.body.metrosxrollo = MTS_ROLLO;
                 //metros
                 metros = Number(req.body.cantidad) % MTS_ROLLO;
                 metros = metrosExistentes + metros;//incrementa
+                result.metraje = metros;
                 //rollos
                 cantidad = Math.trunc(Number(req.body.cantidad) / MTS_ROLLO);
+console.log("Incrementado Metros> ", metros);
             } else {
                 res.status(500).json({ok: false, message:"Error: Unidad desconocida {"+tipoUnidad+"}" });
                 res.end();
                 throw "Error: Wrong Unit ["+tipoUnidad+"]";
             }
-            cantidad = cantidadExistente + cantidad;//incrementa
-console.log("incrementado cantidad: ",cantidad, " metros> ", metros);
-            CollectionInventario.updateOne({"codigo": codigo}, {$set: {"existencia": cantidad, "metraje": metros}}).then(item => {
+            resultTotal.existencia = cantidadExistente + cantidad;//incrementa
+console.log("Incrementado cantidad: ",cantidad);
+            CollectionItem.updateOne({"_id": codigo}, {$set: resultTotal}).then(item => {
                 var Collection = client.db().collection("historial");
-                req.body.inventario_id = codigo;
-                Collection.insertOne(req.body)
-                .then(results => {
+                req.body.inventario_id = codigo.toString();
+                Collection.insertOne(req.body).then(results => {
                     console.log(`Una compra addicionada al historial...`);
                     res.status(200).json({ok: true, message: "Historial e Inventario actualizados."});
                     res.end();
@@ -205,7 +205,6 @@ console.log("incrementado cantidad: ",cantidad, " metros> ", metros);
                 .catch(error => console.error(error))
                 .finally(data => client.close());
             }).catch(error => console.error(error))
-        }).catch(error => console.error(error))
     }).catch(error => console.error(error));
 })
 
@@ -214,7 +213,6 @@ app.delete('/delete_historial_compras/:id', (req, res) => {
     client.connect();
     
     var CollectionHistorial = client.db().collection("historial");
-    var CollectionInventario = client.db().collection("inventario");
     let o_id = new ObjectID(req.params.id);
     CollectionHistorial.find({ _id: o_id }).toArray().then(rowHistorial => {
         if (rowHistorial.length == 0 ) {
@@ -224,7 +222,11 @@ app.delete('/delete_historial_compras/:id', (req, res) => {
         }
 
         let inventarioID = rowHistorial[0].inventario_id;
-        CollectionInventario.find({"codigo": inventarioID }).toArray().then(rowInventario => {
+        let po_id = new ObjectID(inventarioID);
+        let producto = rowHistorial[0].item.toLowerCase();
+        var CollectionInventario = client.db().collection("collection" + producto);
+
+        CollectionInventario.find({"_id": po_id }).toArray().then(rowInventario => {
             if (rowInventario.length == 0 ) {
                 res.statusMessage = "No se puede encontrar inventario [" + inventarioID + "]!!";
                 res.send();
@@ -232,34 +234,38 @@ app.delete('/delete_historial_compras/:id', (req, res) => {
             }
 
             let CantidadActualizada = 0;
+            let resultTotal = {existencia:0};
+
             let unidad = rowHistorial[0].nombreDeUnidad;
             let cantidad = rowHistorial[0].cantidad;
-            let ID = rowHistorial[0].inventario_id;
-
             let existencia = rowInventario[0].existencia;
-            let MetrosActualizados = rowInventario[0].metraje;
-console.log("metr:",MetrosActualizados);
+
             if (unidad == "laminas" || unidad == "rollos" || unidad == "bolsas") {
-                CantidadActualizada = Number(existencia) - cantidad;
+                CantidadActualizada = Number(existencia) - Number(cantidad);
             } else if (unidad == "paquetes") {
                 CantidadActualizada = Number(existencia) - (Number(cantidad) * rowHistorial[0].laminaxpaquete);
             } else if (unidad == "cajas") {
                 CantidadActualizada = Number(existencia) - (Number(cantidad) * rowHistorial[0].rollosxcaja);
             } else if (unidad == "metros") {
+                let MetrosActualizados = rowInventario[0].metraje;
+                console.log("metr actuali:",MetrosActualizados);
                 MetrosActualizados = Number(MetrosActualizados) - (Number(cantidad) % rowHistorial[0].metrosxrollo);
                 CantidadActualizada =  Number(existencia) - (Math.trunc(Number(cantidad) / rowHistorial[0].metrosxrollo));
+                resultTotal.metraje = MetrosActualizados;
             } else {
                 res.statusMessage = "Unidad en historia desconocida  [" + unidad + "]!!";
                 res.send();
                 throw "Unidad desconocida " + unidad;
             }
+            console.log("previa cantidad: " + existencia, "Nueva cantidad: "+CantidadActualizada);
+            resultTotal.existencia = CantidadActualizada;
 
-            CollectionInventario.updateOne({"codigo": ID}, {$set: {"existencia": CantidadActualizada, "metraje": MetrosActualizados}}).then(result => {
-                console.log("Inventario actualizado...");
+            CollectionInventario.updateOne({"_id": po_id}, {$set: resultTotal}).then(result => {
+                console.log("Inventario actualizado...", result);
                 CollectionHistorial.findOneAndDelete({ _id: o_id }).then(result => {
                     //DELETE FROM inventario
                     console.log("Historial borrado...");
-                    res.statusMessage ='Inventario actualizado '+ID+' e Historial ' + o_id + ' Borrado';
+                    res.statusMessage ='Inventario actualizado '+inventarioID+' e Historial ' + o_id + ' Borrado';
                     res.send();
                 })
                 .catch(error => console.error(error))
@@ -277,7 +283,6 @@ app.delete('/delete_historial_ventas/:id', (req, res) => {
     client.connect();
     
     var CollectionHistorial = client.db().collection("historial");
-    var CollectionInventario = client.db().collection("inventario");
     let o_id = new ObjectID(req.params.id);
     CollectionHistorial.find({ _id: o_id }).toArray().then(rowHistorial => {
         if (rowHistorial.length == 0 ) {
@@ -287,7 +292,11 @@ app.delete('/delete_historial_ventas/:id', (req, res) => {
         }
 
         let inventarioID = rowHistorial[0].inventario_id;
-        CollectionInventario.find({"codigo": inventarioID }).toArray().then(rowInventario => {
+        let po_id = new ObjectID(inventarioID);
+        let producto = rowHistorial[0].item.toLowerCase();
+        var CollectionInventario = client.db().collection("collection"+producto);
+
+        CollectionInventario.find({"_id": po_id }).toArray().then(rowInventario => {
             if (rowInventario.length == 0 ) {
                 res.statusMessage = "No se puede encontrar inventario [" + inventarioID + "]!!";
                 res.send();
@@ -297,32 +306,36 @@ app.delete('/delete_historial_ventas/:id', (req, res) => {
             let CantidadActualizada = 0;
             let unidad = rowHistorial[0].nombreDeUnidad;
             let cantidad = rowHistorial[0].cantidad;
-            let ID = rowHistorial[0].inventario_id;
 
             let existencia = rowInventario[0].existencia;
-            let MetrosActualizados = rowInventario[0].metraje;
-    console.log("v metr:",MetrosActualizados);
+            let totalActualizado = {existencia:0};
+
             if (unidad == "laminas" || unidad == "rollos" || unidad == "bolsas") {
-                CantidadActualizada = Number(existencia) + cantidad;
+                CantidadActualizada = Number(existencia) + Number(cantidad);
             } else if (unidad == "paquetes") {
                 CantidadActualizada = Number(existencia) + (Number(cantidad) * rowHistorial[0].laminaxpaquete);
             } else if (unidad == "cajas") {
                 CantidadActualizada = Number(existencia) + (Number(cantidad) * rowHistorial[0].rollosxcaja);
             } else if (unidad == "metros") {
+                let MetrosActualizados = rowInventario[0].metraje;
+                console.log("v metr:",MetrosActualizados);
                 MetrosActualizados = Number(metraje) + (Number(cantidad) % rowHistorial[0].metrosxrollo);
                 CantidadActualizada =  Number(existencia) + (Math.trunc(Number(cantidad) / rowHistorial[0].metrosxrollo));
+                totalActualizado.metraje = MetrosActualizados;
             } else {
                 res.statusMessage = "Unidad en historia desconocida  [" + unidad + "]!!";
                 res.send();
                 throw "Unidad desconocida " + unidad;
             }
+            console.log("Previa cantidad: " + existencia, "Nueva cantidad: "+CantidadActualizada);
+            totalActualizado.existencia = CantidadActualizada;
 
-            CollectionInventario.updateOne({"codigo": ID}, {$set: {"existencia": CantidadActualizada, "metraje": MetrosActualizados}}).then(result => {
+            CollectionInventario.updateOne({"_id": po_id}, {$set: totalActualizado}).then(result => {
                 console.log("Inventario actualizado...");
                 CollectionHistorial.findOneAndDelete({ _id: o_id }).then(result => {
                     //DELETE FROM inventario
                     console.log("Historial deleted...");
-                    res.statusMessage ='Inventario actualizado '+ID+' e Historial ' + o_id + ' Borrado';
+                    res.statusMessage ='Inventario actualizado '+inventarioID+' e Historial ' + req.params.id + ' Borrado';
                     res.send();
                 })
                 .catch(error => console.error(error))
@@ -357,14 +370,13 @@ console.log("1",req.body);
           "medidas":  medida,
           "marca":    req.body.marca
       }).toArray().then(item => {
-  console.log("2",item);
-          var codigo = item[0]._id.toString();
-          let CollectionInventario = client.db().collection("inventario");
-          CollectionInventario.find({"codigo": codigo}).toArray().then(result => {
-  console.log("3",result);
+  console.log(item);
+            var ID = item[0]._id;
+
             let cantidad = 0;
-            let metros = result[0].metraje;
-            let cantidadExistente = result[0].existencia;
+            let cantidadExistente = item[0].existencia;
+            let total = {existencia:0};
+
             //Calcular entrada en base a unidad
             if (tipoUnidad == "laminas" || tipoUnidad == "rollos" || tipoUnidad == "bolsas") {
                 cantidad = Number(req.body.cantidad);
@@ -377,6 +389,7 @@ console.log("1",req.body);
                 cantidad = (Number(req.body.cantidad) * NUM_ROLLOS);
                 req.body.rollosxcaja = NUM_ROLLOS;
             } else if (tipoUnidad == "metros") {
+                let metros = item[0].metraje;
                 let metrosExistentes = metros;
                 var MTS_ROLLO = item[0].metrosxrollo;
                 req.body.metrosxrollo = MTS_ROLLO;
@@ -395,26 +408,28 @@ console.log("1",req.body);
                     //rollos
                     cantidad = Math.trunc(Number(req.body.cantidad) / MTS_ROLLO);
                 }
+                total.metraje = metros;
+                console.log("Decrementado metros: ", metros);
             } else {
                 res.status(500).json({ok: false, message:"Error: Unidad desconocida {"+tipoUnidad+"}" });
                 res.end();
                 throw "Error: Wrong Unit ["+tipoUnidad+"]";
             }
             cantidad = cantidadExistente - cantidad;//decrementa
+            total.existencia = cantidad;
 
             if (cantidad < 0) {
                 console.log(`La cantidad en Pedido es mayor a lo contenido en inventario...`);
-                res.status(500).json({ok: false, message: "La cantidad de " + tipoUnidad + " [" + req.body.cantidad + "] en Pedido es mayor a lo contenido en inventario [" + cantidadExistente + "]."});
+                res.status(500).json({ok: false, message: "La cantidad de " + tipoUnidad + " [" + req.body.cantidad + "] el Pedido es mayor a lo contenido en inventario [" + cantidadExistente + "]."});
                 res.end();
                 throw "Error: Cantidad excedente a lo existente ["+req.body.cantidad+"]";
             }
 
-console.log("4","decrementado cantidad: ",cantidad, " metros: ", metros);
-                CollectionInventario.updateOne({"codigo": codigo}, {$set: {"existencia": cantidad, "metraje": metros}}).then(item => {
-                  var Collection = client.db().collection("historial");
-                  req.body.inventario_id = codigo;
-                  Collection.insertOne(req.body)
-                  .then(results => {
+console.log("Decrementado cantidad: ",cantidad);
+            CollectionItem.updateOne({"_id": ID}, {$set: total}).then(item => {
+                  var CollectionHistorial = client.db().collection("historial");
+                  req.body.inventario_id = ID.toString();
+                  CollectionHistorial.insertOne(req.body).then(results => {
                         let AVISO = "";
                         if (cantidad == 0) {
                             AVISO = "<p>SE ACABA DE AGOTAR "+tipoUnidad+" PARA ["+req.body.marca+"]</p>";
@@ -452,9 +467,8 @@ console.log("4","decrementado cantidad: ",cantidad, " metros: ", metros);
                   })
                   .catch(error => console.error(error))
                   .finally(data => client.close());
-              }).catch(error => console.error(error))
-          }).catch(error => console.error(error))
-      }).catch(error => console.error(error));
+            }).catch(error => console.error(error))
+        }).catch(error => console.error(error))
 })
 
 app.post('/obtener_precio', (req, res) => {
@@ -633,31 +647,21 @@ app.get('/inventario', function(req, res) {
     var DB = client.db();
     var productos = [], control = [];
 
-    DB.collection("inventario").find().toArray().then(resultsInventario => {
         DB.collection("collectionmelamina").find().toArray().then(resultsMelamina => {
-            resultsMelamina.forEach(element => {
-                productos[element._id.toString()] = element;
-            });
             DB.collection("collectiontapacantos").find().toArray().then(resultsTapacantos => {
-                resultsTapacantos.forEach(element => {
-                    productos[element._id.toString()] = element;
-                });
                 DB.collection("collectionpegamento").find().toArray().then(resultPegamento => {
-                    resultPegamento.forEach(element => {
-                        productos[element._id.toString()] = element;
-                    });
                     DB.collection("collectionfondo").find().toArray().then(resultFondo => {
-                        resultFondo.forEach(element => {
-                            productos[element._id.toString()] = element;
-                        });
                         DB.collection("control_producto").find().toArray().then(resultControl => {
                             resultControl.forEach(element => {
                                 control[element.item] = element;
                             });
                             res.render('pages/inventario', {
-                                inventario: resultsInventario, 
-                                producto: productos,
-                                control: control
+                                melamina: resultsMelamina,
+                                tapacantos: resultsTapacantos,
+                                pegamento: resultPegamento,
+                                fondo: resultFondo,
+                                control: control,
+                                size: resultsMelamina.length+resultsTapacantos.length+resultPegamento.length+resultFondo.length
                             });
                         })
                         .catch(error => console.error(error))
@@ -670,8 +674,6 @@ app.get('/inventario', function(req, res) {
             .catch(error => console.error(error))
         })
         .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
 });
 
 // preferencias page

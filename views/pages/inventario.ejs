@@ -26,28 +26,10 @@
 <header>
   <%- include('../partials/header'); %>
 </header>
-    <% function obtenerTipo(metros) {
-            var tipo = "Tapacantos";
-            var unidad = "rollos";
-            if (metros <= 0 ) {
-                if (metros == -1) {
-                    tipo = "Pegamento";
-                    unidad = "bolsas";
-                } else if (metros == -2) {
-                    tipo = "Fondo";
-                    unidad = "laminas";
-                } else if (metros == -3) {
-                    tipo = "Melamina";
-                    unidad = "laminas";
-                }
-                metros = '';
-            }
-            return [tipo, unidad, metros];
-    } %>
     <div class="limiter">
         <div class="container-table100">
             <div class="wrap-table100" id="historial">
-                <span id="inventario_mensaje">Inventario actualizado con <%-inventario.length %> items</span><br><br>
+                <span id="inventario_mensaje">Inventario actualizado con <%-size %> items</span><br><br>
                 <label id="busqueda_general_label" for="busqueda_general">Busqueda:<input id="busqueda_general" class="search" placeholder="Search" /></label>
                 <div class="table100 ver3 m-b-110" >
                     <div class="table100-head">
@@ -67,27 +49,57 @@
                     <div class="table100-body js-pscroll ps ps--active-y">
                         <table>
                             <tbody class="list">
-                            <%
-                                for (let index = inventario.length-1; index >= 0; index--) {
-                                    var metraje = inventario[index].metraje;
-                                    var [tipo, unidad, metros] = obtenerTipo(metraje);
-                                    var codigo = inventario[index].codigo;
-
-                                    var color = producto[codigo].color;
-                                    var medida = producto[codigo].medidas;
-                                    var marca = producto[codigo].marca;
-
-                                    console.log(tipo);
-                                    var alerta = (inventario[index].existencia <= control[tipo].minimo) ? 'talert' : '';
+                            <%  for (let index = melamina.length - 1; index >= 0; index--) {
+                                    var producto = melamina[index];
+                                    var alerta = (producto.existencia <= control["Melamina"].minimo) ? 'talert' : '';
                                 %>
                                 <tr class="row100 body <%- alerta%>">
-                                    <td class="cell100 column6 <%- alerta%> Tipo"><%= tipo %></td>
-                                    <td class="cell100 column6 <%- alerta%> Color"><%= color %></td>
-                                    <td class="cell100 column6 <%- alerta%> Medida"><%= medida %></td>
-                                    <td class="cell100 column6 <%- alerta%> Marca"><%= marca %></td>
-                                    <td class="cell100 column6 <%- alerta%> Existncia"><%= inventario[index].existencia %> <%= unidad%></td>
-                                    <td class="cell100 column6 <%- alerta%> Metros"><%= metros %></td>
+                                    <td class="cell100 column6 <%- alerta%> Tipo">Melamina (min: <%= control["Melamina"].minimo%>)</td>
+                                    <td class="cell100 column6 <%- alerta%> Color"><%= producto.color %></td>
+                                    <td class="cell100 column6 <%- alerta%> Medida"><%= producto.medidas %></td>
+                                    <td class="cell100 column6 <%- alerta%> Marca"><%= producto.marca %></td>
+                                    <td class="cell100 column6 <%- alerta%> Existncia"><%= producto.existencia %> laminas</td>
+                                    <td class="cell100 column6 <%- alerta%> Metros"></td>
                                 </tr>
+                            <% } %>
+                            <%  for (let index = tapacantos.length - 1; index >= 0; index--) {
+                                    var producto = tapacantos[index];
+                                    var alerta = (producto.existencia <= control["Tapacantos"].minimo) ? 'talert' : '';
+                                %>
+                                <tr class="row100 body <%- alerta%>">
+                                    <td class="cell100 column6 <%- alerta%> Tipo">Tapacantos (min: <%= control["Tapacantos"].minimo%>)</td>
+                                    <td class="cell100 column6 <%- alerta%> Color"><%= producto.color %></td>
+                                    <td class="cell100 column6 <%- alerta%> Medida"><%= producto.medidas %></td>
+                                    <td class="cell100 column6 <%- alerta%> Marca"><%= producto.marca %></td>
+                                    <td class="cell100 column6 <%- alerta%> Existncia"><%= producto.existencia %> rollos</td>
+                                    <td class="cell100 column6 <%- alerta%> Metros"><%= producto.metraje %> Mt</td>
+                                </tr>
+                            <% } %>
+                            <%  for (let index = pegamento.length - 1; index >= 0; index--) {
+                                var producto = pegamento[index];
+                                var alerta = (producto.existencia <= control["Pegamento"].minimo) ? 'talert' : '';
+                            %>
+                            <tr class="row100 body <%- alerta%>">
+                                <td class="cell100 column6 <%- alerta%> Tipo">Pegamento (min: <%= control["Pegamento"].minimo%>)</td>
+                                <td class="cell100 column6 <%- alerta%> Color"><%= producto.color %></td>
+                                <td class="cell100 column6 <%- alerta%> Medida"><%= producto.medidas %></td>
+                                <td class="cell100 column6 <%- alerta%> Marca"><%= producto.marca %></td>
+                                <td class="cell100 column6 <%- alerta%> Existncia"><%= producto.existencia %> bolsas</td>
+                                <td class="cell100 column6 <%- alerta%> Metros"></td>
+                            </tr>
+                            <% } %>
+                            <%  for (let index = fondo.length - 1; index >= 0; index--) {
+                                var producto = fondo[index];
+                                var alerta = (producto.existencia <= control["Fondo"].minimo) ? 'talert' : '';
+                            %>
+                            <tr class="row100 body <%- alerta%>">
+                                <td class="cell100 column6 <%- alerta%> Tipo">Fondo (min: <%= control["Fondo"].minimo%>)</td>
+                                <td class="cell100 column6 <%- alerta%> Color"><%= producto.color %></td>
+                                <td class="cell100 column6 <%- alerta%> Medida"><%= producto.medidas %></td>
+                                <td class="cell100 column6 <%- alerta%> Marca"><%= producto.marca %></td>
+                                <td class="cell100 column6 <%- alerta%> Existncia"><%= producto.existencia %> laminas</td>
+                                <td class="cell100 column6 <%- alerta%> Metros"></td>
+                            </tr>
                             <% } %>
                             </tbody>
                         </table>
