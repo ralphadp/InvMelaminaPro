@@ -51,6 +51,27 @@ function getReportesPedidosMes(mesElegido) {
     });
 }
 
+function getConsumoCliente() {
+    fetch('/reporte_consumo_cliente/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            console.log(response.message);
+            clearSVG()
+            BarsData(response.chartData, "precio_cliente_bars");
+            PieLegend(response.chartData, "precio_cliente_pie");
+        } else {
+            console.log(response.status, response.statusText);
+        }
+    })
+    .catch(error => {
+        console.log(error.message);
+    });
+}
+
 function lightSelectedMenu(index, mes) {
     //clean
     nombreMes.forEach((mesName)=> {
@@ -63,7 +84,7 @@ function lightSelectedMenu(index, mes) {
 }
 
 function lightLeftMenu(index, title) {
-    var frameNames = ["frame-pedidos-cliente", "frame-pedidos"];
+    var frameNames = ["frame-pedidos-cliente", "frame-pedidos", "frame-precios-cliente"];
     document.getElementById("frame-title").innerHTML = title;
     frameNames.forEach((nameID)=> {
         document.getElementById(nameID).style.display = "none";
@@ -88,6 +109,10 @@ function getPedidosMes(mes) {
     mes = (mes < 10) ? ('0' + mes) : mes;
 
     getReportesPedidosMes(mes);
+}
+
+function getPrecioCliente() {
+    getConsumoCliente();
 }
 
 /////////////////// D3  functions ///////////////////
@@ -392,6 +417,12 @@ function generarProductos() {
     getPedidosMes(mes);
 }
 
+function generarPreciosCliente() {
+    lightLeftMenu(2, "Reporte: Compras hechas por Clientes hasta la fecha");
+
+    getPrecioCliente();
+}
+
 $(function() {
     $("#form-total-0").steps({
         headerTag: "h2",
@@ -429,7 +460,24 @@ $(function() {
             return true;
         }
     });
-
+    $("#form-total-2").steps({
+        headerTag: "h2",
+        bodyTag: "section",
+        transitionEffect: "fade",
+        enableAllSteps: true,
+        autoFocus: true,
+        transitionEffectSpeed: 500,
+        titleTemplate : '<div class="title">#title#</div>',
+        labels: {
+            previous : 'Anterior',
+            next : 'Proximo',
+            finish : 'Salir',
+            current : ''
+        },
+        onStepChanging: function (event, currentIndex, newIndex) { 
+            return true;
+        }
+    });
 
     lightLeftMenu(0, "Reporte: Volumen de Pedidos por Cliente (mes)");
     let mes = (new Date()).getMonth();

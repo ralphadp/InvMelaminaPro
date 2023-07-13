@@ -97,6 +97,7 @@
 		<div class="leftbar">
 			<button id="frame-pedidos-cliente-b" class="leftbuttons" type="button" onclick="generarPedidosCliente()">Volumen de Pedidos-Cliente</button>
 			<button id="frame-pedidos-b" class="leftbuttons" type="button" onclick="generarProductos()">Volumen de Productos</button>
+			<button id="frame-precios-cliente-b" class="leftbuttons" type="button" onclick="generarPreciosCliente()">Volumen de Precios-Cliente</button>
 		</div>
 		<div class="melaminapro-heading" id="frame-title">Reporte: Volumen de Pedidos por Cliente (mes)</div>
 		
@@ -152,6 +153,7 @@
 		        </form>
 			</div>
 		</div><!-- end frame -->
+
 		<div class="melaminapro-v6-content" id="frame-pedidos">
 			<div class="melaminapro-form">
 		        <form class="form-register" id="form-register" action="#" method="post">
@@ -197,6 +199,37 @@
 								 <button type="button" id="p1_clickOctubre" onclick="getPedidosMes(9)" class="mes-button">Octubre</button>
 								 <button type="button" id="p1_clickNoviembre" onclick="getPedidosMes(10)" class="mes-button">Noviembre</button>
 								 <button type="button" id="p1_clickDiciembre" onclick="getPedidosMes(11)" class="mes-button">Diciembre</button>
+								</div>
+							</div>
+			            </section>
+		        	</div>
+		        </form>
+			</div>
+		</div><!-- end frame -->
+
+		<div class="melaminapro-v6-content" id="frame-precios-cliente">
+			<div class="melaminapro-form">
+		        <form class="form-register" id="form-register" action="#" method="post">
+					<div id="form-total-2">
+			            <h2>
+			            	<p style="background-color: white;" class="step-icon"><span>1</span></p>
+			            	<span style="font-style: oblique; font-weight: 800;" class="step-text"><U>Barras</U></span>
+			            </h2>
+			            <section>
+			                <div class="inner">
+								<div style="background-color: azure; padding-left: 5px;" id="precio_cliente_bars">
+								 <button type="button" id="b2_clickUpdate" onclick="getPrecioCliente()" class="mes-button">Actualizar</button>
+								</div>
+							</div>
+			            </section>
+						<h2>
+			            	<p style="background-color: white;" class="step-icon"><span>1</span></p>
+			            	<span style="font-style: oblique; font-weight: 800;" class="step-text"><U>Pie</U></span>
+			            </h2>
+			            <section>
+			                <div class="inner">
+								<div class="canvasBox" style="background-color: azure; padding-left: 5px;" id="precio_cliente_pie">
+								 <button type="button" id="p2_clickUpdate" onclick="getPrecioCliente()" class="mes-button">Actualizar</button>
 								</div>
 							</div>
 			            </section>
