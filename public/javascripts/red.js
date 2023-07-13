@@ -93,6 +93,31 @@ function getProductoXProvedor() {
     });
 }
 
+function getProductoXDia(dia) {
+    let data = {
+        day: dia
+    };
+    fetch('/reporte_venta_producto_dia/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            console.log(response.message);
+            clearSVG()
+            BarsData(response.chartData, "venta_dia_bars");
+            PieLegend(response.chartData, "venta_dia_pie");
+        } else {
+            console.log(response.status, response.statusText);
+        }
+    })
+    .catch(error => {
+        console.log(error.message);
+    });
+}
+
 function lightSelectedMenu(index, mes) {
     //clean
     nombreMes.forEach((mesName)=> {
@@ -105,7 +130,7 @@ function lightSelectedMenu(index, mes) {
 }
 
 function lightLeftMenu(index, title) {
-    var frameNames = ["frame-pedidos-cliente", "frame-pedidos", "frame-precios-cliente","frame-provedor"];
+    var frameNames = ["frame-pedidos-cliente","frame-pedidos","frame-precios-cliente","frame-provedor","frame-cantidad-venta-dia"];
     document.getElementById("frame-title").innerHTML = title;
     frameNames.forEach((nameID)=> {
         document.getElementById(nameID).style.display = "none";
@@ -138,6 +163,10 @@ function getPrecioCliente() {
 
 function getProvedorProducto() {
     getProductoXProvedor();
+}
+
+function getProductoDia(dia) {
+    getProductoXDia(dia);
 }
 
 /////////////////// D3  functions ///////////////////
@@ -454,6 +483,19 @@ function generarProvedorProductos() {
     getProvedorProducto();
 }
 
+function generarProoductoDia() {
+    lightLeftMenu(4, "Reporte: Volumen de Ventas por dia");
+
+    getProductoDia(getFromPicker());
+}
+
+function getFromPicker() {
+    var date = new Date();
+    var t=$.datepicker.formatDate("dd/mm/yy", date);
+    
+    return t;
+}
+
 $(function() {
     $("#form-total-0").steps({
         headerTag: "h2",
@@ -463,12 +505,7 @@ $(function() {
         autoFocus: true,
         transitionEffectSpeed: 500,
         titleTemplate : '<div class="title">#title#</div>',
-        labels: {
-            previous : 'Anterior',
-            next : 'Proximo',
-            finish : 'Salir',
-            current : ''
-        },
+        labels: { previous : 'Anterior', next : 'Proximo', finish : 'Salir', current : '' },
         onStepChanging: function (event, currentIndex, newIndex) { 
             return true;
         }
@@ -481,12 +518,7 @@ $(function() {
         autoFocus: true,
         transitionEffectSpeed: 500,
         titleTemplate : '<div class="title">#title#</div>',
-        labels: {
-            previous : 'Anterior',
-            next : 'Proximo',
-            finish : 'Salir',
-            current : ''
-        },
+        labels: { previous : 'Anterior', next : 'Proximo', finish : 'Salir', current : '' },
         onStepChanging: function (event, currentIndex, newIndex) { 
             return true;
         }
@@ -499,12 +531,7 @@ $(function() {
         autoFocus: true,
         transitionEffectSpeed: 500,
         titleTemplate : '<div class="title">#title#</div>',
-        labels: {
-            previous : 'Anterior',
-            next : 'Proximo',
-            finish : 'Salir',
-            current : ''
-        },
+        labels: { previous : 'Anterior', next : 'Proximo', finish : 'Salir', current : '' },
         onStepChanging: function (event, currentIndex, newIndex) { 
             return true;
         }
@@ -517,12 +544,20 @@ $(function() {
         autoFocus: true,
         transitionEffectSpeed: 500,
         titleTemplate : '<div class="title">#title#</div>',
-        labels: {
-            previous : 'Anterior',
-            next : 'Proximo',
-            finish : 'Salir',
-            current : ''
-        },
+        labels: { previous : 'Anterior', next : 'Proximo', finish : 'Salir', current : '' },
+        onStepChanging: function (event, currentIndex, newIndex) { 
+            return true;
+        }
+    });
+    $("#form-total-4").steps({
+        headerTag: "h2",
+        bodyTag: "section",
+        transitionEffect: "fade",
+        enableAllSteps: true,
+        autoFocus: true,
+        transitionEffectSpeed: 500,
+        titleTemplate : '<div class="title">#title#</div>',
+        labels: { previous : 'Anterior', next : 'Proximo', finish : 'Salir', current : '' },
         onStepChanging: function (event, currentIndex, newIndex) { 
             return true;
         }
@@ -532,4 +567,23 @@ $(function() {
     let mes = (new Date()).getMonth();
     getPedidosClienteDelMes(mes);
 
+    $.datepicker.setDefaults($.datepicker.regional["es"]);
+    $("#datepicker_bar").datepicker({
+        dateFormat: 'dd/mm/yy',
+        firstDay: 1,
+        onSelect: function (dateText, inst) {
+            var date = $(this).val();
+            getProductoDia(date);
+            //alert(date);
+        }
+    }).datepicker("setDate", new Date());
+    $("#datepicker_pie").datepicker({
+        dateFormat: 'dd/mm/yy',
+        firstDay: 1,
+        onSelect: function (dateText, inst) {
+            var date = $(this).val();
+            getProductoDia(date);
+            alert(date);
+        }
+    }).datepicker("setDate", new Date());
 });

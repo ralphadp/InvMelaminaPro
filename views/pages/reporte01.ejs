@@ -7,7 +7,6 @@
 	<link rel="stylesheet" href="stylesheets/stylein.css">
 	
 	<script src="https://d3js.org/d3.v3.js"></script>
-
 	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 
 	<!--Move to main css, later-->
@@ -99,6 +98,7 @@
 			<button id="frame-pedidos-b" class="leftbuttons" type="button" onclick="generarProductos()">Volumen de Productos</button>
 			<button id="frame-precios-cliente-b" class="leftbuttons" type="button" onclick="generarPreciosCliente()">Volumen de Ventas(Bs) x Cliente</button>
 			<button id="frame-provedor-b" class="leftbuttons" type="button" onclick="generarProvedorProductos()">Volumen de Compras(Bs) x Provedor</button>
+			<button id="frame-cantidad-venta-dia-b" class="leftbuttons" type="button" onclick="generarProoductoDia()">Volumen de Ventas(Bs) x Producto x dia</button>
 		</div>
 		<div class="melaminapro-heading" id="frame-title">Reporte: Volumen de Pedidos por Cliente (mes)</div>
 		
@@ -270,6 +270,42 @@
 			</div>
 		</div><!-- end frame -->
 
+		<div class="melaminapro-v6-content" id="frame-cantidad-venta-dia">
+			<div class="melaminapro-form">
+		        <form class="form-register" id="form-register" action="#" method="post">
+					<div id="form-total-4">
+			            <h2>
+			            	<p style="background-color: white;" class="step-icon"><span>1</span></p>
+			            	<span style="font-style: oblique; font-weight: 800;" class="step-text"><U>Barras</U></span>
+			            </h2>
+			            <section>
+			                <div class="inner">
+								<div style="background-color: azure; padding-left: 5px;" id="venta_dia_bars">
+									<div>
+										<label for="datepicker_bar">Selecciona Fecha:</label>
+										<input type="text" id="datepicker_bar"/>
+									</div>
+								</div>
+							</div>
+			            </section>
+						<h2>
+			            	<p style="background-color: white;" class="step-icon"><span>1</span></p>
+			            	<span style="font-style: oblique; font-weight: 800;" class="step-text"><U>Pie</U></span>
+			            </h2>
+			            <section>
+			                <div class="inner">
+								<div class="canvasBox" style="background-color: azure; padding-left: 5px;" id="venta_dia_pie">
+									<div>
+										<label for="datepicker_pie">Selecciona Fecha:</label>
+										<input type="text" id="datepicker_pie"/>
+									</div>
+								</div>
+							</div>
+			            </section>
+		        	</div>
+		        </form>
+			</div>
+		</div><!-- end frame -->
 	</div>
 	
 	<script src="javascripts/jquery-3.3.1.min.js"></script>

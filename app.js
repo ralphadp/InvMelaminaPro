@@ -1439,6 +1439,43 @@ app.post('/reporte_provedor_producto', function(req, res) {
     .catch(error => console.error(error))
 });
 
+app.post('/reporte_venta_producto_dia', function(req, res) {
+    const client = new MongoClient(uri);
+    client.connect();
+    var DB = client.db();
+    console.log("Getting from "+req.body.day);
+    DB.collection("item").find().toArray().then(resultItem => {
+        var productos = [];
+        resultItem.forEach((item, index)=> {
+            productos[index] = item.nombre;
+        });
+
+        DB.collection("historial").find({
+            "fecha": {$regex : req.body.day},
+            "tipo_entrada": "pedido"
+        }).toArray().then(resultHistorial => {
+            let reporte = [];
+
+            productos.forEach((producto, index) => {
+                let DATA = {cliente:"", Volume:0};
+                DATA.cliente = producto;
+                resultHistorial.forEach((historia) => {
+                    if (historia.item == producto) {
+                        DATA.Volume = DATA.Volume + Number(historia.cantidad);
+                    }
+                });
+                reporte[index] = DATA;
+            });
+            console.log(reporte);
+            res.status(200).json({ok: true, message: "Encontrados", chartData: reporte, action: "none"});
+            res.end();
+        })
+        .catch(error => console.error(error))
+        .finally(data => client.close())
+    })
+    .catch(error => console.error(error))
+});
+
 // index page
 app.get('/inventario', function(req, res) {
   res.render('pages/inventario');
