@@ -344,16 +344,31 @@ function Provedor() {
 	    direccion: "",
 	    celular: "",
 	    email: "",
-		items: "",
+		items: [],
 	};
 
 	this.getRowBuild = function(next_index) {
 		return `<tr id='row_${next_index}'>
-					<td id='p_nombre_${next_index}' contenteditable='true'></td>
-					<td id='p_direccion_${next_index}' contenteditable='true'></td>
-					<td id='p_celular_${next_index}' contenteditable='true'></td>
-					<td id='p_email_${next_index}' contenteditable='true'></td>
-					<td id='p_items_${next_index}' contenteditable='true'></td>
+					<td class="item_td" id='p_nombre_${next_index}' contenteditable='true'></td>
+					<td class="item_td" id='p_direccion_${next_index}' contenteditable='true'></td>
+					<td class="item_td" id='p_celular_${next_index}' contenteditable='true'></td>
+					<td class="item_td" id='p_email_${next_index}' contenteditable='true'></td>
+					<td class="itemtd" id='p_items_${next_index}'>
+						<table>
+							<tr>
+								<td class="itemtd">Melamina</td>
+								<td class="itemtd">Tapacantos</td>
+								<td class="itemtd">Pegamento</td>
+								<td class="itemtd">Fondo</td>
+							</tr>
+							<tr>
+								<td class="itemtd"><input id="p_items_${next_index}_Melamina" type="checkbox"/></td>
+								<td class="itemtd"><input id="p_items_${next_index}_Tapacantos" type="checkbox"/></td>
+								<td class="itemtd"><input id="p_items_${next_index}_Pegamento" type="checkbox"/></td>
+								<td class="itemtd"><input id="p_items_${next_index}_Fondo" type="checkbox"/></td>
+							</tr>
+						</table>
+					</td>
 					<td><button type='button' title='Guardar' id='gp_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='bp_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -361,11 +376,17 @@ function Provedor() {
 	}
 
 	this.assignar = function(row_id) {
-		this.att.nombre = document.getElementById("p_nombre_" + row_id).innerText;
+		this.att.nombre    = document.getElementById("p_nombre_" + row_id).innerText;
 		this.att.direccion = document.getElementById("p_direccion_" + row_id).innerText;
-		this.att.celular = document.getElementById("p_celular_" + row_id).innerText;
-		this.att.email = document.getElementById("p_email_" + row_id).innerText;
-		this.att.items = document.getElementById("p_items_" + row_id).innerText;
+		this.att.celular   = document.getElementById("p_celular_" + row_id).innerText;
+		this.att.email     = document.getElementById("p_email_" + row_id).innerText;
+
+		let index = 0;
+		["Melamina","Tapacantos","Pegamento","Fondo"].forEach((producto) => {
+			if (document.getElementById("p_items_" + row_id + "_" + producto).checked) {
+				this.att.items[index++] = producto;
+			}
+		});
 	}
 
 /*UPDATE*/
