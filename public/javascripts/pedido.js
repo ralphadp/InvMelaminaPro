@@ -297,6 +297,7 @@ function PrePrintCarrito() {
     $('#celular-print').text(NotaVenta.celular);
     $('#email-print').text(NotaVenta.email);
     $('#ci-print').text(NotaVenta.ci);
+    $('#numero-venta').text("Nº 000" + $('#pedido').text());
 
     var TotalPrecio = 0;
     var pedidoNum = 1;
