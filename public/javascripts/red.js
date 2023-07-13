@@ -72,6 +72,27 @@ function getConsumoCliente() {
     });
 }
 
+function getProductoXProvedor() {
+    fetch('/reporte_provedor_producto/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            console.log(response.message);
+            clearSVG()
+            BarsData(response.chartData, "provedor_bars");
+            PieLegend(response.chartData, "provedor_pie");
+        } else {
+            console.log(response.status, response.statusText);
+        }
+    })
+    .catch(error => {
+        console.log(error.message);
+    });
+}
+
 function lightSelectedMenu(index, mes) {
     //clean
     nombreMes.forEach((mesName)=> {
@@ -84,7 +105,7 @@ function lightSelectedMenu(index, mes) {
 }
 
 function lightLeftMenu(index, title) {
-    var frameNames = ["frame-pedidos-cliente", "frame-pedidos", "frame-precios-cliente"];
+    var frameNames = ["frame-pedidos-cliente", "frame-pedidos", "frame-precios-cliente","frame-provedor"];
     document.getElementById("frame-title").innerHTML = title;
     frameNames.forEach((nameID)=> {
         document.getElementById(nameID).style.display = "none";
@@ -113,6 +134,10 @@ function getPedidosMes(mes) {
 
 function getPrecioCliente() {
     getConsumoCliente();
+}
+
+function getProvedorProducto() {
+    getProductoXProvedor();
 }
 
 /////////////////// D3  functions ///////////////////
@@ -418,9 +443,15 @@ function generarProductos() {
 }
 
 function generarPreciosCliente() {
-    lightLeftMenu(2, "Reporte: Compras hechas por Clientes hasta la fecha");
+    lightLeftMenu(2, "Reporte: Volumen de ventas hechas a Clientes en Bs");
 
     getPrecioCliente();
+}
+
+function generarProvedorProductos() {
+    lightLeftMenu(3, "Reporte: Volumen de compras a Provedores en Bs.");
+
+    getProvedorProducto();
 }
 
 $(function() {
@@ -461,6 +492,24 @@ $(function() {
         }
     });
     $("#form-total-2").steps({
+        headerTag: "h2",
+        bodyTag: "section",
+        transitionEffect: "fade",
+        enableAllSteps: true,
+        autoFocus: true,
+        transitionEffectSpeed: 500,
+        titleTemplate : '<div class="title">#title#</div>',
+        labels: {
+            previous : 'Anterior',
+            next : 'Proximo',
+            finish : 'Salir',
+            current : ''
+        },
+        onStepChanging: function (event, currentIndex, newIndex) { 
+            return true;
+        }
+    });
+    $("#form-total-3").steps({
         headerTag: "h2",
         bodyTag: "section",
         transitionEffect: "fade",

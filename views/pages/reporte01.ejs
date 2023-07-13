@@ -97,7 +97,8 @@
 		<div class="leftbar">
 			<button id="frame-pedidos-cliente-b" class="leftbuttons" type="button" onclick="generarPedidosCliente()">Volumen de Pedidos-Cliente</button>
 			<button id="frame-pedidos-b" class="leftbuttons" type="button" onclick="generarProductos()">Volumen de Productos</button>
-			<button id="frame-precios-cliente-b" class="leftbuttons" type="button" onclick="generarPreciosCliente()">Volumen de Precios-Cliente</button>
+			<button id="frame-precios-cliente-b" class="leftbuttons" type="button" onclick="generarPreciosCliente()">Volumen de Ventas(Bs) x Cliente</button>
+			<button id="frame-provedor-b" class="leftbuttons" type="button" onclick="generarProvedorProductos()">Volumen de Compras(Bs) x Provedor</button>
 		</div>
 		<div class="melaminapro-heading" id="frame-title">Reporte: Volumen de Pedidos por Cliente (mes)</div>
 		
@@ -237,6 +238,38 @@
 		        </form>
 			</div>
 		</div><!-- end frame -->
+
+		<div class="melaminapro-v6-content" id="frame-provedor">
+			<div class="melaminapro-form">
+		        <form class="form-register" id="form-register" action="#" method="post">
+					<div id="form-total-3">
+			            <h2>
+			            	<p style="background-color: white;" class="step-icon"><span>1</span></p>
+			            	<span style="font-style: oblique; font-weight: 800;" class="step-text"><U>Barras</U></span>
+			            </h2>
+			            <section>
+			                <div class="inner">
+								<div style="background-color: azure; padding-left: 5px;" id="provedor_bars">
+								 <button type="button" id="b3_clickUpdate" onclick="getProvedorProducto()" class="mes-button">update</button>
+								</div>
+							</div>
+			            </section>
+						<h2>
+			            	<p style="background-color: white;" class="step-icon"><span>1</span></p>
+			            	<span style="font-style: oblique; font-weight: 800;" class="step-text"><U>Pie</U></span>
+			            </h2>
+			            <section>
+			                <div class="inner">
+								<div class="canvasBox" style="background-color: azure; padding-left: 5px;" id="provedor_pie">
+								 <button type="button" id="p3_clickUpdate" onclick="getProvedorProducto()" class="mes-button">update</button>
+								</div>
+							</div>
+			            </section>
+		        	</div>
+		        </form>
+			</div>
+		</div><!-- end frame -->
+
 	</div>
 	
 	<script src="javascripts/jquery-3.3.1.min.js"></script>

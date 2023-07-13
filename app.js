@@ -1405,6 +1405,40 @@ app.post('/reporte_consumo_cliente', function(req, res) {
     .catch(error => console.error(error))
 });
 
+app.post('/reporte_provedor_producto', function(req, res) {
+    const client = new MongoClient(uri);
+    client.connect();
+    var DB = client.db();
+
+    DB.collection("collectionprovedor").find().toArray().then(resultProvedor => {
+        var filtro = [];
+        resultProvedor.forEach((provedor, index)=> {
+            filtro[index] = { "cliente" : provedor.nombre };
+        });
+        var todosLosProvedores = { "$or": filtro };
+        DB.collection("historial").find(todosLosProvedores).toArray().then(resultHistorial => {
+            let reporte = [];
+
+            resultProvedor.forEach((provedor, index) => {
+                let DATA = {cliente:"", Volume:0};
+                DATA.cliente = provedor.nombre;
+                resultHistorial.forEach((historia) => {
+                    if (historia.cliente == provedor.nombre) {
+                        DATA.Volume = DATA.Volume + Number(historia.precioCompra);
+                    }
+                });
+                reporte[index] = DATA;
+            });
+            console.log(reporte);
+            res.status(200).json({ok: true, message: "Encontrados", chartData: reporte, action: "none"});
+            res.end();
+        })
+        .catch(error => console.error(error))
+        .finally(data => client.close())
+    })
+    .catch(error => console.error(error))
+});
+
 // index page
 app.get('/inventario', function(req, res) {
   res.render('pages/inventario');
