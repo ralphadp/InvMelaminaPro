@@ -1313,13 +1313,13 @@ app.put('/actualizar_control_producto/',(req, res) => {
 
     let CollectionControl = client.db().collection("control_producto");
 
-    CollectionControl.findOneAndUpdate({item: "Melamina"}, {$set: {minimo: req.body.melamina}}).then(results => {
+    CollectionControl.findOneAndUpdate({item: "Melamina"}, {$set: {minimo: Number(req.body.melamina)}}).then(results => {
         console.log(results);
-        CollectionControl.findOneAndUpdate({item: "Tapacantos"}, {$set: {minimo: req.body.tapacantos}}).then(results => {
+        CollectionControl.findOneAndUpdate({item: "Tapacantos"}, {$set: {minimo: Number(req.body.tapacantos)}}).then(results => {
             console.log(results);
-            CollectionControl.findOneAndUpdate({item: "Pegamento"}, {$set: {minimo: req.body.pegamento}}).then(results => {
+            CollectionControl.findOneAndUpdate({item: "Pegamento"}, {$set: {minimo: Number(req.body.pegamento)}}).then(results => {
                 console.log(results);
-                CollectionControl.findOneAndUpdate({item: "Fondo"}, {$set: {minimo: req.body.fondo}}).then(results => {
+                CollectionControl.findOneAndUpdate({item: "Fondo"}, {$set: {minimo: Number(req.body.fondo)}}).then(results => {
                     console.log(results);
                     console.log("Control producto ",req.body," actualizado...");
                     res.status(200).json({ok: true, message: "Control Producto actualizado.", action: "none"});
