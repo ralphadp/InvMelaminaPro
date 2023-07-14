@@ -449,9 +449,9 @@
 						<% }} %>
 					</select>
 				  </td>
-				  <td class="item_td" contenteditable="true" id="a_precio_compra_<%= ID %>"><%= melamina[index].precio_compra %></td>
-				  <td class="item_td" contenteditable="true" id="a_precio_venta_<%= ID %>"><%= melamina[index].precio_venta %></td>
-				  <td class="item_td" contenteditable="true" id="a_laminaxpaquete_<%= ID %>"><%= melamina[index].laminaxpaquete %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="a_precio_compra_<%= ID %>"><%= melamina[index].precio_compra %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="a_precio_venta_<%= ID %>"><%= melamina[index].precio_venta %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="a_laminaxpaquete_<%= ID %>"><%= melamina[index].laminaxpaquete %></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="bm_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -513,12 +513,12 @@
 						<% }} %>
 					</select>
 				  </td>
-				  <td class="item_td" contenteditable="true" id="t_precio_compra_<%= ID %>"><%= tapacantos[index].precio_compra %></td>
-				  <td class="item_td" contenteditable="true" id="t_precio_venta_<%= ID %>"><%= tapacantos[index].precio_venta %></td>
-				  <td class="item_td" contenteditable="true" id="t_metrosxrollo_<%= ID %>"><%= tapacantos[index].metrosxrollo %></td>
-				  <td class="item_td" contenteditable="true" id="t_rollosxcaja_<%= ID %>"><%= tapacantos[index].rollosxcaja %></td>
-				  <td class="item_td" contenteditable="true" id="t_precio_venta_metros_<%= ID %>"><%= tapacantos[index].precio_venta_metros %></td>
-				  <td class="item_td" contenteditable="true" id="t_precio_compra_metros_<%= ID %>"><%= tapacantos[index].precio_compra_metros %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_compra_<%= ID %>"><%= tapacantos[index].precio_compra %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_<%= ID %>"><%= tapacantos[index].precio_venta %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_metrosxrollo_<%= ID %>"><%= tapacantos[index].metrosxrollo %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_rollosxcaja_<%= ID %>"><%= tapacantos[index].rollosxcaja %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_metros_<%= ID %>"><%= tapacantos[index].precio_venta_metros %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_compra_metros_<%= ID %>"><%= tapacantos[index].precio_compra_metros %></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gt_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="bt_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -558,8 +558,8 @@
 						<% }} %>
 					</select>
 				  </td>
-				  <td contenteditable="true" id="p_precio_compra_<%= ID %>"><%= pegamento[index].precio_compra %></td>
-				  <td contenteditable="true" id="p_precio_venta_<%= ID %>"><%= pegamento[index].precio_venta %></td>
+				  <td class="numericAllow" contenteditable="true" id="p_precio_compra_<%= ID %>"><%= pegamento[index].precio_compra %></td>
+				  <td class="numericAllow" contenteditable="true" id="p_precio_venta_<%= ID %>"><%= pegamento[index].precio_venta %></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gp_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="bp_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -618,9 +618,9 @@
 						<% }} %>
 					</select>
 				  </td>
-				  <td class="item_td" contenteditable="true" id="f_precio_compra_<%= ID %>"><%= fondo[index].precio_compra %></td>
-				  <td class="item_td" contenteditable="true" id="f_precio_venta_<%= ID %>"><%= fondo[index].precio_venta %></td>
-				  <td class="item_td" contenteditable="true" id="f_laminaxpaquete_<%= ID %>"><%= fondo[index].laminaxpaquete %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="f_precio_compra_<%= ID %>"><%= fondo[index].precio_compra %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="f_precio_venta_<%= ID %>"><%= fondo[index].precio_venta %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="f_laminaxpaquete_<%= ID %>"><%= fondo[index].laminaxpaquete %></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gf_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="bf_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -690,6 +690,14 @@
 			control.asignar();
 			control.actualizar();
 		}
+
+		$(".numericAllow").keypress(function(event) {
+			var key = event.charCode || event.keyCode;
+			if (isNaN(String.fromCharCode(event.which)) && key!=46 
+				|| key===32 || key===13 
+				|| (key===46 && event.currentTarget.innerText.includes('.'))) 
+					event.preventDefault();
+		});
     </script>
 
 
