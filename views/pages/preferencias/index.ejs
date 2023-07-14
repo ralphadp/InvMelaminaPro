@@ -28,6 +28,11 @@
 	<header>
         <%- include('../../partials/header'); %>
     </header>
+	<%  var controMinimo = {};
+		for (i = 0; i < control.length; i++) {
+			controMinimo[control[i].item] = Number(control[i].minimo);
+		}
+	%>
 	<div id="booking" class="section">
 		<div class="section-center">
 			<div class="container">
@@ -44,32 +49,11 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<span class="form-label">Min Cant. Melamina</span>
-										<select class="form-control">
-											<option>1 lamina</option>
-											<option>2 laminas</option>
-											<option>3 laminas</option>
-											<option>4 laminas</option>
-											<option>5 laminas</option>
-											<option>6 laminas</option>
-											<option>7 laminas</option>
-											<option>8 laminas</option>
-											<option>9 laminas</option>
-											<option>10 laminas</option>
-											<option>11 laminas</option>
-											<option>12 laminas</option>
-											<option>13 laminas</option>
-											<option>14 laminas</option>
-											<option>15 laminas</option>
-											<option>16 laminas</option>
-											<option>17 laminas</option>
-											<option>18 laminas</option>
-											<option>19 laminas</option>
-											<option selected>20 laminas</option>
-											<option>21 laminas</option>
-											<option>22 laminas</option>
-											<option>23 laminas</option>
-											<option>24 laminas</option>
-											<option>25 laminas</option>
+										<select class="form-control" id="melamina_min">
+											<option value="1" <%= (controMinimo["Melamina"]==1)?'selected':'' %>>1 lamina</option>
+											<% for (var index = 2; index < 25; index++) { %>
+											<option value="<%=index %>" <%= (controMinimo["Melamina"]==index)?'selected':'' %>><%=index %> laminas</option>
+											<% } %>
 										</select>
 										<span class="select-arrow"></span>
 									</div>
@@ -77,32 +61,11 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<span class="form-label">Min Cant. Tapacantos</span>
-										<select class="form-control">
-											<option>1 rollo</option>
-											<option>2 rollos</option>
-											<option>3 rollos</option>
-											<option>4 rollos</option>
-											<option>5 rollos</option>
-											<option>6 rollos</option>
-											<option>7 rollos</option>
-											<option>8 rollos</option>
-											<option>9 rollos</option>
-											<option>10 rollos</option>
-											<option>11 rollos</option>
-											<option selected>12 rollos</option>
-											<option>13 rollos</option>
-											<option>14 rollos</option>
-											<option>15 rollos</option>
-											<option>16 rollos</option>
-											<option>17 rollos</option>
-											<option>18 rollos</option>
-											<option>19 rollos</option>
-											<option>20 rollos</option>
-											<option>21 rollos</option>
-											<option>22 rollos</option>
-											<option>23 rollos</option>
-											<option>24 rollos</option>
-											<option>25 rollos</option>
+										<select class="form-control" id="tapacantos_min">
+											<option value="1" <%= (controMinimo["Tapacantos"]==1)?'selected':'' %>>1 rollo</option>
+											<% for (var index = 2; index < 25; index++) { %>
+											<option value="<%=index %>" <%= (controMinimo["Tapacantos"]==index)?'selected':'' %>><%=index %> rollos</option>
+											<% } %>
 										</select>
 										<span class="select-arrow"></span>
 									</div>
@@ -110,32 +73,11 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<span class="form-label">Min Cant. Pegamento</span>
-										<select class="form-control">
-											<option>1 bolsa</option>
-											<option>2 bolsas</option>
-											<option>3 bolsas</option>
-											<option>4 bolsas</option>
-											<option>5 bolsas</option>
-											<option>6 bolsas</option>
-											<option>7 bolsas</option>
-											<option>8 bolsas</option>
-											<option>9 bolsas</option>
-											<option>10 bolsas</option>
-											<option>11 bolsas</option>
-											<option>12 bolsas</option>
-											<option>13 bolsas</option>
-											<option>14 bolsas</option>
-											<option selected>15 bolsas</option>
-											<option>16 bolsas</option>
-											<option>17 bolsas</option>
-											<option>18 bolsas</option>
-											<option>19 bolsas</option>
-											<option>20 bolsas</option>
-											<option>21 bolsas</option>
-											<option>22 bolsas</option>
-											<option>23 bolsas</option>
-											<option>24 bolsas</option>
-											<option>25 bolsas</option>
+										<select class="form-control" id="pegamento_min">
+											<option value="1" <%= (controMinimo["Pegamento"]==1)?'selected':'' %>>1 bolsa</option>
+											<% for (var index = 2; index < 25; index++) { %>
+											<option value="<%=index %>" <%= (controMinimo["Pegamento"]==index)?'selected':'' %>><%=index %> bolsas</option>
+											<% } %>
 										</select>
 										<span class="select-arrow"></span>
 									</div>
@@ -143,37 +85,20 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<span class="form-label">Min Cant. Fondo</span>
-										<select class="form-control">
-											<option>1 lamina</option>
-											<option>2 laminas</option>
-											<option>3 laminas</option>
-											<option>4 laminas</option>
-											<option>5 laminas</option>
-											<option>6 laminas</option>
-											<option>7 laminas</option>
-											<option>8 laminas</option>
-											<option>9 laminas</option>
-											<option>10 laminas</option>
-											<option>11 laminas</option>
-											<option>12 laminas</option>
-											<option>13 laminas</option>
-											<option>14 laminas</option>
-											<option selected>15 laminas</option>
-											<option>16 laminas</option>
-											<option>17 laminas</option>
-											<option>18 laminas</option>
-											<option>19 laminas</option>
-											<option>20 laminas</option>
-											<option>21 laminas</option>
-											<option>22 laminas</option>
-											<option>23 laminas</option>
-											<option>24 laminas</option>
-											<option>25 laminas</option>
+										<select class="form-control" id="fondo_min">
+											<option value="1" <%= (controMinimo["Fondo"]==1)?'selected':'' %>>1 lamina</option>
+											<% for (var index = 2; index < 25; index++) { %>
+											<option value="<%=index %>" <%= (controMinimo["Fondo"]==index)?'selected':'' %>><%=index %> laminas</option>
+											<% } %>
 										</select>
 										<span class="select-arrow"></span>
 									</div>
 								</div>
 							</div>
+							<div class="form-btn">
+								<button class="submit-btn" type="button" onclick="guardarControlMinimos()">Guardar</button>
+							</div>
+							<hr>
 							<div class="form-group">
 								<span class="form-label">Listas & Catalogos</span>
 								<select id="catalogos" class="form-control" required onchange="selectEditableTable(this)" >
@@ -193,9 +118,6 @@
 								<span class="form-label"><button class="form-btn" onclick="DisplayMelaninaForm(true); return false;">Añadir</button></span>
 								<span class="form-label"><button class="form-btn" onclick="DisplayMelaninaDeleteForm(true); return false;">Borrar</button></span>-->
 								<span class="select-arrow"></span>
-							</div>
-							<div class="form-btn">
-								<button class="submit-btn">Guardar</button>
 							</div>
 						</form>
 					</div>
@@ -726,7 +648,7 @@
 				if (selectedCatalogo == name) {
 					SELECTED_CATALOGO = name;
 					let obj = SELECTED_CATALOGO.capitalizeFirst();
-					console.log(obj);
+					console.log("Selected class " + obj);
 					objCatalog = new window[obj]();
 					document.getElementById(name).style.display = "block";
 				} else {
@@ -761,6 +683,12 @@
 		function borrar(row_id) {
             row_id = row_id.substr(3);
             objCatalog.borrar(row_id);
+		}
+
+		function guardarControlMinimos() {
+			var control = new ControlProducto();
+			control.asignar();
+			control.actualizar();
 		}
     </script>
 

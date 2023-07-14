@@ -1320,3 +1320,45 @@ function Fondo() {
 	    });
 	};
 };
+
+function ControlProducto() {
+	this.att = {
+	    melamina:  null,
+		tapacantos:null,
+		pegamento: null,
+		fondo:     null,
+	};
+
+	this.asignar = function() {
+		this.att.melamina   = getSelectedOption("melamina_min");
+		this.att.tapacantos = getSelectedOption("tapacantos_min");
+		this.att.pegamento  = getSelectedOption("pegamento_min");
+		this.att.fondo      = getSelectedOption("fondo_min");
+	}
+
+/*UPDATE*/
+	this.actualizar = function() {
+		fetch('/actualizar_control_producto/', {
+	        method: 'PUT',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify(this.att)
+	    })
+	    .then(response => response.json())
+	    .then(response => {
+	        if (response.ok) {
+	            console.log(response.message);
+				document.getElementById("message").style.background = "#a4f1a4";
+	            document.getElementById("message").innerHTML = response.message + ". Fondo addicionado! <br>";
+	        } else {
+	            console.log(response.status, response.statusText);
+				document.getElementById("message").style.background = "red";
+	            document.getElementById("message").innerHTML = response.message + "<br>";
+	        }
+	    })
+	    .catch(error => {
+			document.getElementById("message").style.background = "red";
+	        document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+	        console.log(error.message);
+	    });
+	};
+}

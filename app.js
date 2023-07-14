@@ -684,6 +684,7 @@ app.get('/inventario', function(req, res) {
 app.get('/preferencias', function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
+    var CollectionControlProducto = client.db().collection("control_producto");
     var CollectionColor = client.db().collection("color");
     var CollectionMarcas = client.db().collection("marcas");
     var CollectionMedidas = client.db().collection("medidas");
@@ -695,6 +696,7 @@ app.get('/preferencias', function(req, res) {
     var CollectionPegamento = client.db().collection("collectionpegamento");
     var CollectionFondo = client.db().collection("collectionfondo");
 
+    CollectionControlProducto.find().toArray().then(resultsControl => {
     CollectionColor.find().toArray().then(resultsColor => {
         CollectionMarcas.find().toArray().then(resultsMarcas => {
             CollectionMedidas.find().toArray().then(resultsMedidas => {
@@ -706,6 +708,7 @@ app.get('/preferencias', function(req, res) {
                                     CollectionPegamento.find().toArray().then(resultsPegamento => {
                                         CollectionFondo.find().toArray().then(resultsFondo => {
                                             res.render('pages/preferencias/index', {
+                                                control: resultsControl,
                                                 color: resultsColor,
                                                 marcas: resultsMarcas,
                                                 medidas: resultsMedidas,
@@ -736,6 +739,8 @@ app.get('/preferencias', function(req, res) {
             .catch(error => console.error(error))
         })
         .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
 });
@@ -1298,6 +1303,36 @@ app.delete('/delete_fondo/:id', (req, res) => {
     })
     .catch(error => console.error(error))
     .finally(data => client.close())
+})
+
+app.put('/actualizar_control_producto/',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+
+    console.log("control: ", req.body);
+
+    let CollectionControl = client.db().collection("control_producto");
+
+    CollectionControl.findOneAndUpdate({item: "Melamina"}, {$set: {minimo: req.body.melamina}}).then(results => {
+        console.log(results);
+        CollectionControl.findOneAndUpdate({item: "Tapacantos"}, {$set: {minimo: req.body.tapacantos}}).then(results => {
+            console.log(results);
+            CollectionControl.findOneAndUpdate({item: "Pegamento"}, {$set: {minimo: req.body.pegamento}}).then(results => {
+                console.log(results);
+                CollectionControl.findOneAndUpdate({item: "Fondo"}, {$set: {minimo: req.body.fondo}}).then(results => {
+                    console.log(results);
+                    console.log("Control producto ",req.body," actualizado...");
+                    res.status(200).json({ok: true, message: "Control Producto actualizado.", action: "none"});
+                    res.end();
+                })
+                .catch(error => console.error(error))
+                .finally(data => client.close())
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error));
 })
 
 app.post('/reporte_pedidos_cliente_interno_mes', function(req, res) {
