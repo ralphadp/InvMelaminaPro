@@ -839,7 +839,7 @@ app.delete('/delete_marca/:id', (req, res) => {
     const client = new MongoClient(uri);
     client.connect();
     
-    var CollectionMarca = client.db().collection("marca");
+    var CollectionMarca = client.db().collection("marcas");
     let cid = new ObjectID(req.params.id);
 
     CollectionMarca.deleteOne({"_id": cid }).then(result => {
@@ -1025,7 +1025,7 @@ app.post('/nuevo_cliente',(req, res) => {
     client.connect();
     console.log("cliente",req.body);
 
-    let CollectionCliente = client.db().collection("cliente");
+    let CollectionCliente = client.db().collection("collectionCliente");
 
     CollectionCliente.insertOne(req.body).then(results => {
 
@@ -1047,7 +1047,7 @@ app.put('/actualizar_cliente/:id',(req, res) => {
     let idc = new ObjectID(req.params.id);
     console.log(req.params.id, idc);
 
-    let CollectionCliente = client.db().collection("cliente");
+    let CollectionCliente = client.db().collection("collectionCliente");
 
     CollectionCliente.updateOne({"_id": idc}, {$set: req.body}).then(results => {
         console.log(results);
@@ -1063,7 +1063,7 @@ app.delete('/delete_cliente/:id', (req, res) => {
     const client = new MongoClient(uri);
     client.connect();
     
-    var CollectionCliente = client.db().collection("cliente");
+    var CollectionCliente = client.db().collection("collectionCliente");
     let cid = new ObjectID(req.params.id);
 
     CollectionCliente.deleteOne({"_id": cid }).then(result => {
