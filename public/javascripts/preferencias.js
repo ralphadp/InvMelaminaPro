@@ -33,8 +33,8 @@ function Color() {
 	}
 
 	this.assignar = function(row_id) {
-		this.att.nombre =     document.getElementById("c_nombre_" + row_id).innerText;
-		this.att.codigo =     document.getElementById("c_codigo_" + row_id).innerText;
+		this.att.nombre =     document.getElementById("c_nombre_" + row_id).innerText.trim();
+		this.att.codigo =     document.getElementById("c_codigo_" + row_id).innerText.trim();
 		this.att.melamina =   $("#c_melamina_" + row_id).is(":checked");
 		this.att.tapacantos = $("#c_tapacantos_" + row_id).is(":checked");
 		this.att.fondo =      $("#c_fondo_" + row_id).is(":checked");
@@ -145,7 +145,7 @@ function Marca() {
 	}
 
 	this.assignar = function(row_id) {
-		this.att.nombre =     document.getElementById("m_nombre_" + row_id).innerText;
+		this.att.nombre =     document.getElementById("m_nombre_" + row_id).innerText.trim();
 		this.att.melamina =   $("#m_melamina_" + row_id).is(":checked");
 		this.att.tapacantos = $("#m_tapacantos_" + row_id).is(":checked");
 		this.att.pegamento =  $("#m_pegamento_" + row_id).is(":checked");
@@ -255,7 +255,7 @@ function Medidas() {
 	}
 
 	this.assignar = function(row_id) {
-		this.att.nombre =     document.getElementById("e_nombre_" + row_id).innerText;
+		this.att.nombre =     document.getElementById("e_nombre_" + row_id).innerText.trim();
 		this.att.melamina =   $("#e_melamina_" + row_id).is(":checked");
 		this.att.tapacantos = $("#e_tapacantos_" + row_id).is(":checked");
 		this.att.fondo =      $("#e_fondo_" + row_id).is(":checked");
@@ -381,10 +381,10 @@ function Provedor() {
 	}
 
 	this.assignar = function(row_id) {
-		this.att.nombre    = document.getElementById("p_nombre_" + row_id).innerText;
-		this.att.direccion = document.getElementById("p_direccion_" + row_id).innerText;
-		this.att.celular   = document.getElementById("p_celular_" + row_id).innerText;
-		this.att.email     = document.getElementById("p_email_" + row_id).innerText;
+		this.att.nombre    = document.getElementById("p_nombre_" + row_id).innerText.trim();
+		this.att.direccion = document.getElementById("p_direccion_" + row_id).innerText.trim();
+		this.att.celular   = document.getElementById("p_celular_" + row_id).innerText.trim();
+		this.att.email     = document.getElementById("p_email_" + row_id).innerText.trim();
 
 		let index = 0;
 		["Melamina","Tapacantos","Pegamento","Fondo"].forEach((producto) => {
@@ -495,9 +495,9 @@ function Item() {
 	}
 
 	this.assignar = function(row_id) {
-		this.att.nombre = document.getElementById("i_nombre_" + row_id).innerText;
-		this.att.unidad = document.getElementById("i_unidad_" + row_id).innerText;
-		this.att.embalaje = document.getElementById("i_embalaje_" + row_id).innerText;
+		this.att.nombre = document.getElementById("i_nombre_" + row_id).innerText.trim();
+		this.att.unidad = document.getElementById("i_unidad_" + row_id).innerText.trim();
+		this.att.embalaje = document.getElementById("i_embalaje_" + row_id).innerText.trim();
 	}
 
 /*UPDATE*/
@@ -611,14 +611,14 @@ function Cliente() {
 	}
 
 	this.assignar = function(row_id) {
-		this.att.nombre = document.getElementById("l_nombre_" + row_id).innerText;
-		this.att.ci = document.getElementById("l_ci_" + row_id).innerText;
-		this.att.nit = document.getElementById("l_nit_" + row_id).innerText;
-		this.att.direccion = document.getElementById("l_direccion_" + row_id).innerText;
-		this.att.celular = document.getElementById("l_celular_" + row_id).innerText;
-		this.att.email = document.getElementById("l_email_" + row_id).innerText;
-		this.att.empresa = document.getElementById("l_empresa_" + row_id).innerText;
-		this.att.tipo = document.getElementById("l_tipo_" + row_id).innerText;
+		this.att.nombre = document.getElementById("l_nombre_" + row_id).innerText.trim();
+		this.att.ci = document.getElementById("l_ci_" + row_id).innerText.trim();
+		this.att.nit = document.getElementById("l_nit_" + row_id).innerText.trim();
+		this.att.direccion = document.getElementById("l_direccion_" + row_id).innerText.trim();
+		this.att.celular = document.getElementById("l_celular_" + row_id).innerText.trim();
+		this.att.email = document.getElementById("l_email_" + row_id).innerText.trim();
+		this.att.empresa = document.getElementById("l_empresa_" + row_id).innerText.trim();
+		this.att.tipo = document.getElementById("l_tipo_" + row_id).innerText.trim();
 	}
 
 /*UPDATE*/
