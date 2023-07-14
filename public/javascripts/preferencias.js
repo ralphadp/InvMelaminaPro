@@ -5,6 +5,11 @@ Object.defineProperty(String.prototype, 'capitalizeFirst', {
 	enumerable: false
 });
 
+function getSelectedOption(elementId) {
+	var element = document.getElementById(elementId);
+	return element.options[element.selectedIndex].value;
+}
+
 function Color() {
 	this.att = {
 	    nombre: "",
@@ -710,15 +715,56 @@ function Melamina() {
 
 	};
 
-	this.getRowBuild = function(next_index) {
+	this.getRowBuild = function(next_index, listas) {
+		var colorOptions;
+		for (var i=0; i < listas.color.length; i++) {
+			if (listas.color[i].melamina)  {
+				colorOptions += `<option value="${listas.color[i].nombre}">${listas.color[i].nombre}</option>`;
+			}
+		}
+		var medidasOptions;
+		for (var i=0; i < listas.medidas.length; i++) {
+			if (listas.medidas[i].melamina)  {
+				medidasOptions += `<option value="${listas.medidas[i].nombre}">${listas.medidas[i].nombre}</option>`;
+			}
+		}
+		var provedorOptions;
+		for (var i=0; i < listas.provedor.length; i++) {
+			if (listas.provedor[i].items.includes("Melamina"))  {
+				provedorOptions += `<option value="${listas.provedor[i].nombre}">${listas.provedor[i].nombre}</option>`;
+			}
+		}
+		var marcaOptions;
+		for (var i=0; i < listas.marca.length; i++) {
+			if (listas.marca[i].melamina)  {
+				marcaOptions += `<option value="${listas.marca[i].nombre}">${listas.marca[i].nombre}</option>`;
+			}
+		}
+
 		return `<tr id='row_${next_index}'>
-					<td id='a_color_${next_index}' contenteditable='true'></td>
-					<td id='a_provedor_${next_index}' contenteditable='true'></td>
-					<td id='a_medidas_${next_index}' contenteditable='true'></td>
-					<td id='a_marca_${next_index}' contenteditable='true'></td>
-					<td id='a_precio_compra_${next_index}' contenteditable='true'></td>
-					<td id='a_precio_venta_${next_index}' contenteditable='true'></td>
-					<td id='a_laminaxpaquete_${next_index}' contenteditable='true'></td>
+					<td class='item_td' id='a_color_${next_index}'>
+						<select id="color_melamina_${next_index}">
+							${colorOptions}
+						</select>
+					</td>
+					<td class='item_td' id='a_provedor_${next_index}'>
+					    <select id="provedor_melamina_${next_index}">
+							${provedorOptions}
+						</select>
+					</td>
+					<td class='item_td' id='a_medidas_${next_index}'>
+					    <select id="medidas_melamina_${next_index}">
+							${medidasOptions}
+						</select>
+					</td>
+					<td class='item_td' id='a_marca_${next_index}'>
+					    <select id="marca_melamina_${next_index}">
+							${marcaOptions}
+						</select>
+					</td>
+					<td class='item_td' id='a_precio_compra_${next_index}' contenteditable='true'></td>
+					<td class='item_td' id='a_precio_venta_${next_index}' contenteditable='true'></td>
+					<td class='item_td' id='a_laminaxpaquete_${next_index}' contenteditable='true'></td>
 					<td><button type='button' title='Guardar' id='ga_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='ba_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -726,10 +772,10 @@ function Melamina() {
 	}
 
 	this.assignar = function(row_id) {
-		this.att.color = document.getElementById("a_color_" + row_id).innerText;
-		this.att.provedor = document.getElementById("a_provedor_" + row_id).innerText;
-		this.att.medidas = document.getElementById("a_medidas_" + row_id).innerText;
-		this.att.marca = document.getElementById("a_marca_" + row_id).innerText;
+		this.att.color = getSelectedOption("color_melamina_" + row_id);
+		this.att.provedor = getSelectedOption("provedor_melamina_" + row_id);
+		this.att.medidas = getSelectedOption("medidas_melamina_" + row_id);
+		this.att.marca = getSelectedOption("marca_melamina_" + row_id);
 		this.att.precio_compra = document.getElementById("a_precio_compra_" + row_id).innerText;
 		this.att.precio_venta = document.getElementById("a_precio_venta_" + row_id).innerText;
 		this.att.laminaxpaquete = document.getElementById("a_laminaxpaquete_" + row_id).innerText;
@@ -832,18 +878,59 @@ function Tapacantos() {
 
 	};
 
-	this.getRowBuild = function(next_index) {
+	this.getRowBuild = function(next_index, listas) {
+		var colorOptions;
+		for (var i=0; i < listas.color.length; i++) {
+			if (listas.color[i].tapacantos)  {
+				colorOptions += `<option value="${listas.color[i].nombre}">${listas.color[i].nombre}</option>`;
+			}
+		}
+		var medidasOptions;
+		for (var i=0; i < listas.medidas.length; i++) {
+			if (listas.medidas[i].tapacantos)  {
+				medidasOptions += `<option value="${listas.medidas[i].nombre}">${listas.medidas[i].nombre}</option>`;
+			}
+		}
+		var provedorOptions;
+		for (var i=0; i < listas.provedor.length; i++) {
+			if (listas.provedor[i].items.includes("Tapacantos"))  {
+				provedorOptions += `<option value="${listas.provedor[i].nombre}">${listas.provedor[i].nombre}</option>`;
+			}
+		}
+		var marcaOptions;
+		for (var i=0; i < listas.marca.length; i++) {
+			if (listas.marca[i].tapacantos)  {
+				marcaOptions += `<option value="${listas.marca[i].nombre}">${listas.marca[i].nombre}</option>`;
+			}
+		}
+
 		return `<tr id='row_${next_index}'>
-					<td id='t_color_${next_index}' contenteditable='true'></td>
-					<td id='t_provedor_${next_index}' contenteditable='true'></td>
-					<td id='t_medidas_${next_index}' contenteditable='true'></td>
-					<td id='t_marca_${next_index}' contenteditable='true'></td>
-					<td id='t_precio_compra_${next_index}' contenteditable='true'></td>
-					<td id='t_precio_venta_${next_index}' contenteditable='true'></td>
-					<td id='t_metrosxrollo_${next_index}' contenteditable='true'></td>
-					<td id='t_rollosxcaja_${next_index}' contenteditable='true'></td>
-					<td id='t_precio_venta_metros_${next_index}' contenteditable='true'></td>
-					<td id='t_precio_compra_metros_${next_index}' contenteditable='true'></td>
+					<td class='item_td' id='t_color_${next_index}'>
+						<select id="color_tapacantos_${next_index}">
+							${colorOptions}
+						</select>
+					</td>
+					<td class='item_td' id='t_provedor_${next_index}'>
+					    <select id="provedor_tapacantos_${next_index}">
+							${provedorOptions}
+						</select>
+					</td>
+					<td class='item_td' id='t_medidas_${next_index}'>
+					    <select id="medidas_tapacantos_${next_index}">
+							${medidasOptions}
+						</select>
+					</td>
+					<td class='item_td' id='t_marca_${next_index}'>
+					    <select id="marca_tapacantos_${next_index}">
+							${marcaOptions}
+						</select>
+					</td>
+					<td class='item_td' id='t_precio_compra_${next_index}' contenteditable='true'></td>
+					<td class='item_td' id='t_precio_venta_${next_index}' contenteditable='true'></td>
+					<td class='item_td' id='t_metrosxrollo_${next_index}' contenteditable='true'></td>
+					<td class='item_td' id='t_rollosxcaja_${next_index}' contenteditable='true'></td>
+					<td class='item_td' id='t_precio_venta_metros_${next_index}' contenteditable='true'></td>
+					<td class='item_td' id='t_precio_compra_metros_${next_index}' contenteditable='true'></td>
 					<td><button type='button' title='Guardar' id='gt_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='bt_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -851,10 +938,10 @@ function Tapacantos() {
 	}
 
 	this.assignar = function(row_id) {
-		this.att.color = document.getElementById("t_color_" + row_id).innerText;
-		this.att.provedor = document.getElementById("t_provedor_" + row_id).innerText;
-		this.att.medidas = document.getElementById("t_medidas_" + row_id).innerText;
-		this.att.marca = document.getElementById("t_marca_" + row_id).innerText;
+		this.att.color = getSelectedOption("color_tapacantos_" + row_id);
+		this.att.provedor = getSelectedOption("provedor_tapacantos_" + row_id);
+		this.att.medidas = getSelectedOption("medidas_tapacantos_" + row_id);
+		this.att.marca = getSelectedOption("marca_tapacantos_" + row_id);
 		this.att.precio_compra = document.getElementById("t_precio_compra_" + row_id).innerText;
 		this.att.precio_venta = document.getElementById("t_precio_venta_" + row_id).innerText;
 		this.att.metrosxrollo = document.getElementById("t_metrosxrollo_" + row_id).innerText;
@@ -953,10 +1040,31 @@ function Pegamento() {
 		precio_venta:0,
 	};
 
-	this.getRowBuild = function(next_index) {
+	this.getRowBuild = function(next_index, listas) {
+		var provedorOptions;
+		for (var i=0; i < listas.provedor.length; i++) {
+			if (listas.provedor[i].items.includes("Pegamento")) {
+				provedorOptions += `<option value="${listas.provedor[i].nombre}">${listas.provedor[i].nombre}</option>`;
+			}
+		}
+		var marcaOptions;
+		for (var i=0; i < listas.marca.length; i++) {
+			if (listas.marca[i].pegamento) {
+				marcaOptions += `<option value="${listas.marca[i].nombre}">${listas.marca[i].nombre}</option>`;
+			}
+		}
+
 		return `<tr id='row_${next_index}'>
-					<td id='p_provedor_${next_index}' contenteditable='true'></td>
-					<td id='p_marca_${next_index}' contenteditable='true'></td>
+					<td id='p_provedor_${next_index}'>
+					    <select id="provedor_pegamento_${next_index}">
+							${provedorOptions}
+						</select>
+					</td>
+					<td id='p_marca_${next_index}'>
+					    <select id="marca_pegamento_${next_index}">
+							${marcaOptions}
+						</select>
+					</td>
 					<td id='p_precio_compra_${next_index}' contenteditable='true'></td>
 					<td id='p_precio_venta_${next_index}' contenteditable='true'></td>
 					<td><button type='button' title='Guardar' id='gp_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
@@ -966,8 +1074,8 @@ function Pegamento() {
 	}
 
 	this.assignar = function(row_id) {
-		this.att.provedor = document.getElementById("p_provedor_" + row_id).innerText;
-		this.att.marca = document.getElementById("p_marca_" + row_id).innerText;
+		this.att.provedor = getSelectedOption("provedor_pegamento_" + row_id);
+		this.att.marca = getSelectedOption("marca_pegamento_" + row_id);
 		this.att.precio_compra = document.getElementById("p_precio_compra_" + row_id).innerText;
 		this.att.precio_venta = document.getElementById("p_precio_venta_" + row_id).innerText;
 	}
@@ -1065,15 +1173,56 @@ function Fondo() {
 		laminaxpaquete:0,
 	};
 
-	this.getRowBuild = function(next_index) {
+	this.getRowBuild = function(next_index, listas) {
+		var colorOptions;
+		for (var i=0; i < listas.color.length; i++) {
+			if (listas.color[i].fondo) {
+				colorOptions += `<option value="${listas.color[i].nombre}">${listas.color[i].nombre}</option>`;
+			}
+		}
+		var medidasOptions;
+		for (var i=0; i < listas.medidas.length; i++) {
+			if (listas.medidas[i].fondo) {
+				medidasOptions += `<option value="${listas.medidas[i].nombre}">${listas.medidas[i].nombre}</option>`;
+			}
+		}
+		var provedorOptions;
+		for (var i=0; i < listas.provedor.length; i++) {
+			if (listas.provedor[i].items.includes("Fondo")) {
+				provedorOptions += `<option value="${listas.provedor[i].nombre}">${listas.provedor[i].nombre}</option>`;
+			}
+		}
+		var marcaOptions;
+		for (var i=0; i < listas.marca.length; i++) {
+			if (listas.marca[i].fondo) {
+				marcaOptions += `<option value="${listas.marca[i].nombre}">${listas.marca[i].nombre}</option>`;
+			}
+		}
+
 		return `<tr id='row_${next_index}'>
-					<td id='f_color_${next_index}' contenteditable='true'></td>
-					<td id='f_provedor_${next_index}' contenteditable='true'></td>
-					<td id='f_medidas_${next_index}' contenteditable='true'></td>
-					<td id='f_marca_${next_index}' contenteditable='true'></td>
-					<td id='f_precio_compra_${next_index}' contenteditable='true'></td>
-					<td id='f_precio_venta_${next_index}' contenteditable='true'></td>
-					<td id='f_laminaxpaquete_${next_index}' contenteditable='true'></td>
+					<td class='item_td' id='f_color_${next_index}'>
+						<select id="color_fondo_${next_index}">
+							${colorOptions}
+						</select>
+					</td>
+					<td class='item_td' id='f_provedor_${next_index}'>
+					    <select id="provedor_fondo_${next_index}">
+							${provedorOptions}
+						</select>
+					</td>
+					<td class='item_td' id='f_medidas_${next_index}'>
+					    <select id="medidas_fondo_${next_index}">
+							${medidasOptions}
+						</select>
+					</td>
+					<td class='item_td' id='f_marca_${next_index}'>
+					    <select id="marca_fondo_${next_index}">
+							${marcaOptions}
+						</select>
+					</td>
+					<td class='item_td' id='f_precio_compra_${next_index}' contenteditable='true'></td>
+					<td class='item_td' id='f_precio_venta_${next_index}' contenteditable='true'></td>
+					<td class='item_td' id='f_laminaxpaquete_${next_index}' contenteditable='true'></td>
 					<td><button type='button' title='Guardar' id='gf_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='bf_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -1081,10 +1230,10 @@ function Fondo() {
 	}
 
 	this.assignar = function(row_id) {
-		this.att.color = document.getElementById("f_color_" + row_id).innerText;
-		this.att.provedor = document.getElementById("f_provedor_" + row_id).innerText;
-		this.att.medidas = document.getElementById("f_medidas_" + row_id).innerText;
-		this.att.marca = document.getElementById("f_marca_" + row_id).innerText;
+		this.att.color = getSelectedOption("color_fondo_" + row_id);
+		this.att.provedor = getSelectedOption("provedor_fondo_" + row_id);
+		this.att.medidas = getSelectedOption("medidas_fondo_" + row_id);
+		this.att.marca = getSelectedOption("marca_fondo_" + row_id);
 		this.att.precio_compra = document.getElementById("f_precio_compra_" + row_id).innerText;
 		this.att.precio_venta = document.getElementById("f_precio_venta_" + row_id).innerText;
 		this.att.laminaxpaquete = document.getElementById("f_laminaxpaquete_" + row_id).innerText;

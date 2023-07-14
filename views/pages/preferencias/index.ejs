@@ -6,6 +6,14 @@
 	<title>Preferencias</title>
 
 	<%- include('../../partials/head-preferencias'); %>
+	<script>
+        var listas = {
+			color: <%- JSON.stringify(color) %>,
+            medidas: <%- JSON.stringify(medidas) %>,
+		    marca: <%- JSON.stringify(marcas) %>,
+		    provedor: <%- JSON.stringify(provedor) %>,
+		};
+    </script>
 	<style>
 		#preferencias_menu {
 			background-color: bisque;
@@ -35,45 +43,145 @@
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
-										<span class="form-label">Cantidad Maxima</span>
+										<span class="form-label">Min Cant. Melamina</span>
 										<select class="form-control">
-											<option>1</option>
-											<option>2</option>
-											<option>3</option>
-											<option>4</option>
-											<option selected>5</option>
-											<option>6</option>
-											<option>7</option>
-											<option>8</option>
-											<option>9</option>
-											<option>10</option>
+											<option>1 lamina</option>
+											<option>2 laminas</option>
+											<option>3 laminas</option>
+											<option>4 laminas</option>
+											<option>5 laminas</option>
+											<option>6 laminas</option>
+											<option>7 laminas</option>
+											<option>8 laminas</option>
+											<option>9 laminas</option>
+											<option>10 laminas</option>
+											<option>11 laminas</option>
+											<option>12 laminas</option>
+											<option>13 laminas</option>
+											<option>14 laminas</option>
+											<option>15 laminas</option>
+											<option>16 laminas</option>
+											<option>17 laminas</option>
+											<option>18 laminas</option>
+											<option>19 laminas</option>
+											<option selected>20 laminas</option>
+											<option>21 laminas</option>
+											<option>22 laminas</option>
+											<option>23 laminas</option>
+											<option>24 laminas</option>
+											<option>25 laminas</option>
 										</select>
 										<span class="select-arrow"></span>
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
-										<span class="form-label">Color por defecto</span>
+										<span class="form-label">Min Cant. Tapacantos</span>
 										<select class="form-control">
-						                	<option >Noguera Caiena</option>
-											<option selected>Blanco</option>
-											<option >Carvhallo Evora</option>
-											<option >WEngue Ravera B</option>
-											<option >Blanco Berneck</option>
-											<option >Nogueira</option>
-											<option >Negro</option>
+											<option>1 rollo</option>
+											<option>2 rollos</option>
+											<option>3 rollos</option>
+											<option>4 rollos</option>
+											<option>5 rollos</option>
+											<option>6 rollos</option>
+											<option>7 rollos</option>
+											<option>8 rollos</option>
+											<option>9 rollos</option>
+											<option>10 rollos</option>
+											<option>11 rollos</option>
+											<option selected>12 rollos</option>
+											<option>13 rollos</option>
+											<option>14 rollos</option>
+											<option>15 rollos</option>
+											<option>16 rollos</option>
+											<option>17 rollos</option>
+											<option>18 rollos</option>
+											<option>19 rollos</option>
+											<option>20 rollos</option>
+											<option>21 rollos</option>
+											<option>22 rollos</option>
+											<option>23 rollos</option>
+											<option>24 rollos</option>
+											<option>25 rollos</option>
+										</select>
+										<span class="select-arrow"></span>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<span class="form-label">Min Cant. Pegamento</span>
+										<select class="form-control">
+											<option>1 bolsa</option>
+											<option>2 bolsas</option>
+											<option>3 bolsas</option>
+											<option>4 bolsas</option>
+											<option>5 bolsas</option>
+											<option>6 bolsas</option>
+											<option>7 bolsas</option>
+											<option>8 bolsas</option>
+											<option>9 bolsas</option>
+											<option>10 bolsas</option>
+											<option>11 bolsas</option>
+											<option>12 bolsas</option>
+											<option>13 bolsas</option>
+											<option>14 bolsas</option>
+											<option selected>15 bolsas</option>
+											<option>16 bolsas</option>
+											<option>17 bolsas</option>
+											<option>18 bolsas</option>
+											<option>19 bolsas</option>
+											<option>20 bolsas</option>
+											<option>21 bolsas</option>
+											<option>22 bolsas</option>
+											<option>23 bolsas</option>
+											<option>24 bolsas</option>
+											<option>25 bolsas</option>
+										</select>
+										<span class="select-arrow"></span>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<span class="form-label">Min Cant. Fondo</span>
+										<select class="form-control">
+											<option>1 lamina</option>
+											<option>2 laminas</option>
+											<option>3 laminas</option>
+											<option>4 laminas</option>
+											<option>5 laminas</option>
+											<option>6 laminas</option>
+											<option>7 laminas</option>
+											<option>8 laminas</option>
+											<option>9 laminas</option>
+											<option>10 laminas</option>
+											<option>11 laminas</option>
+											<option>12 laminas</option>
+											<option>13 laminas</option>
+											<option>14 laminas</option>
+											<option selected>15 laminas</option>
+											<option>16 laminas</option>
+											<option>17 laminas</option>
+											<option>18 laminas</option>
+											<option>19 laminas</option>
+											<option>20 laminas</option>
+											<option>21 laminas</option>
+											<option>22 laminas</option>
+											<option>23 laminas</option>
+											<option>24 laminas</option>
+											<option>25 laminas</option>
 										</select>
 										<span class="select-arrow"></span>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
+								<span class="form-label">Listas & Catalogos</span>
 								<select id="catalogos" class="form-control" required onchange="selectEditableTable(this)" >
-									<option selected value="color">Colores existentes</option>
-									<option value="marca">Marcas existentes</option>
-									<option value="medidas">Medidas Existentes</option>
-									<option value="provedor">Provedor Existentes</option>
-									<option value="item">Productos Existentes</option>
+									<option selected value="color">Colores</option>
+									<option value="marca">Marcas</option>
+									<option value="medidas">Medidas</option>
+									<option value="provedor">Provedor</option>
+									<option value="item">Productos</option>
 									<option value="cliente">Clientes</option>
 									<option value="melamina">Catalogo Melaminas</option>
 									<option value="tapacantos">Catalogo Tapacantos</option>
@@ -379,18 +487,46 @@
 			  <th> Provedor </th>  
 			  <th> Medidas </th>
 			  <th> Marca </th>
-			  <th> Precio Compra </th>
-			  <th> Precio Venta </th>
+			  <th> Precio Compra (lamina) </th>
+			  <th> Precio Venta (lamina) </th>
 			  <th> Lamina x Paquete </th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < melamina.length; index++) {
 					 var ID = melamina[index]._id.toString() %>
 			  <tr id="row_<%= ID %>">
-				  <td class="item_td" contenteditable="true" id="a_color_<%= ID %>"><%= melamina[index].color %></td>
-				  <td class="item_td" contenteditable="true" id="a_provedor_<%= ID %>"><%= melamina[index].provedor %></td>
-				  <td class="item_td" contenteditable="true" id="a_medidas_<%= ID %>"><%= melamina[index].medidas %></td>
-				  <td class="item_td" contenteditable="true" id="a_marca_<%= ID %>"><%= melamina[index].marca %></td>
+				  <td class="item_td" id="a_color_<%= ID %>">
+					<select id="color_melamina_<%= ID %>">
+						<% for (var i=0; i < color.length; i++) {
+							if (color[i].melamina)  { %>
+							<option value="<%= color[i].nombre %>" <%=(color[i].nombre==melamina[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td" id="a_provedor_<%= ID %>">
+					<select id="provedor_melamina_<%= ID %>">
+						<% for (var i=0; i < provedor.length; i++) {
+							if (provedor[i].items.includes("Melamina"))  { %>
+							<option value="<%= provedor[i].nombre %>" <%=(provedor[i].nombre==melamina[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td" id="a_medidas_<%= ID %>">
+					<select id="medidas_melamina_<%= ID %>">
+						<% for (var i=0; i < medidas.length; i++) {
+							if (medidas[i].melamina)  { %>
+							<option value="<%= medidas[i].nombre %>" <%=(medidas[i].nombre==melamina[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td" id="a_marca_<%= ID %>">
+					<select id="marca_melamina_<%= ID %>">
+						<% for (var i=0; i < marcas.length; i++) {
+							if (marcas[i].melamina)  { %>
+							<option value="<%= marcas[i].nombre %>" <%=(marcas[i].nombre==melamina[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
 				  <td class="item_td" contenteditable="true" id="a_precio_compra_<%= ID %>"><%= melamina[index].precio_compra %></td>
 				  <td class="item_td" contenteditable="true" id="a_precio_venta_<%= ID %>"><%= melamina[index].precio_venta %></td>
 				  <td class="item_td" contenteditable="true" id="a_laminaxpaquete_<%= ID %>"><%= melamina[index].laminaxpaquete %></td>
@@ -405,15 +541,15 @@
 	  </div>
 	  <div id="tapacantos" class="container_table">
 		<span class="form-label"><h5>Tapacantos   <button type="button" onclick="add_row()">+</button></h5></span>
-		<div class="table-editable">
+		<div class="table-editable" style="width: 1000px!important;">
 		  <table class="table" id="tapacantos_data_table">
 			<tr>
 			  <th> Color </th>  
 			  <th> Provedor </th>  
 			  <th> Medidas </th>
 			  <th> Marca </th>
-			  <th> Precio Compra </th>
-			  <th> Precio Venta </th>
+			  <th> Precio Compra (rollos)</th>
+			  <th> Precio Venta (rollos)</th>
 			  <th> Metros x Rollo </th>
 			  <th> Rollos x Caja </th>
 			  <th> Precio Venta (metros) </th>
@@ -423,10 +559,38 @@
 			 <% for (let index = 0; index < tapacantos.length; index++) {
 					 var ID = tapacantos[index]._id.toString() %>
 			  <tr id="row_<%= ID %>">
-				  <td class="item_td" contenteditable="true" id="t_color_<%= ID %>"><%= tapacantos[index].color %></td>
-				  <td class="item_td" contenteditable="true" id="t_provedor_<%= ID %>"><%= tapacantos[index].provedor %></td>
-				  <td class="item_td" contenteditable="true" id="t_medidas_<%= ID %>"><%= tapacantos[index].medidas %></td>
-				  <td class="item_td" contenteditable="true" id="t_marca_<%= ID %>"><%= tapacantos[index].marca %></td>
+				  <td class="item_td" id="t_color_<%= ID %>">
+					<select id="color_tapacantos_<%= ID %>">
+						<% for (var i=0; i < color.length; i++) {
+							if (color[i].tapacantos)  { %>
+							<option value="<%= color[i].nombre %>" <%=(color[i].nombre==tapacantos[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td" id="t_provedor_<%= ID %>">
+					<select id="provedor_tapacantos_<%= ID %>">
+						<% for (var i=0; i < provedor.length; i++) {
+							if (provedor[i].items.includes("Tapacantos"))  { %>
+							<option value="<%= provedor[i].nombre %>" <%=(provedor[i].nombre==tapacantos[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td" id="t_medidas_<%= ID %>">
+					<select id="medidas_tapacantos_<%= ID %>">
+						<% for (var i=0; i < medidas.length; i++) {
+							if (medidas[i].tapacantos)  { %>
+							<option value="<%= medidas[i].nombre %>" <%=(medidas[i].nombre==tapacantos[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td" id="t_marca_<%= ID %>">
+					<select id="marca_tapacantos_<%= ID %>">
+						<% for (var i=0; i < marcas.length; i++) {
+							if (marcas[i].tapacantos)  { %>
+							<option value="<%= marcas[i].nombre %>" <%=(marcas[i].nombre==tapacantos[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
 				  <td class="item_td" contenteditable="true" id="t_precio_compra_<%= ID %>"><%= tapacantos[index].precio_compra %></td>
 				  <td class="item_td" contenteditable="true" id="t_precio_venta_<%= ID %>"><%= tapacantos[index].precio_venta %></td>
 				  <td class="item_td" contenteditable="true" id="t_metrosxrollo_<%= ID %>"><%= tapacantos[index].metrosxrollo %></td>
@@ -449,15 +613,29 @@
 			<tr>
 			  <th> Provedor </th>  
 			  <th> Marca </th>
-			  <th> Precio Compra </th>
-			  <th> Precio Venta </th>
+			  <th> Precio Compra (bolsa)</th>
+			  <th> Precio Venta (bolsa)</th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < pegamento.length; index++) {
 					 var ID = pegamento[index]._id.toString() %>
 			  <tr id="row_<%= ID %>">
-				  <td contenteditable="true" id="p_provedor_<%= ID %>"><%= pegamento[index].provedor %></td>
-				  <td contenteditable="true" id="p_marca_<%= ID %>"><%= pegamento[index].marca %></td>
+				  <td id="p_provedor_<%= ID %>">
+					<select id="provedor_pegamento_<%= ID %>">
+						<% for (var i=0; i < provedor.length; i++) {
+							if (provedor[i].items.includes("Pegamento"))  { %>
+							<option value="<%= provedor[i].nombre %>" <%=(provedor[i].nombre==pegamento[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td id="p_marca_<%= ID %>">
+					<select id="marca_pegamento_<%= ID %>">
+						<% for (var i=0; i < marcas.length; i++) {
+							if (marcas[i].pegamento)  { %>
+							<option value="<%= marcas[i].nombre %>" <%=(marcas[i].nombre==pegamento[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
 				  <td contenteditable="true" id="p_precio_compra_<%= ID %>"><%= pegamento[index].precio_compra %></td>
 				  <td contenteditable="true" id="p_precio_venta_<%= ID %>"><%= pegamento[index].precio_venta %></td>
 				  <td>
@@ -478,18 +656,46 @@
 			  <th> Provedor </th>  
 			  <th> Medidas </th>
 			  <th> Marca </th>
-			  <th> Precio Compra </th>
-			  <th> Precio Venta </th>
+			  <th> Precio Compra (laminas)</th>
+			  <th> Precio Venta (laminas)</th>
 			  <th> Lamina x Paquete </th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < fondo.length; index++) {
 					 var ID = fondo[index]._id.toString() %>
 			  <tr id="row_<%= ID %>">
-				  <td class="item_td" contenteditable="true" id="f_color_<%= ID %>"><%= fondo[index].color %></td>
-				  <td class="item_td" contenteditable="true" id="f_provedor_<%= ID %>"><%= fondo[index].provedor %></td>
-				  <td class="item_td" contenteditable="true" id="f_medidas_<%= ID %>"><%= fondo[index].medidas %></td>
-				  <td class="item_td" contenteditable="true" id="f_marca_<%= ID %>"><%= fondo[index].marca %></td>
+				  <td class="item_td" id="f_color_<%= ID %>">
+					<select id="color_fondo_<%= ID %>">
+						<% for (var i=0; i < color.length; i++) {
+							if (color[i].fondo)  { %>
+							<option value="<%= color[i].nombre %>" <%=(color[i].nombre==fondo[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td" id="f_provedor_<%= ID %>">
+					<select id="provedor_fondo_<%= ID %>">
+						<% for (var i=0; i < provedor.length; i++) {
+							if (provedor[i].items.includes("Fondo"))  { %>
+							<option value="<%= provedor[i].nombre %>" <%=(provedor[i].nombre==fondo[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td" id="f_medidas_<%= ID %>">
+					<select id="medidas_fondo_<%= ID %>">
+						<% for (var i=0; i < medidas.length; i++) {
+							if (medidas[i].fondo)  { %>
+							<option value="<%= medidas[i].nombre %>" <%=(medidas[i].nombre==fondo[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td" id="f_marca_<%= ID %>">
+					<select id="marca_fondo_<%= ID %>">
+						<% for (var i=0; i < marcas.length; i++) {
+							if (marcas[i].fondo)  { %>
+							<option value="<%= marcas[i].nombre %>" <%=(marcas[i].nombre==fondo[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
 				  <td class="item_td" contenteditable="true" id="f_precio_compra_<%= ID %>"><%= fondo[index].precio_compra %></td>
 				  <td class="item_td" contenteditable="true" id="f_precio_venta_<%= ID %>"><%= fondo[index].precio_venta %></td>
 				  <td class="item_td" contenteditable="true" id="f_laminaxpaquete_<%= ID %>"><%= fondo[index].laminaxpaquete %></td>
@@ -532,7 +738,7 @@
         function add_row() {
 		    var table = document.getElementById(SELECTED_CATALOGO + "_data_table");
 		    var table_len = table.rows.length;
-		    var row = table.insertRow(table_len).outerHTML = objCatalog.getRowBuild(table_len - 1);
+		    var row = table.insertRow(table_len).outerHTML = objCatalog.getRowBuild(table_len - 1, listas);
 		}
 
         function guardarNuevo(row_id) {
