@@ -220,8 +220,8 @@
            <% for (let index = 0; index < color.length; index++) { 
            		var ID = color[index]._id.toString() %>
 			<tr id="row_<%= ID %>">  
-            	<td contenteditable="true" id="c_nombre_<%= ID %>"><%= color[index].nombre %></td>  
-            	<td contenteditable="true" id="c_codigo_<%= ID %>"><%= color[index].codigo %></td>  
+                <td contenteditable="true" class="stopSpaces" id="c_nombre_<%= ID %>"><%= color[index].nombre %></td>
+                <td contenteditable="true" class="stopSpaces" id="c_codigo_<%= ID %>"><%= color[index].codigo %></td>
                 <td><input type="checkbox" id="c_melamina_<%= ID %>" <%=(color[index].melamina == true)?'checked':'' %> /></td>
                 <td><input type="checkbox" id="c_tapacantos_<%= ID %>" <%=(color[index].tapacantos == true)?'checked':'' %> /></td>
                 <td><input type="checkbox" id="c_fondo_<%= ID %>" <%=(color[index].fondo == true)?'checked':'' %> /></td>
@@ -249,7 +249,7 @@
 			 <% for (let index = 0; index < marcas.length; index++) {
 					 var ID = marcas[index]._id.toString() %>
 			  <tr id="row_<%= ID %>">
-				  <td contenteditable="true" id="m_nombre_<%= ID %>"><%= marcas[index].nombre %></td>  
+				  <td contenteditable="true" class="stopSpaces" id="m_nombre_<%= ID %>"><%= marcas[index].nombre %></td>
 				  <td><input type="checkbox" id="m_melamina_<%= ID %>" <%=(marcas[index].melamina == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="m_tapacantos_<%= ID %>" <%=(marcas[index].tapacantos == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="m_pegamento_<%= ID %>" <%=(marcas[index].pegamento == true)?'checked':'' %> /></td>
@@ -277,7 +277,7 @@
 			 <% for (let index = 0; index < medidas.length; index++) {
 					 var ID = medidas[index]._id.toString() %>
 			  <tr id="row_<%= ID %>">
-				  <td contenteditable="true" id="e_nombre_<%= ID %>"><%= medidas[index].nombre %></td>  
+				  <td contenteditable="true"  class="stopSpaces" id="e_nombre_<%= ID %>"><%= medidas[index].nombre %></td>
 				  <td><input type="checkbox" id="e_melamina_<%= ID %>" <%=(medidas[index].melamina == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="e_tapacantos_<%= ID %>" <%=(medidas[index].tapacantos == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="e_fondo_<%= ID %>" <%=(medidas[index].fondo == true)?'checked':'' %> /></td>
@@ -353,9 +353,9 @@
 			 <% for (let index = 0; index < item.length; index++) {
 					 var ID = item[index]._id.toString() %>
 			  <tr id="row_<%= ID %>">
-				  <td contenteditable="true" id="i_nombre_<%= ID %>"><%= item[index].nombre %></td>
-				  <td contenteditable="true" id="i_unidad_<%= ID %>"><%= item[index].unidad %></td>
-				  <td contenteditable="true" id="i_embalaje_<%= ID %>"><%= item[index].embalaje %></td>
+				  <td contenteditable="true" class="stopSpaces" id="i_nombre_<%= ID %>"><%= item[index].nombre %></td>
+				  <td contenteditable="true" class="stopSpaces" id="i_unidad_<%= ID %>"><%= item[index].unidad %></td>
+				  <td contenteditable="true" class="stopSpaces" id="i_embalaje_<%= ID %>"><%= item[index].embalaje %></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gi_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="bi_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -390,7 +390,7 @@
 				  <td class="item_td" contenteditable="true" id="l_celular_<%= ID %>"><%= cliente[index].celular %></td>
 				  <td class="item_td" contenteditable="true" id="l_email_<%= ID %>"><%= cliente[index].email %></td>
 				  <td class="item_td" contenteditable="true" id="l_empresa_<%= ID %>"><%= cliente[index].empresa %></td>
-				  <td class="item_td" contenteditable="true" id="l_tipo_<%= ID %>"><%= cliente[index].tipo %></td>
+				  <td class="item_td" class="stopSpaces" contenteditable="true" id="l_tipo_<%= ID %>"><%= cliente[index].tipo %></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gl_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="bl_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -696,6 +696,14 @@
 			if (isNaN(String.fromCharCode(event.which)) && key!=46 
 				|| key===32 || key===13 
 				|| (key===46 && event.currentTarget.innerText.includes('.'))) 
+					event.preventDefault();
+		});
+
+		$(".stopSpaces").keypress(function(event) {
+			var key = event.charCode || event.keyCode;
+			console.log("'"+event.currentTarget.innerText+"'");
+			console.log(/\s/.test(event.currentTarget.innerText));
+			if (key === 13 || (key===32 && /\s/.test(event.currentTarget.innerText)))
 					event.preventDefault();
 		});
     </script>
