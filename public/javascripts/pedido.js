@@ -317,6 +317,8 @@ function PrePrintCarrito() {
 
         var newCell = newRow.insertCell();
         newCell.style.width = "30px";
+        newCell.style.borderLeft ="1px solid";
+        newCell.style.borderRight ="1px solid";
         newCell.appendChild(document.createTextNode(pedidoNum++));
         newCell = newRow.insertCell();
         newCell.style.width = "100px";
@@ -332,46 +334,60 @@ function PrePrintCarrito() {
         newCell.appendChild(document.createTextNode(carrito.marca));
         newCell = newRow.insertCell();
         newCell.style.width = "70px";
+        newCell.style.borderLeft ="1px solid";
         newCell.appendChild(document.createTextNode(carrito.nombreDeUnidad));
         newCell = newRow.insertCell();
         newCell.style.width = "70px";
         newCell.className = "num";
+        newCell.style.borderLeft ="1px solid";
         newCell.appendChild(document.createTextNode(carrito.cantidad));
         newCell = newRow.insertCell();
         newCell.style.width = "70px";
         newCell.className = "num";
+        newCell.style.borderLeft ="1px solid";
         newCell.appendChild(document.createTextNode(carrito.pu));
         newCell = newRow.insertCell();
         newCell.style.width = "100px";
         newCell.className = "num";
-        newCell.appendChild(document.createTextNode(carrito.precioVenta + " Bs"));
+        newCell.style.borderLeft ="1px solid";
+        newCell.style.borderRight ="1px solid";
+        newCell.appendChild(document.createTextNode(carrito.precioVenta));
         TotalPrecio = TotalPrecio + Number(carrito.precioVenta);
     }
     var newRow = pedido_nota.insertRow();
     var newCell = newRow.insertCell();
     newCell.style.width = "30px";
+    newCell.style.borderTop ="1px solid";
     newCell = newRow.insertCell();
     newCell.style.width = "100px";
+    newCell.style.borderTop ="1px solid";
     newCell = newRow.insertCell();
     newCell.style.width = "100px";
+    newCell.style.borderTop ="1px solid";
     newCell = newRow.insertCell();
     newCell.style.width = "100px";
+    newCell.style.borderTop ="1px solid";
     newCell = newRow.insertCell();
     newCell.style.width = "100px";
+    newCell.style.borderTop ="1px solid";
     newCell = newRow.insertCell();
     newCell.style.width = "70px";
+    newCell.style.borderTop ="1px solid";
     newCell = newRow.insertCell();
     newCell.style.width = "70px";
+    newCell.style.borderTop ="1px solid";
     newCell = newRow.insertCell();
     newCell.style.width = "70px";
+    newCell.style.borderTop ="1px solid";
     newCell.style.fontWeight = "Bold";
     newCell.className = "num";
-    newCell.appendChild(document.createTextNode("TOTAL: "));
+    newCell.appendChild(document.createTextNode("TOTAL Bs: "));
     newCell = newRow.insertCell();
     newCell.style.width = "100px";
     newCell.style.fontWeight = "Bold";
     newCell.className = "num";
-    newCell.appendChild(document.createTextNode(TotalPrecio + " Bs"));
+    newCell.style.border ="1px solid";
+    newCell.appendChild(document.createTextNode(TotalPrecio));
 }
 
 function cleanNotaTable() {

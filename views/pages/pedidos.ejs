@@ -66,10 +66,10 @@
 				border-spacing: 0px;
 			}
 			#pedido-body tr td {
-				border-top: 1px solid #262626c7;
+				/*border-top: 1px solid #262626c7;*/
 			}
 			#pedido-body tr th {
-				border-top: 1px solid #262626c7;
+				/*border-top: 1px solid #262626c7;*/
 				background-color: rgb(139, 173, 234);
 				text-align: left;
 				-webkit-print-color-adjust: exact;
@@ -146,15 +146,15 @@
 			<table id="pedido-body">
 				<thead style="font-size: 13px">
 					<tr>
-						<th style="width: 30px;">Nro</th>
+						<th style="width: 30px;border-right: 1px solid;">Nro</th>
 						<th style="width: 100px;">Item</th>
 						<th style="width: 100px;">Medida</th>
 						<th style="width: 100px;">Color</th>
 						<th style="width: 100px;">Marca</th>
-						<th style="width: 70px;">Unidad</th>
-						<th class="num" style="width: 70px;">Cantidad</th>
-						<th class="num" style="width: 70px;">P.U.</th>
-						<th class="num" style="width: 100px;">Precio</th>
+						<th style="width: 70px;border-left: 1px solid;">Unidad</th>
+						<th class="num" style="width: 70px;border-left: 1px solid;">Cantidad</th>
+						<th class="num" style="width: 70px;border-left: 1px solid;">P.U.</th>
+						<th class="num" style="width: 100px;border-left: 1px solid;">Total</th>
 					</tr>
 				</thead>
 				<tbody style="font-size: 12px">
@@ -171,6 +171,22 @@
 					<td style="width: 100px;"></td>
 					<td style="width: 100px;"></td>
 					<td style="border-top: 1px solid;">Recibi conforme</td>
+					<td style="width: 100px;"></td>
+				</td>
+				<tr>
+					<td style="width: 100px;"></td>
+					<td style="font-size: 12px; width: 100px;">Daniela Jurado</td>
+					<td style="width: 100px;"></td>
+					<td style="width: 100px;"></td>
+					<td style="font-size: 10px; width: 100px;">Nombre:______________</td>
+					<td style="width: 100px;"></td>
+				</td>
+				<tr>
+					<td style="width: 100px;"></td>
+					<td style="width: 100px;"></td>
+					<td style="width: 100px;"></td>
+					<td style="width: 100px;"></td>
+					<td style="font-size: 10px; width: 100px;">CI:__________________</td>
 					<td style="width: 100px;"></td>
 				</td>
 			</table>
