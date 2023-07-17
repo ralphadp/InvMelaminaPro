@@ -1497,10 +1497,16 @@ app.post('/reporte_venta_producto_dia', function(req, res) {
     var DB = client.db();
     console.log("Getting from "+req.body.day);
     DB.collection("item").find().toArray().then(resultItem => {
-        var productos = [];
-        resultItem.forEach((item, index)=> {
-            productos[index] = item.nombre;
-        });
+        var productos = [
+            "Melamina_laminas",
+            "Melamina_paquetes",
+            "Tapacantos_rollos",
+            "Tapacantos_cajas",
+            "Tapacantos_metros",
+            "Pegamento_bolsas",
+            "Fondo_laminas",
+            "Fondo_paquetes",
+        ];
 
         DB.collection("historial").find({
             "fecha": {$regex : req.body.day},
@@ -1512,7 +1518,10 @@ app.post('/reporte_venta_producto_dia', function(req, res) {
                 let DATA = {cliente:"", Volume:0};
                 DATA.cliente = producto;
                 resultHistorial.forEach((historia) => {
-                    if (historia.item == producto) {
+                    let [ITEM, UNIDAD] = producto.split("_");
+                    console.log(ITEM, UNIDAD);
+                    console.log(historia.item,historia.nombreDeUnidad, historia.cantidad);
+                    if (historia.item == ITEM && historia.nombreDeUnidad == UNIDAD) {
                         DATA.Volume = DATA.Volume + Number(historia.cantidad);
                     }
                 });
@@ -1527,6 +1536,117 @@ app.post('/reporte_venta_producto_dia', function(req, res) {
     })
     .catch(error => console.error(error))
 });
+
+app.post('/reporte_venta_compra_dia', function(req, res) {
+    const client = new MongoClient(uri);
+    client.connect();
+    var DB = client.db();
+    console.log("Getting from "+req.body.day);
+    DB.collection("item").find().toArray().then(resultItem => {
+        var productos = [];
+        resultItem.forEach((item, index)=> {
+            productos[index] = item.nombre;
+        });
+
+        DB.collection("historial").find({
+            "fecha": {$regex : req.body.day}
+        }).toArray().then(resultHistorial => {
+            let reporte = [];
+
+            productos.forEach((producto, index) => {
+                let DATA = {item:"", venta:0, compra:0};
+                DATA.item = producto;
+                resultHistorial.forEach((historia) => {
+                    if (historia.item == producto) {
+                        if (historia.tipo_entrada == "pedido") {
+                            DATA.venta = DATA.venta + Number(historia.precioVenta);
+                        } else if (historia.tipo_entrada == "ingreso") {
+                            DATA.compra = DATA.compra + Number(historia.precioCompra);
+                        } else {
+                            console.log("Tipo de entrada desconocida: '" + historia.tipo_entrada +"'");
+                        }
+                    }
+                });
+                reporte[index] = DATA;
+            });
+            console.log(reporte);
+            res.status(200).json({ok: true, message: "Encontrados", chartData: reporte, action: "none"});
+            res.end();
+        })
+        .catch(error => console.error(error))
+        .finally(data => client.close())
+    })
+    .catch(error => console.error(error))
+});
+
+app.post('/reporte_compra_venta_colores_mes', function(req, res) {
+    const client = new MongoClient(uri);
+    client.connect();
+    var DB = client.db();
+    var SelectedMonth = '/' + req.body.mes + '/2023';
+    console.log("selected mes: ", SelectedMonth);
+
+    let productos = {
+        "Melamina":["laminas","paquete"],
+        "Tapacanto":["rollos","cajas","metros"],
+        "Fondo":["laminas","paquete"],
+        "Pegamento":["bolsas"],
+        "Tapatornillo":["laminas"]
+    };
+
+    DB.collection("historial").find({
+        "fecha": { $regex: SelectedMonth }
+    }).toArray().then(resultHistorial => {
+        let reporte = [];
+        let index = 0;
+        
+        Object.keys(productos).forEach(product => {
+
+            productos[product].forEach((tipoProducto) => {
+                let DATA = {producto:"",blanco:{tipo:"",cantidad:0, venta:0, compra:0}, colores:{tipo:"",cantidad:0, venta:0, compra:0}};
+                DATA.producto = product;
+                resultHistorial.forEach((historia) => {
+                    
+                    if (historia.item == product && historia.nombreDeUnidad == tipoProducto) {
+                        console.log(historia.item, historia.nombreDeUnidad,historia.color);
+                        if (historia.color == "Blanco") {
+                            console.log(historia.tipo_entrada, historia.cantidad);
+                            DATA.blanco.tipo = historia.nombreDeUnidad;
+                            DATA.blanco.cantidad += Number(historia.cantidad);
+                            if (historia.tipo_entrada == "pedido") {
+                                DATA.blanco.venta += Number(historia.precioVenta);
+                            } else if (historia.tipo_entrada == "ingreso") {
+                                DATA.blanco.compra += Number(historia.precioCompra);
+                            } else {
+                                console.log("Tipo de entrada desconocida: '" + historia.tipo_entrada +"'");
+                            }
+                        } else {
+                            console.log(historia.tipo_entrada, historia.cantidad);
+                            DATA.colores.tipo = historia.nombreDeUnidad;
+                            DATA.colores.cantidad += Number(historia.cantidad);
+                            if (historia.tipo_entrada == "pedido") {
+                                DATA.colores.venta += Number(historia.precioVenta);
+                            } else if (historia.tipo_entrada == "ingreso") {
+                                DATA.colores.compra += Number(historia.precioCompra);
+                            } else {
+                                console.log("Tipo de entrada desconocida: '" + historia.tipo_entrada +"'");
+                            }
+                        }
+                    }
+                });
+                console.log(index, reporte[index]);
+                reporte[index++] = DATA;
+            });
+        });
+        console.log(reporte);
+        res.status(200).json({ok: true, message: "Encontrados", chartData: reporte, action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+                   
+});
+
 
 // index page
 app.get('/inventario', function(req, res) {

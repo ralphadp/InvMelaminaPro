@@ -118,6 +118,52 @@ function getProductoXDia(dia) {
     });
 }
 
+function getVentaCompraHoy(dia) {
+    let data = {
+        day: dia
+    };
+    fetch('/reporte_venta_compra_dia/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            console.log(response.message);
+            BuildTableDia(response.chartData);
+        } else {
+            console.log(response.status, response.statusText);
+        }
+    })
+    .catch(error => {
+        console.log(error.message);
+    });
+}
+
+function getVentaCompraColoresMes(mesElegido) {
+    let data = {
+        mes: mesElegido
+    };
+    fetch('/reporte_compra_venta_colores_mes/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            console.log(response.message);
+            BuildTableMes(response.chartData);
+        } else {
+            console.log(response.status, response.statusText);
+        }
+    })
+    .catch(error => {
+        console.log(error.message);
+    });
+}
+
 function lightSelectedMenu(index, mes) {
     //clean
     nombreMes.forEach((mesName)=> {
@@ -129,8 +175,17 @@ function lightSelectedMenu(index, mes) {
     document.getElementById("p"+index+"_click" + nombreMes[mes]).style.background = "bisque";
 }
 
+function lightSelectedMenuTable(index, mes) {
+    //clean
+    nombreMes.forEach((mesName)=> {
+        document.getElementById("c"+index+"_click" + mesName).style.background = "white";
+    });
+    //set the right
+    document.getElementById("c"+index+"_click" + nombreMes[mes]).style.background = "bisque";
+}
+
 function lightLeftMenu(index, title) {
-    var frameNames = ["frame-pedidos-cliente","frame-pedidos","frame-precios-cliente","frame-provedor","frame-cantidad-venta-dia"];
+    var frameNames = ["frame-pedidos-cliente","frame-pedidos","frame-precios-cliente","frame-provedor","frame-cantidad-venta-dia","frame-venta-compra-dia","frame-venta-compra-mes"];
     document.getElementById("frame-title").innerHTML = title;
     frameNames.forEach((nameID)=> {
         document.getElementById(nameID).style.display = "none";
@@ -167,6 +222,18 @@ function getProvedorProducto() {
 
 function getProductoDia(dia) {
     getProductoXDia(dia);
+}
+
+function getVentaCompraDia(dia) {
+    getVentaCompraHoy(dia);
+}
+
+function getVentaCompraMes(mes) {
+    lightSelectedMenuTable(2, mes);
+    mes++;
+    mes = (mes < 10) ? ('0' + mes) : mes;
+
+    getVentaCompraColoresMes(mes);
 }
 
 /////////////////// D3  functions ///////////////////
@@ -454,6 +521,161 @@ function PieLegend(chartData, canvas_id) {
             .text(function (d, i) { return ((d.Volume / sum) * 100).toFixed(0) + "%"; });
     });
 }
+
+function BuildTableDia(chartData) {
+    var TotalVenta = 0;
+    var TotalCompra = 0;
+
+    document.getElementById("table-dia-body").innerHTML = "";;
+    var table = document.getElementById('table-dia').getElementsByTagName('tbody')[0];
+
+    chartData.forEach((row) => {
+
+        var newRow = table.insertRow();
+
+        var newCell = newRow.insertCell();
+        newCell.outerHTML = "<th scope='row'>"+row.item+"</th>";
+
+        newCell = newRow.insertCell();
+        newCell.setAttribute("data-title", "Worldwide Gross");
+        newCell.setAttribute("data-type", "currency");
+        newCell.appendChild(document.createTextNode(row.venta));
+
+        newCell = newRow.insertCell();
+        newCell.setAttribute("data-title", "Domestic Gross");
+        newCell.setAttribute("data-type", "currency");
+        newCell.appendChild(document.createTextNode(row.compra));
+
+        TotalVenta = TotalVenta + Number(row.venta);
+        TotalCompra = TotalCompra + Number(row.compra);
+    });
+    var newRow = table.insertRow();
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode("Totales: "));
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(TotalVenta));
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(TotalCompra));
+}
+
+function BuildTableMes(chartData) {
+    var TotalVenta1 = 0;
+    var TotalCompra1 = 0;
+    var TotalVenta2 = 0;
+    var TotalCompra2 = 0;
+
+    document.getElementById("table-mes-body").innerHTML = "";
+    var table = document.getElementById('table-mes').getElementsByTagName('tbody')[0];
+
+    chartData.forEach((row) => {
+
+        var newRow = table.insertRow();
+
+        var newCell = newRow.insertCell();
+        newCell.outerHTML = "<th scope='row'>"+row.producto+"</th>";
+
+        newCell = newRow.insertCell();
+        newCell.setAttribute("data-title", "Worldwide Gross");
+        newCell.setAttribute("data-type", "currency");
+        newCell.appendChild(document.createTextNode("Blanco"));
+
+        newCell = newRow.insertCell();
+        newCell.setAttribute("data-title", "Domestic Gross");
+        newCell.setAttribute("data-type", "currency");
+        newCell.appendChild(document.createTextNode(row.blanco.tipo));
+
+        newCell = newRow.insertCell();
+        newCell.setAttribute("data-title", "Domestic Gross");
+        newCell.setAttribute("data-type", "currency");
+        newCell.appendChild(document.createTextNode(row.blanco.cantidad));
+
+        newCell = newRow.insertCell();
+        newCell.setAttribute("data-title", "Domestic Gross");
+        newCell.setAttribute("data-type", "currency");
+        newCell.appendChild(document.createTextNode(row.blanco.venta));
+
+        newCell = newRow.insertCell();
+        newCell.setAttribute("data-title", "Domestic Gross");
+        newCell.setAttribute("data-type", "currency");
+        newCell.appendChild(document.createTextNode(row.blanco.compra));
+
+        newCell = newRow.insertCell();
+        newCell.setAttribute("data-title", "Worldwide Gross");
+        newCell.setAttribute("data-type", "currency");
+        newCell.appendChild(document.createTextNode("Color"));
+
+        newCell = newRow.insertCell();
+        newCell.setAttribute("data-title", "Domestic Gross");
+        newCell.setAttribute("data-type", "currency");
+        newCell.appendChild(document.createTextNode(row.colores.tipo));
+
+        newCell = newRow.insertCell();
+        newCell.setAttribute("data-title", "Domestic Gross");
+        newCell.setAttribute("data-type", "currency");
+        newCell.appendChild(document.createTextNode(row.colores.cantidad));
+
+        newCell = newRow.insertCell();
+        newCell.setAttribute("data-title", "Domestic Gross");
+        newCell.setAttribute("data-type", "currency");
+        newCell.appendChild(document.createTextNode(row.colores.venta));
+
+        newCell = newRow.insertCell();
+        newCell.setAttribute("data-title", "Domestic Gross");
+        newCell.setAttribute("data-type", "currency");
+        newCell.appendChild(document.createTextNode(row.colores.compra));
+
+        TotalVenta1 = TotalVenta1 + Number(row.blanco.venta);
+        TotalCompra1 = TotalCompra1 + Number(row.blanco.compra);
+        TotalVenta2 = TotalVenta2 + Number(row.colores.venta);
+        TotalCompra2 = TotalCompra2 + Number(row.colores.compra);
+    });
+    var newRow = table.insertRow();
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode("Totales: "));
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(TotalVenta1));
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(TotalCompra1));
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(TotalVenta2));
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(TotalCompra2));
+}
 ///*************** INTERFACE BUTTONS *** */
 
 
@@ -487,6 +709,19 @@ function generarProoductoDia() {
     lightLeftMenu(4, "Reporte: Volumen de Ventas por dia");
 
     getProductoDia(getFromPicker());
+}
+
+function generarVentaCompraDia() {
+    lightLeftMenu(5, "Reporte: Volumen de Ventas y compras de hoy");
+
+    getVentaCompraDia(getFromPicker());
+}
+
+function generarVentaCompraMes() {
+    lightLeftMenu(6, "Reporte: Volumen de Ventas y compras por mes y color");
+
+    let mes = (new Date()).getMonth();
+    getVentaCompraMes(mes);
 }
 
 function getFromPicker() {

@@ -5,6 +5,7 @@
 	<title>Reportes</title>
 	<%- include('../partials/head-compras-ventas'); %>
 	<link rel="stylesheet" href="stylesheets/stylein.css">
+	<link rel="stylesheet" href="stylesheets/report_table.css">
 	
 	<script src="https://d3js.org/d3.v3.js"></script>
 	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
@@ -99,6 +100,8 @@
 			<button id="frame-precios-cliente-b" class="leftbuttons" type="button" onclick="generarPreciosCliente()">Volumen de Ventas(Bs) x Cliente</button>
 			<button id="frame-provedor-b" class="leftbuttons" type="button" onclick="generarProvedorProductos()">Volumen de Compras(Bs) x Provedor</button>
 			<button id="frame-cantidad-venta-dia-b" class="leftbuttons" type="button" onclick="generarProoductoDia()">Volumen de Ventas(Bs) x Producto x dia</button>
+			<button id="frame-venta-compra-dia-b" class="leftbuttons" type="button" onclick="generarVentaCompraDia()">Reporte de Ventas y compras del dia</button>
+			<button id="frame-venta-compra-mes-b" class="leftbuttons" type="button" onclick="generarVentaCompraMes()">Reporte ventas compras por colores del mes</button>
 		</div>
 		<div class="melaminapro-heading" id="frame-title">Reporte: Volumen de Pedidos por Cliente (mes)</div>
 		
@@ -306,6 +309,57 @@
 		        </form>
 			</div>
 		</div><!-- end frame -->
+
+		<div class="container" id="frame-venta-compra-dia">
+			<table class="responsive-table" id="table-dia">
+			  <caption >Reporte compra venta del Dia</caption>
+			  <thead>
+				<tr>
+				  <th scope="col">Producto</th>
+				  <th scope="col">Venta (Bs)</th>
+				  <th scope="col">Compra (Bs)</th>
+				</tr>
+			  </thead>
+			  <tbody id="table-dia-body">
+			  </tbody>
+			</table>
+		</div><!-- end frame -->
+
+		<div class="container" id="frame-venta-compra-mes">
+			<button type="button" id="c2_clickEnero" onclick="getVentaCompraMes(0)" class="mes-button">Enero</button>
+			<button type="button" id="c2_clickFebrero" onclick="getVentaCompraMes(1)" class="mes-button">Febrero</button>
+			<button type="button" id="c2_clickMarzo" onclick="getVentaCompraMes(2)" class="mes-button">Marzo</button>
+			<button type="button" id="c2_clickAbril" onclick="getVentaCompraMes(3)" class="mes-button">Abril</button>
+			<button type="button" id="c2_clickMayo" onclick="getVentaCompraMes(4)" class="mes-button">Mayo</button>
+			<button type="button" id="c2_clickJunio" onclick="getVentaCompraMes(5)" class="mes-button">Junio</button>
+			<button type="button" id="c2_clickJulio" onclick="getVentaCompraMes(6)" class="mes-button">Julio</button>
+			<button type="button" id="c2_clickAgosto" onclick="getVentaCompraMes(7)" class="mes-button">Agosto</button>
+			<button type="button" id="c2_clickSeptiembre" onclick="getVentaCompraMes(8)" class="mes-button">Septiembre</button>
+			<button type="button" id="c2_clickOctubre" onclick="getVentaCompraMes(9)" class="mes-button">Octubre</button>
+			<button type="button" id="c2_clickNoviembre" onclick="getVentaCompraMes(10)" class="mes-button">Noviembre</button>
+			<button type="button" id="c2_clickDiciembre" onclick="getVentaCompraMes(11)" class="mes-button">Diciembre</button>
+			<table class="responsive-table" id="table-mes">
+			  <caption>Reporte compra venta del Mes por colores</caption>
+			  <thead>
+				<tr>
+				  <th scope="col">Producto</th>
+				  <th scope="col">Color</th>
+				  <th scope="col">Tipo</th>
+				  <th scope="col">Cantidad</th>
+				  <th scope="col">Venta (Bs)</th>
+				  <th scope="col">Compra (Bs)</th>
+				  <th scope="col">Color</th>
+				  <th scope="col">Tipo</th>
+				  <th scope="col">Cantidad</th>
+				  <th scope="col">Venta (Bs)</th>
+				  <th scope="col">Compra (Bs)</th>
+				</tr>
+			  </thead>
+			  <tbody id="table-mes-body">
+			  </tbody>
+			</table>
+		</div><!-- end frame -->
+
 	</div>
 	
 	<script src="javascripts/jquery-3.3.1.min.js"></script>
