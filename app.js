@@ -46,6 +46,11 @@ app.get('/pedidos', function(req, res) {
     client.connect();
     var DB = client.db();
 
+    DB.collection("collectionmelamina").find().toArray().then(resultMelamina => {
+    DB.collection("collectiontapacantos").find().toArray().then(resultsTapacantos => {
+    DB.collection("collectionpegamento").find().toArray().then(resultsPegamento => {
+    DB.collection("collectionfondo").find().toArray().then(resultsFondo => {
+    ///use redis to speed and save internally       
     DB.collection("collectionCliente").find().toArray().then(resultsCliente => {
         DB.collection("item").find().toArray().then(resultsItem => {
             DB.collection("color").find().toArray().then(resultsColor => {
@@ -59,6 +64,10 @@ app.get('/pedidos', function(req, res) {
                                 "tipo_entrada": "pedido"
                             }).toArray().then(resultHistorial => {
                                 res.render('pages/pedidos', {
+                                    catalogoMelamina: resultMelamina,
+                                    catalogoTapacantos: resultsTapacantos,
+                                    catalogoPegamento: resultsPegamento,
+                                    catalogoFondo: resultsFondo,
                                     cliente: resultsCliente,
                                     item: resultsItem, 
                                     color: resultsColor, 
@@ -80,6 +89,14 @@ app.get('/pedidos', function(req, res) {
             .catch(error => console.error(error))
         })
         .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
 });

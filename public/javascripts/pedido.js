@@ -36,6 +36,8 @@ let MAX_REQUESTS;
 
 let DATA_INDEX_NAME = ["fecha","item","color","medida","marca","nombreDeUnidad","cantidad","precioVenta"];
 
+
+
 function addCarrito() {
     let ids = new getIDS();
     let tipo_cliente = ids.verify();
@@ -162,10 +164,12 @@ let setHistorial = function() {
     historialUnit.precioVenta    = $('#'+ids.PRECIO_ID).val();
     historialUnit.cantidad       = $('#'+ids.CANTIDAD_ID).val();
     historialUnit.marca          = $('#'+ids.MARCA_ID).find(":selected").text();
+    historialUnit.pu             = PRODUCTO.precio_venta;
 
     if (item != "Pegamento") {
         historialUnit.color    = $('#'+ids.COLOR_ID).find(":selected").val();
         historialUnit.medida   = $('#'+ids.MEDIDA_ID).find(":selected").val();
+        
         if (item == "Tapacanto") {
             historialUnit.metrosXRollo   = NONE;
             historialUnit.precioVentaMts = NONE;
@@ -201,6 +205,9 @@ let GuardarPedidos = function() {
 }
 
 let addicionarPedidoAlCarrito = function() {
+    if (PRODUCTO && PRODUCTO.existencia <= 0) {
+        return;
+    }
     setHistorial();
     addCarrito();
 }
@@ -331,6 +338,10 @@ function PrePrintCarrito() {
         newCell.className = "num";
         newCell.appendChild(document.createTextNode(carrito.cantidad));
         newCell = newRow.insertCell();
+        newCell.style.width = "70px";
+        newCell.className = "num";
+        newCell.appendChild(document.createTextNode(carrito.pu));
+        newCell = newRow.insertCell();
         newCell.style.width = "100px";
         newCell.className = "num";
         newCell.appendChild(document.createTextNode(carrito.precioVenta + " Bs"));
@@ -347,6 +358,8 @@ function PrePrintCarrito() {
     newCell.style.width = "100px";
     newCell = newRow.insertCell();
     newCell.style.width = "100px";
+    newCell = newRow.insertCell();
+    newCell.style.width = "70px";
     newCell = newRow.insertCell();
     newCell.style.width = "70px";
     newCell = newRow.insertCell();
@@ -553,6 +566,7 @@ let selectItem = function() {
     let ids = new getIDS();
     ids.verify();
 
+    cleanVerifyItem();
     let selectedItem = document.getElementById(ids.ITEM_ID).value.toLowerCase();
 
     if (selectedItem == "pegamento") {
@@ -603,6 +617,43 @@ function go2() {
 document.getElementById("form-total-t-0").addEventListener("click", go0);
 document.getElementById("form-total-t-1").addEventListener("click", go1);
 document.getElementById("form-total-t-2").addEventListener("click", go2);
+
+var _KEY = {
+    item:"",
+    color:"",
+    medida:"",
+    marca:""
+};
+var PRODUCTO;
+
+function cleanVerifyItem() {
+    _KEY.item="";
+    _KEY.color="";
+    _KEY.medida=""
+    _KEY.marca="";
+}
+
+$(".verify").on("change", function() {
+    var propiedad = $("option:selected", this).prevObject[0].id;
+    _KEY[propiedad] = this.value;
+    PRODUCTO = fetchProducto(_KEY);
+
+    if (PRODUCTO) {
+        if (PRODUCTO.existencia == 0) {
+            document.getElementById('product_message').style.background = "red";
+            document.getElementById('product_message').innerHTML = "El producto esta agotado, " + PRODUCTO.existencia+ " items.";
+        } else {
+            document.getElementById('product_message').style.background = "transparent";
+            document.getElementById('product_message').style.color = "#55e8d5";
+            document.getElementById('product_message').innerHTML = "Este producto tiene " + PRODUCTO.existencia+ " items aun.";
+        }
+    } else {
+        if (_KEY.item.length>0 && _KEY.color.length>0 && _KEY.medida.length>0 && _KEY.marca.length>0) {
+            document.getElementById('product_message').style.color = "red";
+            document.getElementById('product_message').innerHTML = "El presente producto no existe en el catalogo";
+        }
+    }
+});
 
 $(function() {
     var inputTimestamp1 = document.getElementById('timestamp1');

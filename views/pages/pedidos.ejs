@@ -5,12 +5,42 @@
 	<title>Pedidos</title>
 	<%- include('../partials/head-compras-ventas'); %>
 	<link rel="stylesheet" href="stylesheets/stylepe.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
 	<script>
 		var pedido_cliente = <%- JSON.stringify(cliente); %>;
         var item_color = <%- JSON.stringify(color); %>;
         var item_medida = <%- JSON.stringify(medida); %>;
 		var item_marca = <%- JSON.stringify(marca); %>;
 		var item_unidad = <%- JSON.stringify(unidad); %>;
+		var catMelamina = <%- JSON.stringify(catalogoMelamina); %>;
+		var catTapacantos = <%- JSON.stringify(catalogoTapacantos); %>;
+		var catPegamento = <%- JSON.stringify(catalogoPegamento); %>;
+		var catFondo = <%- JSON.stringify(catalogoFondo); %>;
+
+		let hashProducto = {};
+
+		function fillList() {
+			var items = ["Melamina","Tapacantos","Pegamento","Fondo"];
+			items.forEach((value)=>{
+				objCatalog = window["cat" + value];
+				objCatalog.forEach(element => {
+					var hash = CryptoJS.MD5(value + element.color + element.medidas + element.marca);
+					if (hashProducto[hash]) {
+						hashProducto[hash].existencia += element.existencia; 
+					} else {
+						hashProducto[hash] = element;
+					}
+				});
+			});
+		}
+		fillList();
+
+		function fetchProducto(key) {
+			let indexHash = CryptoJS.MD5(key.item + key.color + key.medida + key.marca);
+			return hashProducto[indexHash];
+		}
+
     </script>
 	<style>
 		#ventas_menu {
@@ -84,7 +114,7 @@
 				background-color: #55e8d5;
 			}
 		</style>
-		<fieldset>
+		<!--<fieldset>-->
 			<table id="pedido-header">
 				<tr>
 					<td><img src="../images/melaninapro_image.png" alt="melaminapro" /></td>
@@ -123,6 +153,7 @@
 						<th style="width: 100px;">Marca</th>
 						<th style="width: 70px;">Unidad</th>
 						<th class="num" style="width: 70px;">Cantidad</th>
+						<th class="num" style="width: 70px;">P.U.</th>
 						<th class="num" style="width: 100px;">Precio</th>
 					</tr>
 				</thead>
@@ -143,9 +174,9 @@
 					<td style="width: 100px;"></td>
 				</td>
 			</table>
-		</fieldset>
+		<!--</fieldset>
 		<closeform>
-		</closeform>
+		</closeform>-->
 	</form>
 	<div class="page-content">
 		<div class="melaminapro-heading">Formulario de Pedidos</div>
@@ -210,7 +241,7 @@
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label for="item" class="special-label-1">Item </label>
-											<select name="item" id="item" class="form-control" onchange="selectItem()">
+											<select name="item" id="item" class="form-control verify" onchange="selectItem()">
 												<option value="" selected="">(Elija el item)</option>
                                                 <% for (let index = 0; index < item.length; index++) { %>
                                                     <option value="<%= item[index].nombre %>"><%= item[index].nombre %></option>
@@ -222,7 +253,7 @@
 										</div>
 										<div class="form-holder form-holder-2" id="divmedida">
 											<label for="medida" class="special-label-1">Medida </label>
-											<select name="medida" id="medida" class="form-control">
+											<select name="medida" id="medida" class="form-control verify">
 												<option value="" selected="">(Elija las medidas)</option>
 											</select>
 											<span class="select-btn">
@@ -231,7 +262,7 @@
 										</div>
 										<div class="form-holder form-holder-2" id="divcolor">
 											<label for="color" class="special-label-1">Color </label>
-											<select name="color" id="color" class="form-control">
+											<select name="color" id="color" class="form-control verify">
 												<option value="" selected="">(Escoja el color)</option>
 											</select>
 											<span class="select-btn">
@@ -240,7 +271,7 @@
 										</div>
 										<div class="form-holder form-holder-2" id="divmarca">
 											<label for="marca" class="special-label-1">Marca </label>
-											<select name="marca" id="marca" class="form-control">
+											<select name="marca" id="marca" class="form-control verify">
 												<option value="" selected="">(Elija la marca)</option>
 											</select>
 											<span class="select-btn">
@@ -250,7 +281,7 @@
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
-											<label for="room" class="special-label-1">Una Cinta de 18 mts y fondo de 200x150 adjuntos.</label>
+											<label id="product_message" for="room" class="special-label-1">Una Cinta de 18 mts y fondo de 200x150 adjuntos.</label>
 										</div>
 									</div>
 									<div class="form-row">
