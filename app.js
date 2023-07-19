@@ -1241,20 +1241,42 @@ app.put('/actualizar_melamina/:id',(req, res) => {
     const client = new MongoClient(uri);
     client.connect();   
 
-    console.log("melamina: ", req.body);
-    let idc = new ObjectID(req.params.id);
-    console.log(req.params.id, idc);
+    let CollectionItem = client.db().collection("item");
+    CollectionItem.findOne({nombre:"Melamina"}).then(producto => {
+        console.log("melamina: ", req.body);
+        let idc = new ObjectID(req.params.id);
+        console.log(req.params.id, idc);
 
-    let CollectionMelamina = client.db().collection("collectionmelamina");
+        let hashOld =  req.body.hash_inventario;
+        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+        req.body.hash_inventario = hash;
 
-    CollectionMelamina.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Melamina color ${req.body.color} actualizada...`);
-        res.status(200).json({ok: true, message: "Melamina (" + req.body.color + ") actualizada.", action: "none"});
-        res.end();
+        let CollectionMelamina = client.db().collection("collectionmelamina");
+        CollectionMelamina.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+
+            console.log(hash, hashOld);
+            if (hash != hashOld) {
+                let CollectionInventario = client.db().collection("inventario");
+                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hash}}).then(results => {
+                    console.log(results);
+                    console.log(`Fue actualizado al catalogo e inventario...`);
+
+                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizada al catalogo e inventario....", action: "reload"});
+                    res.end();
+                })
+                .catch(error => console.error(error))
+                .finally(data => client.close());
+            } else {
+                console.log(results);
+                console.log(`Melamina color ${req.body.color} actualizada...`);
+                res.status(200).json({ok: true, message: "Melamina (" + req.body.color + ") actualizada.", action: "none"});
+                res.end();
+                client.close();
+            }
+        })
+        .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    .finally(data => client.close());
 })
 
 app.delete('/delete_melamina/:id', (req, res) => {
@@ -1263,6 +1285,7 @@ app.delete('/delete_melamina/:id', (req, res) => {
 
     var CollectionMelamina = client.db().collection("collectionmelamina");
     let cid = new ObjectID(req.params.id);
+    let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
 
     CollectionMelamina.deleteOne({"_id": cid }).then(result => {
         console.log(result);
@@ -1272,6 +1295,7 @@ app.delete('/delete_melamina/:id', (req, res) => {
     })
     .catch(error => console.error(error))
     .finally(data => client.close())
+
 })
 
 app.post('/nuevo_tapacantos',(req, res) => {
@@ -1332,22 +1356,45 @@ app.post('/nuevo_tapacantos',(req, res) => {
 
 app.put('/actualizar_tapacantos/:id',(req, res) => {
     const client = new MongoClient(uri);
-    client.connect();   
+    client.connect();
 
-    console.log("tapacantos: ", req.body);
-    let idc = new ObjectID(req.params.id);
-    console.log(req.params.id, idc);
+    let CollectionItem = client.db().collection("item");
+    CollectionItem.findOne({nombre:"Tapacantos"}).then(producto => {
+ 
+        console.log("tapacantos: ", req.body);
+        let idc = new ObjectID(req.params.id);
+        console.log(req.params.id, idc);
 
-    let CollectionTapacantos = client.db().collection("collectiontapacantos");
+        let hashOld =  req.body.hash_inventario;
+        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+        req.body.hash_inventario = hash;
 
-    CollectionTapacantos.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Tapacantos de color ${req.body.color} actualizado...`);
-        res.status(200).json({ok: true, message: "Tapacantos color (" + req.body.color + ") actualizado.", action: "none"});
-        res.end();
+        let CollectionTapacantos = client.db().collection("collectiontapacantos");
+        CollectionTapacantos.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+
+            console.log(hash, hashOld);
+            if (hash != hashOld) {
+                let CollectionInventario = client.db().collection("inventario");
+                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hash}}).then(results => {
+                    console.log(results);
+                    console.log(`Fue actualizado en catalogo e inventario...`);
+
+                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado al catalogo e inventario....", action: "reload"});
+                    res.end();
+                })
+                .catch(error => console.error(error))
+                .finally(data => client.close());
+            } else {
+                console.log(results);
+                console.log(`Tapacantos de color ${req.body.color} actualizado...`);
+                res.status(200).json({ok: true, message: "Tapacantos (" + req.body.color + ") actualizado.", action: "none"});
+                res.end();
+                client.close();
+            }
+        })
+        .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    .finally(data => client.close());
 })
 
 app.delete('/delete_tapacantos/:id', (req, res) => {
@@ -1425,22 +1472,46 @@ app.post('/nuevo_pegamento',(req, res) => {
 
 app.put('/actualizar_pegamento/:id',(req, res) => {
     const client = new MongoClient(uri);
-    client.connect();   
+    client.connect();
 
-    console.log("pegamento: ", req.body);
-    let idc = new ObjectID(req.params.id);
-    console.log(req.params.id, idc);
+    let CollectionItem = client.db().collection("item");
+    CollectionItem.findOne({nombre:"Pegamento"}).then(producto => {
 
-    let CollectionPegamento = client.db().collection("collectionpegamento");
+        console.log("pegamento: ", req.body);
+        let idc = new ObjectID(req.params.id);
+        console.log(req.params.id, idc);
 
-    CollectionPegamento.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Pegamento ${req.body.marca} actualizado...`);
-        res.status(200).json({ok: true, message: "Pegamento (" + req.body.marca + ") actualizado.", action: "none"});
-        res.end();
+        let hashOld =  req.body.hash_inventario;
+        let hash = MD5(producto._id.toString() + req.body.marca).toString();
+        req.body.hash_inventario = hash;
+
+        let CollectionPegamento = client.db().collection("collectionpegamento");
+
+        CollectionPegamento.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+
+            console.log(hash, hashOld);
+            if (hash != hashOld) {
+                let CollectionInventario = client.db().collection("inventario");
+                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hash}}).then(results => {
+                    console.log(results);
+                    console.log(`Fue actualizado en catalogo e inventario...`);
+
+                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado al catalogo e inventario....", action: "reload"});
+                    res.end();
+                })
+                .catch(error => console.error(error))
+                .finally(data => client.close());
+            } else {
+                console.log(results);
+                console.log(`Pegamento de marca ${req.body.marca} actualizado...`);
+                res.status(200).json({ok: true, message: "Pegamento (" + req.body.color + ") actualizado.", action: "none"});
+                res.end();
+                client.close();
+            }
+        })
+        .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    .finally(data => client.close());
 })
 
 app.delete('/delete_pegamento/:id', (req, res) => {
@@ -1516,22 +1587,46 @@ app.post('/nuevo_fondo',(req, res) => {
 
 app.put('/actualizar_fondo/:id',(req, res) => {
     const client = new MongoClient(uri);
-    client.connect();   
+    client.connect();
 
-    console.log("fondo: ", req.body);
-    let idc = new ObjectID(req.params.id);
-    console.log(req.params.id, idc);
+    let CollectionItem = client.db().collection("item");
+    CollectionItem.findOne({nombre:"Fondo"}).then(producto => {
 
-    let CollectionPegamento = client.db().collection("collectionfondo");
+        console.log("fondo: ", req.body);
+        let idc = new ObjectID(req.params.id);
+        console.log(req.params.id, idc);
 
-    CollectionPegamento.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Fondo ${req.body.color} actualizado...`);
-        res.status(200).json({ok: true, message: "Fondo (" + req.body.color + ") actualizado.", action: "none"});
-        res.end();
+        let hashOld = req.body.hash_inventario;
+        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+        req.body.hash_inventario = hash;
+
+        let CollectionPegamento = client.db().collection("collectionfondo");
+
+        CollectionPegamento.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+
+            console.log(hash, hashOld);
+            if (hash != hashOld) {
+                let CollectionInventario = client.db().collection("inventario");
+                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hash}}).then(results => {
+                    console.log(results);
+                    console.log(`Fue actualizado en catalogo e inventario...`);
+
+                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado al catalogo e inventario....", action: "reload"});
+                    res.end();
+                })
+                .catch(error => console.error(error))
+                .finally(data => client.close());
+            } else {
+                console.log(results);
+                console.log(`Fondo de color ${req.body.color} actualizado...`);
+                res.status(200).json({ok: true, message: "Fondo (" + req.body.color + ") actualizado.", action: "none"});
+                res.end();
+                client.close();
+            }
+        })
+        .catch(error => console.error(error))
     })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
+    .catch(error => console.error(error))  
 })
 
 app.delete('/delete_fondo/:id', (req, res) => {

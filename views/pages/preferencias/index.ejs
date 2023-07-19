@@ -419,7 +419,7 @@
 			  <tr id="row_<%= ID %>">
 				  <td class="item_td" id="a_color_<%= ID %>">
 					<select id="color_melamina_<%= ID %>">
-						<option value="">(seleccione un color)</option>
+						<option value="" style="background:yellow">(seleccione un color)</option>
 						<% for (var i=0; i < color.length; i++) {
 							if (color[i].melamina)  { %>
 							<option value="<%= color[i]._id.toString() %>" <%=(color[i]._id.toString()==melamina[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
@@ -428,7 +428,7 @@
 				  </td>
 				  <td class="item_td" id="a_provedor_<%= ID %>">
 					<select id="provedor_melamina_<%= ID %>">
-						<option value="">(seleccione un provedor)</option>
+						<option value="" style="background:yellow">(seleccione un provedor)</option>
 						<% for (var i=0; i < provedor.length; i++) {
 							if (provedor[i].items.includes("Melamina"))  { %>
 							<option value="<%= provedor[i]._id.toString() %>" <%=(provedor[i]._id.toString()==melamina[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
@@ -437,7 +437,7 @@
 				  </td>
 				  <td class="item_td" id="a_medidas_<%= ID %>">
 					<select id="medidas_melamina_<%= ID %>">
-						<option value="">(seleccione un medidas)</option>
+						<option value="" style="background:yellow">(seleccione un medidas)</option>
 						<% for (var i=0; i < medidas.length; i++) {
 							if (medidas[i].melamina)  { %>
 							<option value="<%= medidas[i]._id.toString() %>" <%=(medidas[i]._id.toString()==melamina[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
@@ -446,7 +446,7 @@
 				  </td>
 				  <td class="item_td" id="a_marca_<%= ID %>">
 					<select id="marca_melamina_<%= ID %>">
-						<option value="">(seleccione un marcas)</option>
+						<option value="" style="background:yellow">(seleccione un marcas)</option>
 						<% for (var i=0; i < marcas.length; i++) {
 							if (marcas[i].melamina)  { %>
 							<option value="<%= marcas[i]._id.toString() %>" <%=(marcas[i]._id.toString()==melamina[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
@@ -456,6 +456,7 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="a_precio_compra_<%= ID %>"><%= melamina[index].precio_compra %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="a_precio_venta_<%= ID %>"><%= melamina[index].precio_venta %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="a_laminaxpaquete_<%= ID %>"><%= melamina[index].laminaxpaquete %></td>
+				  <td style="display:none" id="a_hash_<%= ID %>"><%= melamina[index].hash_inventario %></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="bm_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -487,7 +488,7 @@
 			  <tr id="row_<%= ID %>">
 				  <td class="item_td" id="t_color_<%= ID %>">
 					<select id="color_tapacantos_<%= ID %>">
-						<option value="">(seleccione un color)</option>
+						<option value="" style="background:yellow">(seleccione un color)</option>
 						<% for (var i=0; i < color.length; i++) {
 							if (color[i].tapacantos)  { %>
 							<option value="<%= color[i]._id.toString() %>" <%=(color[i]._id.toString()==tapacantos[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
@@ -496,7 +497,7 @@
 				  </td>
 				  <td class="item_td" id="t_provedor_<%= ID %>">
 					<select id="provedor_tapacantos_<%= ID %>">
-						<option value="">(seleccione un provedor)</option>
+						<option value="" style="background:yellow">(seleccione un provedor)</option>
 						<% for (var i=0; i < provedor.length; i++) {
 							if (provedor[i].items.includes("Tapacantos"))  { %>
 							<option value="<%= provedor[i]._id.toString() %>" <%=(provedor[i]._id.toString()==tapacantos[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
@@ -505,7 +506,7 @@
 				  </td>
 				  <td class="item_td" id="t_medidas_<%= ID %>">
 					<select id="medidas_tapacantos_<%= ID %>">
-						<option value="">(seleccione una medida)</option>
+						<option value="" style="background:yellow">(seleccione una medida)</option>
 						<% for (var i=0; i < medidas.length; i++) {
 							if (medidas[i].tapacantos)  { %>
 							<option value="<%= medidas[i]._id.toString() %>" <%=(medidas[i]._id.toString()==tapacantos[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
@@ -514,7 +515,7 @@
 				  </td>
 				  <td class="item_td" id="t_marca_<%= ID %>">
 					<select id="marca_tapacantos_<%= ID %>">
-						<option value="">(seleccione una marca)</option>
+						<option value="" style="background:yellow">(seleccione una marca)</option>
 						<% for (var i=0; i < marcas.length; i++) {
 							if (marcas[i].tapacantos)  { %>
 							<option value="<%= marcas[i]._id.toString() %>" <%=(marcas[i]._id.toString()==tapacantos[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
@@ -527,6 +528,7 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="t_rollosxcaja_<%= ID %>"><%= tapacantos[index].rollosxcaja %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_metros_<%= ID %>"><%= tapacantos[index].precio_venta_metros %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_compra_metros_<%= ID %>"><%= tapacantos[index].precio_compra_metros %></td>
+				  <td style="display:none" id="f_hash_<%= ID %>"><%= tapacantos[index].hash_inventario %></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gt_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="bt_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -552,7 +554,7 @@
 			  <tr id="row_<%= ID %>">
 				  <td id="p_provedor_<%= ID %>">
 					<select id="provedor_pegamento_<%= ID %>">
-						<option value="">(seleccione un provedor)</option>
+						<option value="" style="background:yellow">(seleccione un provedor)</option>
 						<% for (var i=0; i < provedor.length; i++) {
 							if (provedor[i].items.includes("Pegamento"))  { %>
 							<option value="<%= provedor[i]._id.toString() %>" <%=(provedor[i]._id.toString()==pegamento[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
@@ -561,7 +563,7 @@
 				  </td>
 				  <td id="p_marca_<%= ID %>">
 					<select id="marca_pegamento_<%= ID %>">
-						<option value="">(seleccione una marca)</option>
+						<option value="" style="background:yellow">(seleccione una marca)</option>
 						<% for (var i=0; i < marcas.length; i++) {
 							if (marcas[i].pegamento)  { %>
 							<option value="<%= marcas[i]._id.toString() %>" <%=(marcas[i]._id.toString()==pegamento[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
@@ -570,6 +572,7 @@
 				  </td>
 				  <td class="numericAllow" contenteditable="true" id="p_precio_compra_<%= ID %>"><%= pegamento[index].precio_compra %></td>
 				  <td class="numericAllow" contenteditable="true" id="p_precio_venta_<%= ID %>"><%= pegamento[index].precio_venta %></td>
+				  <td style="display:none" id="p_hash_<%= ID %>"><%= pegamento[index].hash_inventario %></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gp_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="bp_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -598,7 +601,7 @@
 			  <tr id="row_<%= ID %>">
 				  <td class="item_td" id="f_color_<%= ID %>">
 					<select id="color_fondo_<%= ID %>">
-						<option value="">(seleccione un color)</option>
+						<option value="" style="background:yellow">(seleccione un color)</option>
 						<% for (var i=0; i < color.length; i++) {
 							if (color[i].fondo)  { %>
 							<option value="<%= color[i]._id.toString() %>" <%=(color[i]._id.toString()==fondo[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
@@ -607,7 +610,7 @@
 				  </td>
 				  <td class="item_td" id="f_provedor_<%= ID %>">
 					<select id="provedor_fondo_<%= ID %>">
-						<option value="">(seleccione un provedor)</option>
+						<option value="" style="background:yellow">(seleccione un provedor)</option>
 						<% for (var i=0; i < provedor.length; i++) {
 							if (provedor[i].items.includes("Fondo"))  { %>
 							<option value="<%= provedor[i]._id.toString() %>" <%=(provedor[i]._id.toString()==fondo[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
@@ -616,7 +619,7 @@
 				  </td>
 				  <td class="item_td" id="f_medidas_<%= ID %>">
 					<select id="medidas_fondo_<%= ID %>">
-						<option value="">(seleccione una medida)</option>
+						<option value="" style="background:yellow">(seleccione una medida)</option>
 						<% for (var i=0; i < medidas.length; i++) {
 							if (medidas[i].fondo)  { %>
 							<option value="<%= medidas[i]._id.toString() %>" <%=(medidas[i]._id.toString()==fondo[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
@@ -625,7 +628,7 @@
 				  </td>
 				  <td class="item_td" id="f_marca_<%= ID %>">
 					<select id="marca_fondo_<%= ID %>">
-						<option value="">(seleccione una marca)</option>
+						<option value="" style="background:yellow">(seleccione una marca)</option>
 						<% for (var i=0; i < marcas.length; i++) {
 							if (marcas[i].fondo)  { %>
 							<option value="<%= marcas[i]._id.toString() %>" <%=(marcas[i]._id.toString()==fondo[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
@@ -635,6 +638,7 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="f_precio_compra_<%= ID %>"><%= fondo[index].precio_compra %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="f_precio_venta_<%= ID %>"><%= fondo[index].precio_venta %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="f_laminaxpaquete_<%= ID %>"><%= fondo[index].laminaxpaquete %></td>
+				  <td style="display:none" id="f_hash_<%= ID %>"><%= fondo[index].hash_inventario %></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gf_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="bf_<%= ID %>"onclick="borrar(this.id)">X</button>

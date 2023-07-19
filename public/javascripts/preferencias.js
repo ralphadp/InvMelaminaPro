@@ -743,26 +743,26 @@ function Melamina() {
 
 		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
 					<td class='item_td' id='a_color_${next_index}'>
-						<select id="color_melamina_${next_index}">
-							<option value="" selected>(Seleccione un color)</option>
+						<select id="color_melamina_${next_index}" >
+							<option value="" style="background:yellow" selected>(Seleccione un color)</option>
 							${colorOptions}
 						</select>
 					</td>
 					<td class='item_td' id='a_provedor_${next_index}'>
 					    <select id="provedor_melamina_${next_index}">
-							<option value="" selected>(Seleccione un provedor)</option>
+							<option value="" style="background:yellow" selected>(Seleccione un provedor)</option>
 							${provedorOptions}
 						</select>
 					</td>
 					<td class='item_td' id='a_medidas_${next_index}'>
 					    <select id="medidas_melamina_${next_index}">
-						<option value="" selected>(Seleccione una medida)</option>
+						<option value="" style="background:yellow" selected>(Seleccione una medida)</option>
 							${medidasOptions}
 						</select>
 					</td>
 					<td class='item_td' id='a_marca_${next_index}'>
 					    <select id="marca_melamina_${next_index}">
-							<option value="" selected>(Seleccione un marca)</option>
+							<option value="" style="background:yellow" selected>(Seleccione un marca)</option>
 							${marcaOptions}
 						</select>
 					</td>
@@ -783,6 +783,7 @@ function Melamina() {
 		this.att.precio_compra = document.getElementById("a_precio_compra_" + row_id).innerText;
 		this.att.precio_venta = document.getElementById("a_precio_venta_" + row_id).innerText;
 		this.att.laminaxpaquete = document.getElementById("a_laminaxpaquete_" + row_id).innerText;
+		this.att.hash_inventario = document.getElementById("a_hash_" + row_id).innerText;
 	}
 
 /*UPDATE*/
@@ -911,25 +912,25 @@ function Tapacantos() {
 		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
 					<td class='item_td' id='t_color_${next_index}'>
 						<select id="color_tapacantos_${next_index}">
-							<option value="" seleted>(seleccione un color)</option>
+							<option value="" style="background:yellow" selected>(seleccione un color)</option>
 							${colorOptions}
 						</select>
 					</td>
 					<td class='item_td' id='t_provedor_${next_index}'>
 					    <select id="provedor_tapacantos_${next_index}">
-							<option value="" seleted>(seleccione un provedor)</option>
+							<option value="" style="background:yellow" selected>(seleccione un provedor)</option>
 							${provedorOptions}
 						</select>
 					</td>
 					<td class='item_td' id='t_medidas_${next_index}'>
 					    <select id="medidas_tapacantos_${next_index}">
-							<option value="" seleted>(seleccione una medida)</option>
+							<option value="" style="background:yellow" selected>(seleccione una medida)</option>
 							${medidasOptions}
 						</select>
 					</td>
 					<td class='item_td' id='t_marca_${next_index}'>
 					    <select id="marca_tapacantos_${next_index}">
-							<option value="" seleted>(seleccione una marca)</option>
+							<option value="" style="background:yellow" selected>(seleccione una marca)</option>
 							${marcaOptions}
 						</select>
 					</td>
@@ -956,6 +957,7 @@ function Tapacantos() {
 		this.att.rollosxcaja = document.getElementById("t_rollosxcaja_" + row_id).innerText;
 		this.att.precio_venta_metros = document.getElementById("t_precio_venta_metros_" + row_id).innerText;
 		this.att.precio_compra_metros = document.getElementById("t_precio_compra_metros_" + row_id).innerText;
+		this.att.hash_inventario = document.getElementById("t_hash_" + row_id).innerText;
 	}
 
 /*UPDATE*/
@@ -1065,13 +1067,13 @@ function Pegamento() {
 		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
 					<td id='p_provedor_${next_index}'>
 					    <select id="provedor_pegamento_${next_index}">
-							<option value="" seleted>(seleccione un provedor)</option>
+							<option value="" style="background:yellow" selected>(seleccione un provedor)</option>
 							${provedorOptions}
 						</select>
 					</td>
 					<td id='p_marca_${next_index}'>
 					    <select id="marca_pegamento_${next_index}">
-							<option value="" seleted>(seleccione una marca)</option>
+							<option value="" style="background:yellow" selected>(seleccione una marca)</option>
 							${marcaOptions}
 						</select>
 					</td>
@@ -1088,6 +1090,7 @@ function Pegamento() {
 		this.att.marca = getSelectedOption("marca_pegamento_" + row_id);
 		this.att.precio_compra = document.getElementById("p_precio_compra_" + row_id).innerText;
 		this.att.precio_venta = document.getElementById("p_precio_venta_" + row_id).innerText;
+		this.att.hash_inventario = document.getElementById("p_hash_" + row_id).innerText;
 	}
 
 /*UPDATE*/
@@ -1212,25 +1215,25 @@ function Fondo() {
 		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
 					<td class='item_td' id='f_color_${next_index}'>
 						<select id="color_fondo_${next_index}">
-							<option value="" seleted>(seleccione un color)</option>
+							<option value="" style="background:yellow" selected>(seleccione un color)</option>
 							${colorOptions}
 						</select>
 					</td>
 					<td class='item_td' id='f_provedor_${next_index}'>
 					    <select id="provedor_fondo_${next_index}">
-							<option value="" seleted>(seleccione un provedor)</option>
+							<option value="" style="background:yellow" selected>(seleccione un provedor)</option>
 							${provedorOptions}
 						</select>
 					</td>
 					<td class='item_td' id='f_medidas_${next_index}'>
 					    <select id="medidas_fondo_${next_index}">
-							<option value="" seleted>(seleccione una medida)</option>
+							<option value="" style="background:yellow" selected>(seleccione una medida)</option>
 							${medidasOptions}
 						</select>
 					</td>
 					<td class='item_td' id='f_marca_${next_index}'>
 					    <select id="marca_fondo_${next_index}">
-							<option value="" seleted>(seleccione una marca)</option>
+							<option value="" style="background:yellow" selected>(seleccione una marca)</option>
 							${marcaOptions}
 						</select>
 					</td>
@@ -1251,6 +1254,7 @@ function Fondo() {
 		this.att.precio_compra = document.getElementById("f_precio_compra_" + row_id).innerText;
 		this.att.precio_venta = document.getElementById("f_precio_venta_" + row_id).innerText;
 		this.att.laminaxpaquete = document.getElementById("f_laminaxpaquete_" + row_id).innerText;
+		this.att.hash_inventario = document.getElementById("f_hash_" + row_id).innerText;
 	}
 
 /*UPDATE*/
