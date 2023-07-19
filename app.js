@@ -1186,20 +1186,55 @@ app.delete('/delete_cliente/:id', (req, res) => {
 app.post('/nueva_melamina',(req, res) => {
     const client = new MongoClient(uri);
     client.connect();
-    console.log("melamina",req.body);
+    console.log("nueva melamina",req.body);
 
-    let CollectionMelamina = client.db().collection("collectionmelamina");
+    let CollectionItem = client.db().collection("item");
+    CollectionItem.findOne({nombre:"Melamina"}).then(producto => {
+        console.log(producto);
 
-    CollectionMelamina.insertOne(req.body).then(results => {
+        let CollectionMelamina = client.db().collection("collectionmelamina");
+        CollectionMelamina.insertOne(req.body).then(results => {
 
-        console.log(results);
-        console.log(`Una melamina nueva fue adicionada al catalogo...`);
+            console.log(results);
 
-        res.status(200).json({ok: true, message: "Una melamina nueva fue adicionada al catalogo....", action: "reload"});
-        res.end();
+            let CollectionInventario = client.db().collection("inventario");
+            console.log(producto._id.toString(), req.body.color, req.body.medidas, req.body.marca);
+            let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+            CollectionInventario.findOne({codigo: hash}).then(results => {
+
+                console.log(results);
+
+                if (!results) {
+                    console.log("Nuevo md5", hash);
+                    let inv = {
+                        codigo: hash,
+                        existencia: 0,
+                        metraje:0
+                    };
+
+                    CollectionInventario.insertOne(inv).then(results => {
+                        console.log(results);
+                        console.log(`Una melamina nueva fue adicionada al catalogo e inventario...`);
+
+                        res.status(200).json({ok: true, message: "Una melamina nueva fue adicionada al catalogo e inventario....", action: "reload"});
+                        res.end();
+
+                    })
+                    .catch(error => console.error(error))
+                    .finally(data => client.close());
+                } else {
+                    console.log(`Una melamina nueva fue adicionada al catalogo...`);
+
+                    res.status(200).json({ok: true, message: "Una melamina nueva fue adicionada al catalogo....", action: "reload"});
+                    res.end();
+                    client.close();
+                }
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    .finally(data => client.close());
 })
 
 app.put('/actualizar_melamina/:id',(req, res) => {
@@ -1244,18 +1279,55 @@ app.post('/nuevo_tapacantos',(req, res) => {
     client.connect();
     console.log("tapacantos",req.body);
 
-    let CollectionTapacantos = client.db().collection("collectiontapacantos");
+    let CollectionItem = client.db().collection("item");
+    CollectionItem.findOne({nombre:"Tapacantos"}).then(producto => {
+        console.log(producto);
+    
+        let CollectionTapacantos = client.db().collection("collectiontapacantos");
 
-    CollectionTapacantos.insertOne(req.body).then(results => {
+        CollectionTapacantos.insertOne(req.body).then(results => {
 
-        console.log(results);
-        console.log(`Un tapacantos nuevo fue adicionado al catalogo...`);
+            console.log(results);
 
-        res.status(200).json({ok: true, message: "Un tapacantos nuevo fue adicionado al catalogo....", action: "reload"});
-        res.end();
+            let CollectionInventario = client.db().collection("inventario");
+            console.log(producto._id.toString(), req.body.color, req.body.medidas, req.body.marca);
+            let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+
+            CollectionInventario.findOne({codigo: hash}).then(results => {
+
+                console.log(results);
+
+                if (!results) {
+                    console.log("Nuevo md5", hash);
+                    let inv = {
+                        codigo: hash,
+                        existencia: 0,
+                        metraje:0
+                    };
+
+                    CollectionInventario.insertOne(inv).then(results => {
+                        console.log(results);
+                        console.log(`Un tapacantos nuevo fue adicionado al catalogo e inventario...`);
+
+                        res.status(200).json({ok: true, message: "Un tapacantos nuevo fue adicionado al catalogo e inventario....", action: "reload"});
+                        res.end();
+
+                    })
+                    .catch(error => console.error(error))
+                    .finally(data => client.close());
+                } else {
+                    console.log(`Un tapacantos nuevo fue adicionado al catalogo...`);
+
+                    res.status(200).json({ok: true, message: "Un tapacantos nuevo fue adicionado al catalogo....", action: "reload"});
+                    res.end();
+                    client.close();
+                }
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    .finally(data => client.close());
 })
 
 app.put('/actualizar_tapacantos/:id',(req, res) => {
@@ -1298,20 +1370,57 @@ app.delete('/delete_tapacantos/:id', (req, res) => {
 app.post('/nuevo_pegamento',(req, res) => {
     const client = new MongoClient(uri);
     client.connect();
-    console.log("pegamento",req.body);
+    console.log("nuevo pegamento",req.body);
 
-    let CollectionPegamento = client.db().collection("collectionpegamento");
+    let CollectionItem = client.db().collection("item");
+    CollectionItem.findOne({nombre:"Pegamento"}).then(producto => {
+        console.log("item:",producto);
 
-    CollectionPegamento.insertOne(req.body).then(results => {
+        let CollectionPegamento = client.db().collection("collectionpegamento");
 
-        console.log(results);
-        console.log(`Un pegamento nuevo fue adicionado al catalogo...`);
+        CollectionPegamento.insertOne(req.body).then(results => {
 
-        res.status(200).json({ok: true, message: "Un pegamento nuevo fue adicionado al catalogo....", action: "reload"});
-        res.end();
+            console.log(results);
+
+            let CollectionInventario = client.db().collection("inventario");
+            console.log(producto._id.toString(),  req.body.marca);
+            let hash = MD5(producto._id.toString() + req.body.marca).toString();
+
+            CollectionInventario.findOne({codigo: hash}).then(results => {
+
+                console.log(results);
+
+                if (!results) {
+                    console.log("Nuevo md5", hash);
+                    let inv = {
+                        codigo: hash,
+                        existencia: 0,
+                        metraje:0
+                    };
+
+                    CollectionInventario.insertOne(inv).then(results => {
+                        console.log(results);
+                        console.log(`Un pegamento nuevo fue adicionado al catalogo e inventario...`);
+
+                        res.status(200).json({ok: true, message: "Un pegamento nuevo fue adicionado al catalogo e inventario....", action: "reload"});
+                        res.end();
+
+                    })
+                    .catch(error => console.error(error))
+                    .finally(data => client.close());
+                } else {
+                    console.log(`Un pegamento nuevo fue adicionado al catalogo...`);
+
+                    res.status(200).json({ok: true, message: "Un pegamento nuevo fue adicionado al catalogo....", action: "reload"});
+                    res.end();
+                    client.close();
+                }
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    .finally(data => client.close());
 })
 
 app.put('/actualizar_pegamento/:id',(req, res) => {
@@ -1356,18 +1465,53 @@ app.post('/nuevo_fondo',(req, res) => {
     client.connect();
     console.log("fondo",req.body);
 
-    let CollectionPegamento = client.db().collection("collectionfondo");
+    let CollectionItem = client.db().collection("item");
+    CollectionItem.findOne({nombre:"Fondo"}).then(producto => {
+        console.log(producto);
+        let CollectionPegamento = client.db().collection("collectionfondo");
 
-    CollectionPegamento.insertOne(req.body).then(results => {
+        CollectionPegamento.insertOne(req.body).then(results => {
 
-        console.log(results);
-        console.log(`Un fondo nuevo fue adicionado al catalogo...`);
+            console.log(results);
 
-        res.status(200).json({ok: true, message: "Un fondo nuevo fue adicionado al catalogo....", action: "reload"});
-        res.end();
+            let CollectionInventario = client.db().collection("inventario");
+            console.log(producto._id.toString(), req.body.color, req.body.medidas, req.body.marca);
+            let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+            CollectionInventario.findOne({codigo: hash}).then(results => {
+
+                console.log(results);
+
+                if (!results) {
+                    console.log("Nuevo md5", hash);
+                    let inv = {
+                        codigo: hash,
+                        existencia: 0,
+                        metraje:0
+                    };
+
+                    CollectionInventario.insertOne(inv).then(results => {
+                        console.log(results);
+                        console.log(`Un fondo nuevo fue adicionado al catalogo e inventario...`);
+
+                        res.status(200).json({ok: true, message: "Un fondo nuevo fue adicionado al catalogo e inventario....", action: "reload"});
+                        res.end();
+
+                    })
+                    .catch(error => console.error(error))
+                    .finally(data => client.close());
+                } else {
+                    console.log(`Un fondo nuevo fue adicionado al catalogo...`);
+
+                    res.status(200).json({ok: true, message: "Un fondo nuevo fue adicionado al catalogo....", action: "reload"});
+                    res.end();
+                    client.close();
+                }
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    .finally(data => client.close());
 })
 
 app.put('/actualizar_fondo/:id',(req, res) => {
