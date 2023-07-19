@@ -13,32 +13,11 @@
         var item_medida = <%- JSON.stringify(medida); %>;
 		var item_marca = <%- JSON.stringify(marca); %>;
 		var item_unidad = <%- JSON.stringify(unidad); %>;
-		var catMelamina = <%- JSON.stringify(catalogoMelamina); %>;
-		var catTapacantos = <%- JSON.stringify(catalogoTapacantos); %>;
-		var catPegamento = <%- JSON.stringify(catalogoPegamento); %>;
-		var catFondo = <%- JSON.stringify(catalogoFondo); %>;
-
-		let hashProducto = {};
-
-		function fillList() {
-			var items = ["Melamina","Tapacantos","Pegamento","Fondo"];
-			items.forEach((value)=>{
-				objCatalog = window["cat" + value];
-				objCatalog.forEach(element => {
-					var hash = CryptoJS.MD5(value + element.color + element.medidas + element.marca);
-					if (hashProducto[hash]) {
-						hashProducto[hash].existencia += element.existencia; 
-					} else {
-						hashProducto[hash] = element;
-					}
-				});
-			});
-		}
-		fillList();
-
+		var item_inventario = <%- JSON.stringify(inventario); %>;
+		
 		function fetchProducto(key) {
 			let indexHash = CryptoJS.MD5(key.item + key.color + key.medida + key.marca);
-			return hashProducto[indexHash];
+			return item_inventario[indexHash];
 		}
 
     </script>
@@ -689,7 +668,6 @@
 							<span class="row-small"><%= historial[i].nombreDeUnidad %></span>
                             <span class="row-small"><%= historial[i].cantidad %></span>
 							<span class="row-small"><%= historial[i].precioVenta %> Bs</span>
-                            <button type="button" id="<%= historial[i]._id.toString() %>" class="delete" onclick="deleteHistorial(this.id)">X</button>
                         </li>
                     <% } %>
 					<% if (ventaTotal > 0) { %>

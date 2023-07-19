@@ -181,7 +181,6 @@
                             <span class="row-small"><%= historial[i].nombreDeUnidad %></span>
                             <span class="row-small"><%= historial[i].cantidad %></span>
                             <span class="row-small-2"><%= historial[i].precioCompra %> Bs</span>
-                            <button class="delete" type="button" id="<%= historial[i]._id.toString() %>" class="delIngresoBtn" onclick="deleteHistorial(this.id)">X</button>
                         </li>
                     <% } %>
                     <% if (gastoTotal > 0) { %>

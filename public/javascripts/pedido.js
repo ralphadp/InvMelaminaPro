@@ -461,22 +461,6 @@ function obtenerPrecioStandard() {
     return false;
 }
 
-function deleteHistorial(id) {
-    fetch('/delete_historial_ventas/' + id + '/', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-    })
-    .then(response => {
-        if (response.ok) {
-            alert(response.statusText);
-            window.location.reload();//update page
-        }
-    })
-    .catch(error => {
-        alert(error.message);
-    });
-};
-
 let addOption = function(select, val, text, backcolor) {
     var opt = document.createElement('option');
     opt.value = val;

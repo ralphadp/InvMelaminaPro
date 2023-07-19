@@ -49,58 +49,23 @@
                     <div class="table100-body js-pscroll ps ps--active-y">
                         <table>
                             <tbody class="list">
-                            <%  for (let index = melamina.length - 1; index >= 0; index--) {
-                                    var producto = melamina[index];
-                                    var alerta = (producto.existencia <= control["Melamina"].minimo) ? 'talert' : '';
+                            <%  Object.keys(inventario).forEach(attribute => {
+                                    let producto = inventario[attribute];
+                                    if (typeof producto !== 'function') {
+                                        if (!producto.nombre) {
+                                            console.log("Codigo huerfano: ", producto.codigo);
+                                        } else {
+                                            var alerta = (producto.existencia <= control[producto.nombre].minimo) ? 'talert' : '';
                                 %>
                                 <tr class="row100 body <%- alerta%>">
-                                    <td class="cell100 column6 <%- alerta%> Tipo">Melamina (min: <%= control["Melamina"].minimo%>)</td>
-                                    <td class="cell100 column6 <%- alerta%> Color"><%= producto.color %></td>
-                                    <td class="cell100 column6 <%- alerta%> Medida"><%= producto.medidas %></td>
-                                    <td class="cell100 column6 <%- alerta%> Marca"><%= producto.marca %></td>
-                                    <td class="cell100 column6 <%- alerta%> Existncia"><%= producto.existencia %> laminas</td>
-                                    <td class="cell100 column6 <%- alerta%> Metros"></td>
+                                    <td class="cell100 column6 <%- alerta%> Tipo"><%= producto.nombre %> (min: <%= control[producto.nombre].minimo%>)</td>
+                                    <td class="cell100 column6 <%- alerta%> Color"><%= producto.item.color %></td>
+                                    <td class="cell100 column6 <%- alerta%> Medida"><%= producto.item.medidas %></td>
+                                    <td class="cell100 column6 <%- alerta%> Marca"><%= producto.item.marca %></td>
+                                    <td class="cell100 column6 <%- alerta%> Existncia"><%= producto.existencia %> <%= producto.unidad %></td>
+                                    <td class="cell100 column6 <%- alerta%> Metros"><%= (producto.metraje>=0)?producto.metraje+' Metros':'' %></td>
                                 </tr>
-                            <% } %>
-                            <%  for (let index = tapacantos.length - 1; index >= 0; index--) {
-                                    var producto = tapacantos[index];
-                                    var alerta = (producto.existencia <= control["Tapacantos"].minimo) ? 'talert' : '';
-                                %>
-                                <tr class="row100 body <%- alerta%>">
-                                    <td class="cell100 column6 <%- alerta%> Tipo">Tapacantos (min: <%= control["Tapacantos"].minimo%>)</td>
-                                    <td class="cell100 column6 <%- alerta%> Color"><%= producto.color %></td>
-                                    <td class="cell100 column6 <%- alerta%> Medida"><%= producto.medidas %></td>
-                                    <td class="cell100 column6 <%- alerta%> Marca"><%= producto.marca %></td>
-                                    <td class="cell100 column6 <%- alerta%> Existncia"><%= producto.existencia %> rollos</td>
-                                    <td class="cell100 column6 <%- alerta%> Metros"><%= producto.metraje %> Mt</td>
-                                </tr>
-                            <% } %>
-                            <%  for (let index = pegamento.length - 1; index >= 0; index--) {
-                                var producto = pegamento[index];
-                                var alerta = (producto.existencia <= control["Pegamento"].minimo) ? 'talert' : '';
-                            %>
-                            <tr class="row100 body <%- alerta%>">
-                                <td class="cell100 column6 <%- alerta%> Tipo">Pegamento (min: <%= control["Pegamento"].minimo%>)</td>
-                                <td class="cell100 column6 <%- alerta%> Color"><%= producto.color %></td>
-                                <td class="cell100 column6 <%- alerta%> Medida"><%= producto.medidas %></td>
-                                <td class="cell100 column6 <%- alerta%> Marca"><%= producto.marca %></td>
-                                <td class="cell100 column6 <%- alerta%> Existncia"><%= producto.existencia %> bolsas</td>
-                                <td class="cell100 column6 <%- alerta%> Metros"></td>
-                            </tr>
-                            <% } %>
-                            <%  for (let index = fondo.length - 1; index >= 0; index--) {
-                                var producto = fondo[index];
-                                var alerta = (producto.existencia <= control["Fondo"].minimo) ? 'talert' : '';
-                            %>
-                            <tr class="row100 body <%- alerta%>">
-                                <td class="cell100 column6 <%- alerta%> Tipo">Fondo (min: <%= control["Fondo"].minimo%>)</td>
-                                <td class="cell100 column6 <%- alerta%> Color"><%= producto.color %></td>
-                                <td class="cell100 column6 <%- alerta%> Medida"><%= producto.medidas %></td>
-                                <td class="cell100 column6 <%- alerta%> Marca"><%= producto.marca %></td>
-                                <td class="cell100 column6 <%- alerta%> Existncia"><%= producto.existencia %> laminas</td>
-                                <td class="cell100 column6 <%- alerta%> Metros"></td>
-                            </tr>
-                            <% } %>
+                            <% } } }); %>
                             </tbody>
                         </table>
                         <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
