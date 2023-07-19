@@ -20,9 +20,9 @@ function Color() {
 	};
 
 	this.getRowBuild = function(next_index) {
-		return `<tr id='row_${next_index}'>
-					<td id='c_nombre_${next_index}' contenteditable='true'></td>
-					<td id='c_codigo_${next_index}' contenteditable='true'></td>
+		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
+					<td contenteditable='true' class='stopSpaces' id='c_nombre_${next_index}' ></td>
+					<td contenteditable='true' class='stopSpaces' id='c_codigo_${next_index}' ></td>
 					<td><input id='c_melamina_${next_index}' type='checkbox'/></td>
 					<td><input id='c_tapacantos_${next_index}' type='checkbox'/></td>
 					<td><input id='c_fondo_${next_index}' type='checkbox'/></td>
@@ -132,8 +132,8 @@ function Marca() {
 	};
 
 	this.getRowBuild = function(next_index) {
-		return `<tr id='row_${next_index}'>
-					<td id='m_nombre_${next_index}' contenteditable='true'></td>
+		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
+					<td class='stopSpaces' id='m_nombre_${next_index}' contenteditable='true'></td>
 					<td><input id='m_melamina_${next_index}' type='checkbox'/></td>
 					<td><input id='m_tapacantos_${next_index}' type='checkbox'/></td>
 					<td><input id='m_pegamento_${next_index}' type='checkbox'/></td>
@@ -243,8 +243,8 @@ function Medidas() {
 	};
 
 	this.getRowBuild = function(next_index) {
-		return `<tr id='row_${next_index}'>
-					<td id='e_nombre_${next_index}' contenteditable='true'></td>
+		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
+					<td class='stopSpaces' id='e_nombre_${next_index}' contenteditable='true'></td>
 					<td><input id='e_melamina_${next_index}' type='checkbox'/></td>
 					<td><input id='e_tapacantos_${next_index}' type='checkbox'/></td>
 					<td><input id='e_fondo_${next_index}' type='checkbox'/></td>
@@ -353,8 +353,8 @@ function Provedor() {
 	};
 
 	this.getRowBuild = function(next_index) {
-		return `<tr id='row_${next_index}'>
-					<td class="item_td" id='p_nombre_${next_index}' contenteditable='true'></td>
+		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
+					<td class="item_td stopSpaces" id='p_nombre_${next_index}' contenteditable='true'></td>
 					<td class="item_td" id='p_direccion_${next_index}' contenteditable='true'></td>
 					<td class="item_td" id='p_celular_${next_index}' contenteditable='true'></td>
 					<td class="item_td" id='p_email_${next_index}' contenteditable='true'></td>
@@ -484,10 +484,10 @@ function Item() {
 	};
 
 	this.getRowBuild = function(next_index) {
-		return `<tr id='row_${next_index}'>
-					<td id='i_nombre_${next_index}' contenteditable='true'></td>
-					<td id='i_unidad_${next_index}' contenteditable='true'></td>
-					<td id='i_embalaje_${next_index}' contenteditable='true'></td>
+		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
+					<td class='stopSpaces' id='i_nombre_${next_index}' contenteditable='true'></td>
+					<td class='stopSpaces' id='i_unidad_${next_index}' contenteditable='true'></td>
+					<td class='stopSpaces' id='i_embalaje_${next_index}' contenteditable='true'></td>
 					<td><button type='button' title='Guardar' id='gi_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='bi_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -595,7 +595,7 @@ function Cliente() {
 	};
 
 	this.getRowBuild = function(next_index) {
-		return `<tr id='row_${next_index}'>
+		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
 					<td id='l_nombre_${next_index}' contenteditable='true'></td>
 					<td id='l_ci_${next_index}' contenteditable='true'></td>
 					<td id='l_nit_${next_index}' contenteditable='true'></td>
@@ -719,52 +719,56 @@ function Melamina() {
 		var colorOptions;
 		for (var i=0; i < listas.color.length; i++) {
 			if (listas.color[i].melamina)  {
-				colorOptions += `<option value="${listas.color[i].nombre}">${listas.color[i].nombre}</option>`;
+				colorOptions += `<option value="${listas.color[i]._id.toString()}">${listas.color[i].nombre}</option>`;
 			}
 		}
 		var medidasOptions;
 		for (var i=0; i < listas.medidas.length; i++) {
 			if (listas.medidas[i].melamina)  {
-				medidasOptions += `<option value="${listas.medidas[i].nombre}">${listas.medidas[i].nombre}</option>`;
+				medidasOptions += `<option value="${listas.medidas[i]._id.toString()}">${listas.medidas[i].nombre}</option>`;
 			}
 		}
 		var provedorOptions;
 		for (var i=0; i < listas.provedor.length; i++) {
 			if (listas.provedor[i].items.includes("Melamina"))  {
-				provedorOptions += `<option value="${listas.provedor[i].nombre}">${listas.provedor[i].nombre}</option>`;
+				provedorOptions += `<option value="${listas.provedor[i]._id.toString()}">${listas.provedor[i].nombre}</option>`;
 			}
 		}
 		var marcaOptions;
 		for (var i=0; i < listas.marca.length; i++) {
 			if (listas.marca[i].melamina)  {
-				marcaOptions += `<option value="${listas.marca[i].nombre}">${listas.marca[i].nombre}</option>`;
+				marcaOptions += `<option value="${listas.marca[i]._id.toString()}">${listas.marca[i].nombre}</option>`;
 			}
 		}
 
-		return `<tr id='row_${next_index}'>
+		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
 					<td class='item_td' id='a_color_${next_index}'>
 						<select id="color_melamina_${next_index}">
+							<option value="" selected>(Seleccione un color)</option>
 							${colorOptions}
 						</select>
 					</td>
 					<td class='item_td' id='a_provedor_${next_index}'>
 					    <select id="provedor_melamina_${next_index}">
+							<option value="" selected>(Seleccione un provedor)</option>
 							${provedorOptions}
 						</select>
 					</td>
 					<td class='item_td' id='a_medidas_${next_index}'>
 					    <select id="medidas_melamina_${next_index}">
+						<option value="" selected>(Seleccione una medida)</option>
 							${medidasOptions}
 						</select>
 					</td>
 					<td class='item_td' id='a_marca_${next_index}'>
 					    <select id="marca_melamina_${next_index}">
+							<option value="" selected>(Seleccione un marca)</option>
 							${marcaOptions}
 						</select>
 					</td>
-					<td class='item_td' id='a_precio_compra_${next_index}' contenteditable='true'></td>
-					<td class='item_td' id='a_precio_venta_${next_index}' contenteditable='true'></td>
-					<td class='item_td' id='a_laminaxpaquete_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='a_precio_compra_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='a_precio_venta_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='a_laminaxpaquete_${next_index}' contenteditable='true'></td>
 					<td><button type='button' title='Guardar' id='ga_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='ba_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -793,7 +797,7 @@ function Melamina() {
 	        if (response.ok) {
 	            console.log(response.message);
 				document.getElementById("message").style.background = "#a4f1a4";
-	            document.getElementById("message").innerHTML = response.message + ". Melamina addicionado! <br>";
+	            document.getElementById("message").innerHTML = response.message + " en BD! <br>";
 	        } else {
 	            console.log(response.status, response.statusText);
 				document.getElementById("message").style.background = "red";
@@ -819,7 +823,7 @@ function Melamina() {
 	        if (response.ok) {
 	            console.log(response.message);
 				document.getElementById("message").style.background = "#a4f1a4";
-	            document.getElementById("message").innerHTML = response.message + ". Melamina guardado!<br>";
+	            document.getElementById("message").innerHTML = response.message + ". Melamina guardada!<br>";
 	            if (response.action == "reload") {
 	            	 window.location.reload();
 	            }
@@ -847,7 +851,7 @@ function Melamina() {
 	        if (response.ok) {
 	            console.log(response.message);
 				document.getElementById("message").style.background = "#a4f1a4";
-	            document.getElementById("message").innerHTML = response.message + ". Melamina eliminado! <br>";
+	            document.getElementById("message").innerHTML = response.message + ". Melamina eliminada! <br>";
 	            document.getElementById("row_" + id).outerHTML = ""; ///need to move this code
 	        } else {
 	            console.log(response.status, response.statusText);
@@ -882,55 +886,59 @@ function Tapacantos() {
 		var colorOptions;
 		for (var i=0; i < listas.color.length; i++) {
 			if (listas.color[i].tapacantos)  {
-				colorOptions += `<option value="${listas.color[i].nombre}">${listas.color[i].nombre}</option>`;
+				colorOptions += `<option value="${listas.color[i]._id.toString()}">${listas.color[i].nombre}</option>`;
 			}
 		}
 		var medidasOptions;
 		for (var i=0; i < listas.medidas.length; i++) {
 			if (listas.medidas[i].tapacantos)  {
-				medidasOptions += `<option value="${listas.medidas[i].nombre}">${listas.medidas[i].nombre}</option>`;
+				medidasOptions += `<option value="${listas.medidas[i]._id.toString()}">${listas.medidas[i].nombre}</option>`;
 			}
 		}
 		var provedorOptions;
 		for (var i=0; i < listas.provedor.length; i++) {
 			if (listas.provedor[i].items.includes("Tapacantos"))  {
-				provedorOptions += `<option value="${listas.provedor[i].nombre}">${listas.provedor[i].nombre}</option>`;
+				provedorOptions += `<option value="${listas.provedor[i]._id.toString()}">${listas.provedor[i].nombre}</option>`;
 			}
 		}
 		var marcaOptions;
 		for (var i=0; i < listas.marca.length; i++) {
 			if (listas.marca[i].tapacantos)  {
-				marcaOptions += `<option value="${listas.marca[i].nombre}">${listas.marca[i].nombre}</option>`;
+				marcaOptions += `<option value="${listas.marca[i]._id.toString()}">${listas.marca[i].nombre}</option>`;
 			}
 		}
 
-		return `<tr id='row_${next_index}'>
+		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
 					<td class='item_td' id='t_color_${next_index}'>
 						<select id="color_tapacantos_${next_index}">
+							<option value="" seleted>(seleccione un color)</option>
 							${colorOptions}
 						</select>
 					</td>
 					<td class='item_td' id='t_provedor_${next_index}'>
 					    <select id="provedor_tapacantos_${next_index}">
+							<option value="" seleted>(seleccione un provedor)</option>
 							${provedorOptions}
 						</select>
 					</td>
 					<td class='item_td' id='t_medidas_${next_index}'>
 					    <select id="medidas_tapacantos_${next_index}">
+							<option value="" seleted>(seleccione una medida)</option>
 							${medidasOptions}
 						</select>
 					</td>
 					<td class='item_td' id='t_marca_${next_index}'>
 					    <select id="marca_tapacantos_${next_index}">
+							<option value="" seleted>(seleccione una marca)</option>
 							${marcaOptions}
 						</select>
 					</td>
-					<td class='item_td' id='t_precio_compra_${next_index}' contenteditable='true'></td>
-					<td class='item_td' id='t_precio_venta_${next_index}' contenteditable='true'></td>
-					<td class='item_td' id='t_metrosxrollo_${next_index}' contenteditable='true'></td>
-					<td class='item_td' id='t_rollosxcaja_${next_index}' contenteditable='true'></td>
-					<td class='item_td' id='t_precio_venta_metros_${next_index}' contenteditable='true'></td>
-					<td class='item_td' id='t_precio_compra_metros_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='t_precio_compra_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='t_precio_venta_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='t_metrosxrollo_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='t_rollosxcaja_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='t_precio_venta_metros_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='t_precio_compra_metros_${next_index}' contenteditable='true'></td>
 					<td><button type='button' title='Guardar' id='gt_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='bt_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -1044,29 +1052,31 @@ function Pegamento() {
 		var provedorOptions;
 		for (var i=0; i < listas.provedor.length; i++) {
 			if (listas.provedor[i].items.includes("Pegamento")) {
-				provedorOptions += `<option value="${listas.provedor[i].nombre}">${listas.provedor[i].nombre}</option>`;
+				provedorOptions += `<option value="${listas.provedor[i]._id.toString()}">${listas.provedor[i].nombre}</option>`;
 			}
 		}
 		var marcaOptions;
 		for (var i=0; i < listas.marca.length; i++) {
 			if (listas.marca[i].pegamento) {
-				marcaOptions += `<option value="${listas.marca[i].nombre}">${listas.marca[i].nombre}</option>`;
+				marcaOptions += `<option value="${listas.marca[i]._id.toString()}">${listas.marca[i].nombre}</option>`;
 			}
 		}
 
-		return `<tr id='row_${next_index}'>
+		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
 					<td id='p_provedor_${next_index}'>
 					    <select id="provedor_pegamento_${next_index}">
+							<option value="" seleted>(seleccione un provedor)</option>
 							${provedorOptions}
 						</select>
 					</td>
 					<td id='p_marca_${next_index}'>
 					    <select id="marca_pegamento_${next_index}">
+							<option value="" seleted>(seleccione una marca)</option>
 							${marcaOptions}
 						</select>
 					</td>
-					<td id='p_precio_compra_${next_index}' contenteditable='true'></td>
-					<td id='p_precio_venta_${next_index}' contenteditable='true'></td>
+					<td class='numericAllow' id='p_precio_compra_${next_index}' contenteditable='true'></td>
+					<td class='numericAllow' id='p_precio_venta_${next_index}' contenteditable='true'></td>
 					<td><button type='button' title='Guardar' id='gp_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='bp_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -1177,52 +1187,56 @@ function Fondo() {
 		var colorOptions;
 		for (var i=0; i < listas.color.length; i++) {
 			if (listas.color[i].fondo) {
-				colorOptions += `<option value="${listas.color[i].nombre}">${listas.color[i].nombre}</option>`;
+				colorOptions += `<option value="${listas.color[i]._id.toString()}">${listas.color[i].nombre}</option>`;
 			}
 		}
 		var medidasOptions;
 		for (var i=0; i < listas.medidas.length; i++) {
 			if (listas.medidas[i].fondo) {
-				medidasOptions += `<option value="${listas.medidas[i].nombre}">${listas.medidas[i].nombre}</option>`;
+				medidasOptions += `<option value="${listas.medidas[i]._id.toString()}">${listas.medidas[i].nombre}</option>`;
 			}
 		}
 		var provedorOptions;
 		for (var i=0; i < listas.provedor.length; i++) {
 			if (listas.provedor[i].items.includes("Fondo")) {
-				provedorOptions += `<option value="${listas.provedor[i].nombre}">${listas.provedor[i].nombre}</option>`;
+				provedorOptions += `<option value="${listas.provedor[i]._id.toString()}">${listas.provedor[i].nombre}</option>`;
 			}
 		}
 		var marcaOptions;
 		for (var i=0; i < listas.marca.length; i++) {
 			if (listas.marca[i].fondo) {
-				marcaOptions += `<option value="${listas.marca[i].nombre}">${listas.marca[i].nombre}</option>`;
+				marcaOptions += `<option value="${listas.marca[i]._id.toString()}">${listas.marca[i].nombre}</option>`;
 			}
 		}
 
-		return `<tr id='row_${next_index}'>
+		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
 					<td class='item_td' id='f_color_${next_index}'>
 						<select id="color_fondo_${next_index}">
+							<option value="" seleted>(seleccione un color)</option>
 							${colorOptions}
 						</select>
 					</td>
 					<td class='item_td' id='f_provedor_${next_index}'>
 					    <select id="provedor_fondo_${next_index}">
+							<option value="" seleted>(seleccione un provedor)</option>
 							${provedorOptions}
 						</select>
 					</td>
 					<td class='item_td' id='f_medidas_${next_index}'>
 					    <select id="medidas_fondo_${next_index}">
+							<option value="" seleted>(seleccione una medida)</option>
 							${medidasOptions}
 						</select>
 					</td>
 					<td class='item_td' id='f_marca_${next_index}'>
 					    <select id="marca_fondo_${next_index}">
+							<option value="" seleted>(seleccione una marca)</option>
 							${marcaOptions}
 						</select>
 					</td>
-					<td class='item_td' id='f_precio_compra_${next_index}' contenteditable='true'></td>
-					<td class='item_td' id='f_precio_venta_${next_index}' contenteditable='true'></td>
-					<td class='item_td' id='f_laminaxpaquete_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='f_precio_compra_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='f_precio_venta_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='f_laminaxpaquete_${next_index}' contenteditable='true'></td>
 					<td><button type='button' title='Guardar' id='gf_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='bf_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>

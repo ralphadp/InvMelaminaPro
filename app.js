@@ -65,22 +65,63 @@ app.get('/pedidos', function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
+    var items = {};
+    var persona = {};
 
     DB.collection("inventario").find().toArray().then(resultsInventario => {
         var rInventario = {};
         resultsInventario.forEach((value) => {
             rInventario[value.codigo] = value;
         });
-    DB.collection("collectionmelamina").find().toArray().then(resultMelamina => {
-    DB.collection("collectiontapacantos").find().toArray().then(resultsTapacantos => {
-    DB.collection("collectionpegamento").find().toArray().then(resultsPegamento => {
-    DB.collection("collectionfondo").find().toArray().then(resultsFondo => {
     ///use redis to speed and save internally       
     DB.collection("collectionCliente").find().toArray().then(resultsCliente => {
+        resultsCliente.forEach((cliente) => {
+            persona[cliente._id.toString()] = cliente;
+        });
         DB.collection("item").find().toArray().then(resultsItem => {
+            resultsItem.forEach((item) => {
+                items[item.nombre] = item;
+            });
+            DB.collection("collectionmelamina").find().toArray().then(resultMelamina => {
+                resultMelamina.forEach((melamina) => {
+                    let hash = MD5(items["Melamina"]._id.toString() + melamina.color + melamina.medidas + melamina.marca).toString();
+                    if (rInventario[hash]) {
+                        rInventario[hash].contenido = melamina;
+                    }
+                })
+            DB.collection("collectiontapacantos").find().toArray().then(resultsTapacantos => {
+                resultsTapacantos.forEach((tapacantos) => {
+                    let hash = MD5(items["Tapacantos"]._id.toString() + tapacantos.color + tapacantos.medidas + tapacantos.marca).toString();
+                    if (rInventario[hash]) {
+                        rInventario[hash].contenido = tapacantos;
+                    }
+                })
+            DB.collection("collectionpegamento").find().toArray().then(resultsPegamento => {
+                resultsPegamento.forEach((pegamento) => {
+                    let hash = MD5(items["Pegamento"]._id.toString() + pegamento.marca).toString();
+                    if (rInventario[hash]) {
+                        rInventario[hash].contenido = pegamento;
+                    }
+                })
+            DB.collection("collectionfondo").find().toArray().then(resultsFondo => {
+                resultsFondo.forEach((fondo) => {
+                    let hash = MD5(items["Fondo"]._id.toString() + fondo.color + fondo.medidas + fondo.marca).toString();
+                    if (rInventario[hash]) {
+                        rInventario[hash].contenido = fondo;
+                    }
+                })
             DB.collection("color").find().toArray().then(resultsColor => {
+                resultsColor.forEach((color) => {
+                    items[color.nombre] = color;
+                });
                 DB.collection("medidas").find().toArray().then(resultMedida => {
+                    resultMedida.forEach((medida) => {
+                        items[medida.nombre] = medida;
+                    });
                     DB.collection("marcas").find().toArray().then(resultMarcas => {
+                        resultMarcas.forEach((marca) => {
+                            items[marca.nombre] = marca;
+                        });
                         DB.collection("unidad").find().toArray().then(resultUnidad => {
                             let fecha = getFecha();
                             console.log(fecha);
@@ -89,12 +130,10 @@ app.get('/pedidos', function(req, res) {
                                 "tipo_entrada": "pedido"
                             }).toArray().then(resultHistorial => {
                                 res.render('pages/pedidos', {
-                                    /*catalogoMelamina: resultMelamina,
-                                    catalogoTapacantos: resultsTapacantos,
-                                    catalogoPegamento: resultsPegamento,
-                                    catalogoFondo: resultsFondo,*/
                                     cliente: resultsCliente,
-                                    item: resultsItem, 
+                                    persona: persona,
+                                    item: resultsItem,
+                                    items: items,
                                     color: resultsColor, 
                                     medida: resultMedida,
                                     marca: resultMarcas,
@@ -134,12 +173,25 @@ app.get('/ingresos', function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
+    var items = {};
 
     DB.collection("collectionprovedor").find().toArray().then(resultsProvedor => {
         DB.collection("item").find().toArray().then(resultsItem => {
+            resultsItem.forEach((item)=>{
+                items[item.nombre] = item;
+            });
             DB.collection("color").find().toArray().then(resultsColor => {
+                resultsColor.forEach((color)=>{
+                    items[color.nombre] = color;
+                });
                 DB.collection("medidas").find().toArray().then(resultMedida => {
+                    resultMedida.forEach((medida)=>{
+                        items[medida.nombre] = medida;
+                    });
                     DB.collection("marcas").find().toArray().then(resultMarcas => {
+                        resultMarcas.forEach((marca)=>{
+                            items[marca.nombre] = marca;
+                        });
                         DB.collection("unidad").find().toArray().then(resultUnidad => {
                             let fecha = getFecha();
                             console.log(fecha);
@@ -149,7 +201,8 @@ app.get('/ingresos', function(req, res) {
                             }).toArray().then(resultHistorial => {
                                 res.render('pages/ingreso', {
                                     provedor: resultsProvedor, 
-                                    item: resultsItem, 
+                                    item: resultsItem,
+                                    items: items,
                                     color: resultsColor, 
                                     medida: resultMedida,
                                     marca: resultMarcas,
@@ -178,7 +231,7 @@ app.post('/addicionar_ingreso', (req, res) => {
     client.connect();
 
     console.log("body:",req.body);
-    let tipoItem = req.body.item.toLowerCase();
+    let tipoItem = req.body.text.item.toLowerCase();
     let tipoUnidad = req.body.nombreDeUnidad.toLowerCase();
     let [color, medida] = formatColorMedida(req.body);
 
@@ -245,6 +298,12 @@ app.post('/addicionar_ingreso', (req, res) => {
                 console.log(item);
                 var Collection = client.db().collection("historial");
                 req.body.inventario_id = codigo.toString();
+                req.body.item = req.body.text.item;
+                req.body.cliente = req.body.text.cliente;
+                req.body.marca = req.body.text.marca;
+                req.body.medida = req.body.text.medida;
+                req.body.color = req.body.text.color;
+                delete req.body.text;
                 Collection.insertOne(req.body).then(results => {
                     console.log(`Una compra addicionada al historial...`);
                     res.status(200).json({ok: true, message: "Historial e Inventario actualizados."});
@@ -262,7 +321,7 @@ app.post('/addicionar_pedido',(req, res) => {
     client.connect();
 
     console.log("body: ",req.body);
-    let tipoItem = req.body.item.toLowerCase();
+    let tipoItem = req.body.text.item.toLowerCase();
     let tipoUnidad = req.body.nombreDeUnidad.toLowerCase();
     let [color, medida] = formatColorMedida(req.body);
 
@@ -279,7 +338,7 @@ app.post('/addicionar_pedido',(req, res) => {
     let hash = getInventarioMD5(req.body);
     console.log(hash);
     CollectionInventario.findOne({"codigo":hash}).then(INVENTARIO => {
-        console.log(INVENTARIO);
+        console.log("Inventario:", INVENTARIO);
         CollectionItem.find(filter).toArray().then(item => {
             console.log(item);
             var ID = item[0]._id;
@@ -340,6 +399,13 @@ app.post('/addicionar_pedido',(req, res) => {
             CollectionInventario.updateOne({"codigo": hash}, {$set: total}).then(item => {
                   var CollectionHistorial = client.db().collection("historial");
                   req.body.inventario_id = ID.toString();
+                  req.body.item = req.body.text.item;
+                  req.body.cliente = req.body.text.cliente;
+                  req.body.marca = req.body.text.marca;
+                  req.body.medida = req.body.text.medida;
+                  req.body.color = req.body.text.color;
+                  delete req.body.text;
+
                   CollectionHistorial.insertOne(req.body).then(results => {
                         let AVISO = "";
                         if (cantidad == 0) {
@@ -514,11 +580,67 @@ app.get('/contenidos', function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
+    let colores = {};
+    let medidas = {};
+    let provedores = {};
+    let marcas = {};
     
+    DB.collection("color").find().toArray().then(color_results => {
+        color_results.forEach((color)=>{
+            colores[color._id.toString()] = color;
+        });
+    DB.collection("medidas").find().toArray().then(medidas_results => {
+        medidas_results.forEach((medida)=>{
+            medidas[medida._id.toString()] = medida;
+        });
+    DB.collection("collectionprovedor").find().toArray().then(provedor_results => {
+        provedor_results.forEach((provedor)=>{
+            provedores[provedor._id.toString()] = provedor;
+        });
+    DB.collection("marcas").find().toArray().then(marca_results => {
+        marca_results.forEach((marca)=>{
+            marcas[marca._id.toString()] = marca;
+        });
     DB.collection("collectiontapacantos").find().toArray().then(tapacantos_results => {
+        tapacantos_results.forEach((tapacantos) => {
+            tapacantos.color_id = tapacantos.color;
+            tapacantos.color = colores[tapacantos.color].nombre;
+            tapacantos.medidas_id = tapacantos.medidas;
+            tapacantos.medidas = medidas[tapacantos.medidas].nombre;
+            tapacantos.provedor_id = tapacantos.provedor;
+            tapacantos.provedor = provedores[tapacantos.provedor].nombre;
+            tapacantos.marca_id = tapacantos.marca;
+            tapacantos.marca = marcas[tapacantos.marca].nombre;
+        });
         DB.collection("collectionmelamina").find().toArray().then(melamina_results => {
+            melamina_results.forEach((melamina) => {
+                melamina.color_id = melamina.color;
+                melamina.color = colores[melamina.color].nombre;
+                melamina.medidas_id = melamina.medidas;
+                melamina.medidas = medidas[melamina.medidas].nombre;
+                melamina.provedor_id = melamina.provedor;
+                melamina.provedor = provedores[melamina.provedor].nombre;
+                melamina.marca_id = melamina.marca;
+                melamina.marca = marcas[melamina.marca].nombre;
+            });
             DB.collection("collectionpegamento").find().toArray().then(pegamento_results => {
+                pegamento_results.forEach((pegamento) => {
+                    pegamento.provedor_id = pegamento.provedor;
+                    pegamento.provedor = provedores[pegamento.provedor].nombre;
+                    pegamento.marca_id = pegamento.marca;
+                    pegamento.marca = marcas[pegamento.marca].nombre;
+                });
                 DB.collection("collectionfondo").find().toArray().then(fondo_results => {
+                    fondo_results.forEach((fondo) => {
+                        fondo.color_id = fondo.color;
+                        fondo.color = colores[fondo.color].nombre;
+                        fondo.medidas_id = fondo.medidas;
+                        fondo.medidas = medidas[fondo.medidas].nombre;
+                        fondo.provedor_id = fondo.provedor;
+                        fondo.provedor = provedores[fondo.provedor].nombre;
+                        fondo.marca_id = fondo.marca;
+                        fondo.marca = marcas[fondo.marca].nombre;
+                    });
                     DB.collection("collectionCliente").find().toArray().then(cliente_results => {
                         res.render('pages/contenidos', { 
                             tapacantos: tapacantos_results,
@@ -536,6 +658,14 @@ app.get('/contenidos', function(req, res) {
             .catch(error => console.error(error))
         })
         .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
     
@@ -560,15 +690,40 @@ app.get('/inventario', function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
-    var productos = [], control = [];
+
+    let producto_item ={};
+    let colores = {};
+    let medidas = {};
+    let marcas = {};
+    var control = [];
+    DB.collection("item").find().toArray().then(resultsItem => {
+        resultsItem.forEach((item)=>{
+            producto_item[item.nombre] = item;
+        });
+    DB.collection("color").find().toArray().then(resultsColor => {
+        resultsColor.forEach((color)=>{
+            colores[color._id.toString()] = color;
+        });
+    DB.collection("medidas").find().toArray().then(resultsMedidas => {
+        resultsMedidas.forEach((medida)=>{
+            medidas[medida._id.toString()] = medida;
+        });
+    DB.collection("marcas").find().toArray().then(resultsMarca => {
+        resultsMarca.forEach((marca)=>{
+            marcas[marca._id.toString()] = marca;
+        });
     DB.collection("inventario").find().toArray().then(resultsInventario => {
-        var rInventario = {fetchInventarioValues: function(nombre, producto, unidad) {
-                let indexHash = MD5(nombre + producto.color + producto.medidas + producto.marca).toString();
+        var rInventario = {fetchInventarioValues: function(nombre, producto) {
+                // orfan 68f75d027e9060139a86229de5cb98e7
+                let item = producto_item[nombre];
+                let indexHash = MD5(item._id.toString() + producto.color + producto.medidas + producto.marca).toString();
                 if (!this[indexHash]) {
-                    console.log("["+indexHash+"] NO existe... ", nombre , producto.color , producto.medidas , producto.marca);
+                    console.log("["+indexHash+"] NO existe... ", nombre, item._id.toString(), producto.color , producto.medidas , producto.marca);
                 } else {
+                    console.log(nombre);
+                    console.log(indexHash, item._id.toString(), producto.color, producto.medidas, producto.marca);
                     this[indexHash].nombre = nombre;
-                    this[indexHash].unidad = unidad;
+                    this[indexHash].unidad = item.unidad;
                     this[indexHash].item = producto;
                 }
             }
@@ -578,28 +733,31 @@ app.get('/inventario', function(req, res) {
         });
         DB.collection("collectionmelamina").find().toArray().then(resultsMelamina => {
             resultsMelamina.forEach((Melamina) => {
-                rInventario.fetchInventarioValues("Melamina", Melamina, "laminas");
+                rInventario.fetchInventarioValues("Melamina", Melamina);
             });
             DB.collection("collectiontapacantos").find().toArray().then(resultsTapacantos => {
                 resultsTapacantos.forEach((Tapacantos) => {
-                    rInventario.fetchInventarioValues("Tapacantos", Tapacantos, "rollos");
+                    rInventario.fetchInventarioValues("Tapacantos", Tapacantos);
                 });
                 DB.collection("collectionpegamento").find().toArray().then(resultPegamento => {
                     resultPegamento.forEach((Pegamento )=> {
-                        rInventario.fetchInventarioValues("Pegamento", Pegamento, "bolsas");
+                        rInventario.fetchInventarioValues("Pegamento", Pegamento);
                     });
                     DB.collection("collectionfondo").find().toArray().then(resultFondo => {
                         resultFondo.forEach((Fondo) => {
-                            rInventario.fetchInventarioValues("Fondo", Fondo, "laminas");
+                            rInventario.fetchInventarioValues("Fondo", Fondo);
                         });
                         DB.collection("control_producto").find().toArray().then(resultControl => {
                             resultControl.forEach(element => {
                                 control[element.item] = element;
                             });
                             res.render('pages/inventario', {
+                                colores: colores,
+                                medidas: medidas,
+                                marcas: marcas,
                                 inventario: rInventario,
                                 control: control,
-                                size: Object.keys(rInventario).length
+                                size: (Object.keys(rInventario).length - 1)  //less 1 function
                             });
                         })
                         .catch(error => console.error(error))
@@ -612,6 +770,14 @@ app.get('/inventario', function(req, res) {
             .catch(error => console.error(error))
         })
         .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
 });

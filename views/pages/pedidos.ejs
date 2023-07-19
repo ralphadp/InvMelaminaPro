@@ -9,15 +9,18 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
 	<script>
 		var pedido_cliente = <%- JSON.stringify(cliente); %>;
+		var cliente = <%- JSON.stringify(persona); %>;
         var item_color = <%- JSON.stringify(color); %>;
         var item_medida = <%- JSON.stringify(medida); %>;
 		var item_marca = <%- JSON.stringify(marca); %>;
 		var item_unidad = <%- JSON.stringify(unidad); %>;
 		var item_inventario = <%- JSON.stringify(inventario); %>;
+		var items = <%- JSON.stringify(items); %>;
 		
 		function fetchProducto(key) {
 			let indexHash = CryptoJS.MD5(key.item + key.color + key.medida + key.marca);
-			return item_inventario[indexHash];
+			let h = indexHash.toString();
+			return item_inventario[h];
 		}
 
     </script>
@@ -225,7 +228,7 @@
 												<option value="" selected>(operario)</option>
                                                 <% for(let index = 0; index < cliente.length; index++) {
 													if (cliente[index].tipo == "interno") { %>
-                                                    <option value="<%= index %>"><%= cliente[index].nombre %></option>
+                                                    <option value="<%= cliente[index]._id.toString() %>"><%= cliente[index].nombre %></option>
                                                 <% } } %>
 											</select>
 											<span class="select-btn">
@@ -236,10 +239,10 @@
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label for="item" class="special-label-1">Item </label>
-											<select name="item" id="item" class="form-control verify" onchange="selectItem()">
+											<select name="item" id="item" class="form-control verify" onchange="selectItem(this)">
 												<option value="" selected="">(Elija el item)</option>
                                                 <% for (let index = 0; index < item.length; index++) { %>
-                                                    <option value="<%= item[index].nombre %>"><%= item[index].nombre %></option>
+                                                    <option value="<%= item[index]._id.toString() %>"><%= item[index].nombre %></option>
                                                 <% } %>
 											</select>
 											<span class="select-btn">
@@ -395,10 +398,10 @@
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label for="item_ex" class="special-label-1">Item </label>
-											<select name="item_ex" id="item_ex" class="form-control" onchange="selectItem()">
+											<select name="item_ex" id="item_ex" class="form-control" onchange="selectItem(this)">
 												<option value="" selected="">(Elija el item)</option>
                                                 <% for(let index = 0; index < item.length; index++) {%>
-                                                    <option value="<%= item[index].nombre %>"><%= item[index].nombre %></option>
+                                                    <option value="<%= item[index]._id.toString() %>"><%= item[index].nombre %></option>
                                                 <% } %>
 											</select>
 											<span class="select-btn">
@@ -509,7 +512,7 @@
 												<option value="" selected="">(ninguno)</option>
 												<% for(let index = 0; index < cliente.length; index++) {
 													if (cliente[index].tipo == "externo") { %>
-                                                    <option value="<%= index %>"><%= cliente[index].nombre %></option>
+                                                    <option value="<%= cliente[index]._id.toString() %>"><%= cliente[index].nombre %></option>
                                                 <% } } %>
 											</select>
 											<span class="select-btn">
@@ -520,10 +523,10 @@
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label for="item_re" class="special-label-1">Item </label>
-											<select name="item_re" id="item_re" class="form-control" onchange="selectItem()">
+											<select name="item_re" id="item_re" class="form-control" onchange="selectItem(this)">
 												<option value="" selected="">(Elija el item)</option>
                                                 <% for(let index = 0; index < item.length; index++) {%>
-                                                    <option value="<%= item[index].nombre %>"><%= item[index].nombre %></option>
+                                                    <option value="<%= item[index]._id.toString() %>"><%= item[index].nombre %></option>
                                                 <% } %>
 											</select>
 											<span class="select-btn">
@@ -535,7 +538,7 @@
 											<select name="medida_re" id="medida_re" class="form-control">
 												<option value="" selected="">(Elija las medidas)</option>
                                                 <% for(let index = 0; index < medida.length; index++) {%>
-                                                    <option value="<%= medida[index].nombre %>"><%= medida[index].nombre %></option>
+                                                    <option value="<%= medida[index]._id.toString() %>"><%= medida[index].nombre %></option>
                                                 <% } %>
 											</select>
 											<span class="select-btn">
@@ -548,7 +551,7 @@
 												<option value="" selected="">(Escoja el color)</option>
                                                 <% for(let index = 0; index < color.length; index++) {%>
                                                     <option style="background: <%= color[index].codigo %>;" 
-                                                        value="<%= color[index].nombre %>">
+                                                        value="<%= color[index]._id.toString() %>">
                                                         <%= color[index].nombre %>
                                                     </option>
                                                 <% } %>
@@ -562,7 +565,7 @@
 											<select name="marca_re" id="marca_re" class="form-control">
 												<option value="" selected="">(Elija la marca)</option>
                                                 <% for(let index = 0; index < marca.length; index++) {%>
-                                                    <option value="<%= marca[index].nombre %>"><%= marca[index].nombre %></option>
+                                                    <option value="<%= marca[index]._id.toString() %>"><%= marca[index].nombre %></option>
                                                 <% } %>
 											</select>
 											<span class="select-btn">

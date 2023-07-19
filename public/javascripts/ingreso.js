@@ -20,16 +20,24 @@ let GuardarIngreso = function() {
     let NONE = "(ninguno)";
     historialUnit.fecha          = document.getElementById('timestamp1').value;
     historialUnit.numIngreso     = $('#ingreso').val();
-    historialUnit.item           = $('[name="item"]').find(":selected").text();
+    historialUnit.item           = $('[name="item"]').find(":selected").val();
 
     let item = historialUnit.item;
-    historialUnit.cliente        = $('[name="provedor"]').find(":selected").text();
+    historialUnit.cliente        = $('[name="provedor"]').find(":selected").val();
     historialUnit.nombreDeUnidad = $('#unidad').find(":selected").text();
     historialUnit.embalaje       = (item == "Pegamento") ? "Bolsa" : ((item == "Tapacanto" ? "Caja" : ((item == "Melamina" ? "Paquete" : "Paquete"))));;
     historialUnit.precioCompra   = $('#precio').val();
     historialUnit.precioVenta    = "";
     historialUnit.cantidad       = $('#cantidad').val();
-    historialUnit.marca          = $('#marca').find(":selected").text();
+    historialUnit.marca          = $('#marca').find(":selected").val();
+
+    historialUnit.text = {
+        item: $('[name="item"]').find(":selected").text(),
+        cliente: $('[name="provedor"]').find(":selected").text(),
+        marca:  $('#marca').find(":selected").text(),
+        color: ($('[name="item"]').find(":selected").text()=="Pegamento")?'(ninguno)':$('#color').find(":selected").text(),
+        medida: ($('[name="item"]').find(":selected").text()=="Pegamento")?'(ninguno)':$('#medida').find(":selected").text()
+    };
 
     if (item != "Pegamento") {
         historialUnit.color    = $('#color').find(":selected").val();
@@ -50,8 +58,8 @@ let GuardarIngreso = function() {
 
 function obtenerPrecioStandard() {
     let queryPrecio = {
-        provedor: $('[name="provedor"]').find(":selected").text(),
-        item:     $('[name="item"]').find(":selected").text(),
+        provedor: $('[name="provedor"]').find(":selected").val(),
+        item:     $('[name="item"]').find(":selected").text(), //to look at collection 
         color:    $('#color').find(":selected").val(),
         medida:   $('#medida').find(":selected").val(),
         marca:    $('#marca').find(":selected").val(),
@@ -127,7 +135,7 @@ let fillPropiedad = function(selectedItem, nombrePropiedad, item_propiedad) {
     for (var i = 0; i < item_propiedad.length; i++) {
         var propiedad = item_propiedad[i];
         if (propiedad[selectedItem] == true) {
-            addOption(selected, propiedad.nombre, propiedad.nombre, propiedad["codigo"] ? propiedad["codigo"] : false);
+            addOption(selected, items[propiedad.nombre]._id.toString(), propiedad.nombre, propiedad["codigo"] ? propiedad["codigo"] : false);
         }
     }
 }
@@ -136,12 +144,13 @@ let selectProvedor = function() {
     let selectedItem = document.getElementById("provedor").value;
     for (var i=0; i<provedor_items.length; i++) {
         var provedor = provedor_items[i];
-        if (provedor.nombre == selectedItem) {
+        if (provedor._id.toString() == selectedItem) {
             let selected = cleanOptionsFrom("item");
             addOption(selected, "", "(Elija el item)");
+            console.log(provedor.items);
             for (var j=0; j<provedor.items.length; j++) {
                 var item_name = provedor.items[j]
-                addOption(selected, item_name, item_name);
+                addOption(selected, items[item_name]._id.toString(), item_name);
             }
         }
     }
@@ -154,9 +163,10 @@ let selectProvedor = function() {
     document.getElementById("unidad").selectedIndex = 0;
 }
 
-let selectItem = function() {
+let selectItem = function(selected) {
+    let selectedItem = selected.options[selected.selectedIndex].text.toLowerCase();
 
-    let selectedItem = document.getElementById("item").value.toLowerCase();
+//    let selectedItem = document.getElementById("item").value.toLowerCase();
 
     if (selectedItem == "pegamento") {
         cleanColor();

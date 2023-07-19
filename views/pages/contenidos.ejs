@@ -70,10 +70,10 @@
                 <tbody class="list">
                     <%  for (let index = tapacantos.length-1; index >= 0; index--) { %>
                         <tr class="row-data">
-                            <td class="Provedor"><%= tapacantos[index].provedor %></td>
-                            <td class="Medidas"><%= tapacantos[index].medidas %></td>
-                            <td class="Color"><%= tapacantos[index].color%></td>
-                            <td class="Marca"><%= tapacantos[index].marca %></td>
+                            <td class="Provedor" id="<%=tapacantos[index].provedor_id %>"><%= tapacantos[index].provedor %></td>
+                            <td class="Medidas" id="<%=tapacantos[index].medidas_id %>"><%= tapacantos[index].medidas %></td>
+                            <td class="Color" id="<%=tapacantos[index].color_id %>"><%= tapacantos[index].color%></td>
+                            <td class="Marca" id="<%=tapacantos[index].marca_id %>"><%= tapacantos[index].marca %></td>
                             <td class="PrecioCompra"><%= tapacantos[index].precio_compra %> Bs(rollo) </td>
                             <td class="PrecioVenta"><%= tapacantos[index].precio_venta %> Bs(rollo)</td>
                             <td class="MetrosXRollo"><%= tapacantos[index].metrosxrollo %></td>
@@ -104,10 +104,10 @@
                 <tbody class="list">
                     <%  for (let index = melamina.length-1; index >= 0; index--) { %>
                         <tr class="">
-                            <td class="Provedor"><%= melamina[index].provedor %></td>
-                            <td class="Medidas"><%= melamina[index].medidas %></td>
-                            <td class="Color"><%= melamina[index].color%></td>
-                            <td class="Marca"><%= melamina[index].marca %></td>
+                            <td class="Provedor" id="<%=melamina[index].provedor_id %>"><%= melamina[index].provedor %></td>
+                            <td class="Medidas" id="<%=melamina[index].medidas_id %>"><%= melamina[index].medidas %></td>
+                            <td class="Color" id="<%=melamina[index].color_id %>"><%= melamina[index].color%></td>
+                            <td class="Marca" id="<%=melamina[index].marca_id %>"><%= melamina[index].marca %></td>
                             <td class="PrecioCompra"><%= melamina[index].precio_compra %> Bs(lamina) </td>
                             <td class="PrecioVenta"><%= melamina[index].precio_venta %> Bs(lamina)</td>
                             <td class="LaminaXPaquete"><%= melamina[index].laminaxpaquete %></td>
@@ -132,8 +132,8 @@
                 <tbody class="list">
                     <%  for (let index = pegamento.length-1; index >= 0; index--) { %>
                         <tr class="">
-                            <td class="Provedor"><%= pegamento[index].provedor %></td>
-                            <td class="Marca"><%= pegamento[index].marca %></td>
+                            <td class="Provedor" id="<%=pegamento[index].provedor_id %>"><%= pegamento[index].provedor %></td>
+                            <td class="Marca" id="<%=pegamento[index].marca_id %>"><%= pegamento[index].marca %></td>
                             <td class="PrecioCompra"><%= pegamento[index].precio_compra %> Bs(lamina) </td>
                             <td class="PrecioVenta"><%= pegamento[index].precio_venta %> Bs(lamina)</td>
                         </tr>
@@ -160,10 +160,10 @@
                 <tbody class="list">
                     <%  for (let index = fondo.length-1; index >= 0; index--) { %>
                         <tr class="">
-                            <td class="Provedor"><%= fondo[index].provedor %></td>
-                            <td class="Medidas"><%= fondo[index].medidas %></td>
-                            <td class="Color"><%= fondo[index].color%></td>
-                            <td class="Marca"><%= fondo[index].marca %></td>
+                            <td class="Provedor" id="<%=fondo[index].provedor_id %>"><%= fondo[index].provedor %></td>
+                            <td class="Medidas" id="<%=fondo[index].medidas_id %>"><%= fondo[index].medidas %></td>
+                            <td class="Color" id="<%=fondo[index].color_id %>"><%= fondo[index].color%></td>
+                            <td class="Marca" id="<%=fondo[index].marca_id %>"><%= fondo[index].marca %></td>
                             <td class="PrecioCompra"><%= fondo[index].precio_compra %> Bs(lamina) </td>
                             <td class="PrecioVenta"><%= fondo[index].precio_venta %> Bs(lamina)</td>
                             <td class="LaminaXPaquete"><%= fondo[index].laminaxpaquete %></td>

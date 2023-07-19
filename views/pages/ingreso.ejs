@@ -11,6 +11,7 @@
         var item_medida = <%- JSON.stringify(medida); %>;
         var item_marca = <%- JSON.stringify(marca); %>;
         var item_unidad = <%- JSON.stringify(unidad); %>;
+        var items = <%- JSON.stringify(items); %>;
     </script>
     <style>
 		#compras_menu {
@@ -57,7 +58,7 @@
                                             <select name="provedor" id="provedor" class="form-control" onchange="selectProvedor()">
                                                 <option value="" selected="">(Elija el provedor)</option>
                                                 <% for(let index = 0; index < provedor.length; index++) {%>
-                                                <option value="<%= provedor[index].nombre %>"><%= provedor[index].nombre %></option>
+                                                <option value="<%= provedor[index]._id.toString() %>"><%= provedor[index].nombre %></option>
                                                 <% } %>
                                             </select>
                                             <span class="select-btn">
@@ -68,10 +69,10 @@
                                     <div class="form-row">
                                         <div class="form-holder form-holder-2">
                                             <label for="room" class="special-label-1">Item</label>
-                                            <select name="item" id="item" class="form-control" onchange="selectItem()">
+                                            <select name="item" id="item" class="form-control" onchange="selectItem(this)">
                                                 <option value="" selected="">(Elija el item)</option>
                                                 <% for(let index = 0; index < item.length; index++) {%>
-                                                    <option value="<%= item[index].nombre %>"><%= item[index].nombre %></option>
+                                                    <option value="<%= item[index]._id.toString() %>"><%= item[index].nombre %></option>
                                                 <% } %>
                                             </select>
                                             <span class="select-btn">
@@ -84,7 +85,7 @@
                                                 <option value="" selected="">(Escoja el color)</option>
                                                 <% for(let index = 0; index < color.length; index++) {%>
                                                     <option style="background: <%= color[index].codigo %>;" 
-                                                        value="<%= color[index].nombre %>">
+                                                        value="<%= color[index]._id.toString() %>">
                                                         <%= color[index].nombre %>
                                                     </option>
                                                 <% } %>
@@ -98,7 +99,7 @@
                                             <select name="medida" id="medida" class="form-control">
                                                 <option value="" selected="">(Elija las medidas)</option>
                                                 <% for(let index = 0; index < medida.length; index++) {%>
-                                                    <option value="<%= medida[index].nombre %>"><%= medida[index].nombre %></option>
+                                                    <option value="<%= medida[index]._id.toString() %>"><%= medida[index].nombre %></option>
                                                 <% } %>
                                             </select>
                                             <span class="select-btn">
@@ -110,7 +111,7 @@
 											<select name="marca" id="marca" class="form-control">
 												<option value="" selected="">(Elija la marca)</option>
                                                 <% for(let index = 0; index < marca.length; index++) {%>
-                                                    <option value="<%= marca[index].nombre %>"><%= marca[index].nombre %></option>
+                                                    <option value="<%= marca[index]._id.toString() %>"><%= marca[index].nombre %></option>
                                                 <% } %>
 											</select>
 											<span class="select-btn">
@@ -147,7 +148,7 @@
                         <div class="actions clearfix">
                             <ul role="menu" aria-label="Pagination">
                                 <li class="disabled"><a></a></li>
-                                <li aria-hidden="false"><a role="menuitem" style="cursor:pointer;" onclick="GuardarIngreso();">Addicionar</a></li>
+                                <li aria-hidden="false"><a role="menuitem" style="cursor:pointer;" onclick="GuardarIngreso();">Guardar</a></li>
                             </ul>
                         </div>
                     </div>

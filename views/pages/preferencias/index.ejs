@@ -277,7 +277,7 @@
 			 <% for (let index = 0; index < medidas.length; index++) {
 					 var ID = medidas[index]._id.toString() %>
 			  <tr id="row_<%= ID %>">
-				  <td contenteditable="true"  class="stopSpaces" id="e_nombre_<%= ID %>"><%= medidas[index].nombre %></td>
+				  <td contenteditable="true" class="stopSpaces" id="e_nombre_<%= ID %>"><%= medidas[index].nombre %></td>
 				  <td><input type="checkbox" id="e_melamina_<%= ID %>" <%=(medidas[index].melamina == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="e_tapacantos_<%= ID %>" <%=(medidas[index].tapacantos == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="e_fondo_<%= ID %>" <%=(medidas[index].fondo == true)?'checked':'' %> /></td>
@@ -305,7 +305,7 @@
 			 <% for (let index = 0; index < provedor.length; index++) {
 					 var ID = provedor[index]._id.toString() %>
 			  <tr id="row_<%= ID %>">
-				  <td class="item_td" contenteditable="true" id="p_nombre_<%= ID %>"><%= provedor[index].nombre %></td>
+				  <td class="item_td" class="stopSpaces" contenteditable="true" id="p_nombre_<%= ID %>"><%= provedor[index].nombre %></td>
 				  <td class="item_td" contenteditable="true" id="p_direccion_<%= ID %>"><%= provedor[index].direccion %></td>
 				  <td class="item_td" contenteditable="true" id="p_celular_<%= ID %>"><%= provedor[index].celular %></td>
 				  <td class="item_td" contenteditable="true" id="p_email_<%= ID %>"><%= provedor[index].email %></td>
@@ -419,33 +419,37 @@
 			  <tr id="row_<%= ID %>">
 				  <td class="item_td" id="a_color_<%= ID %>">
 					<select id="color_melamina_<%= ID %>">
+						<option value="">(seleccione un color)</option>
 						<% for (var i=0; i < color.length; i++) {
 							if (color[i].melamina)  { %>
-							<option value="<%= color[i].nombre %>" <%=(color[i].nombre==melamina[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
+							<option value="<%= color[i]._id.toString() %>" <%=(color[i]._id.toString()==melamina[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
 				  <td class="item_td" id="a_provedor_<%= ID %>">
 					<select id="provedor_melamina_<%= ID %>">
+						<option value="">(seleccione un provedor)</option>
 						<% for (var i=0; i < provedor.length; i++) {
 							if (provedor[i].items.includes("Melamina"))  { %>
-							<option value="<%= provedor[i].nombre %>" <%=(provedor[i].nombre==melamina[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
+							<option value="<%= provedor[i]._id.toString() %>" <%=(provedor[i]._id.toString()==melamina[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
 				  <td class="item_td" id="a_medidas_<%= ID %>">
 					<select id="medidas_melamina_<%= ID %>">
+						<option value="">(seleccione un medidas)</option>
 						<% for (var i=0; i < medidas.length; i++) {
 							if (medidas[i].melamina)  { %>
-							<option value="<%= medidas[i].nombre %>" <%=(medidas[i].nombre==melamina[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
+							<option value="<%= medidas[i]._id.toString() %>" <%=(medidas[i]._id.toString()==melamina[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
 				  <td class="item_td" id="a_marca_<%= ID %>">
 					<select id="marca_melamina_<%= ID %>">
+						<option value="">(seleccione un marcas)</option>
 						<% for (var i=0; i < marcas.length; i++) {
 							if (marcas[i].melamina)  { %>
-							<option value="<%= marcas[i].nombre %>" <%=(marcas[i].nombre==melamina[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
+							<option value="<%= marcas[i]._id.toString() %>" <%=(marcas[i]._id.toString()==melamina[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
@@ -483,33 +487,37 @@
 			  <tr id="row_<%= ID %>">
 				  <td class="item_td" id="t_color_<%= ID %>">
 					<select id="color_tapacantos_<%= ID %>">
+						<option value="">(seleccione un color)</option>
 						<% for (var i=0; i < color.length; i++) {
 							if (color[i].tapacantos)  { %>
-							<option value="<%= color[i].nombre %>" <%=(color[i].nombre==tapacantos[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
+							<option value="<%= color[i]._id.toString() %>" <%=(color[i]._id.toString()==tapacantos[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
 				  <td class="item_td" id="t_provedor_<%= ID %>">
 					<select id="provedor_tapacantos_<%= ID %>">
+						<option value="">(seleccione un provedor)</option>
 						<% for (var i=0; i < provedor.length; i++) {
 							if (provedor[i].items.includes("Tapacantos"))  { %>
-							<option value="<%= provedor[i].nombre %>" <%=(provedor[i].nombre==tapacantos[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
+							<option value="<%= provedor[i]._id.toString() %>" <%=(provedor[i]._id.toString()==tapacantos[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
 				  <td class="item_td" id="t_medidas_<%= ID %>">
 					<select id="medidas_tapacantos_<%= ID %>">
+						<option value="">(seleccione una medida)</option>
 						<% for (var i=0; i < medidas.length; i++) {
 							if (medidas[i].tapacantos)  { %>
-							<option value="<%= medidas[i].nombre %>" <%=(medidas[i].nombre==tapacantos[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
+							<option value="<%= medidas[i]._id.toString() %>" <%=(medidas[i]._id.toString()==tapacantos[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
 				  <td class="item_td" id="t_marca_<%= ID %>">
 					<select id="marca_tapacantos_<%= ID %>">
+						<option value="">(seleccione una marca)</option>
 						<% for (var i=0; i < marcas.length; i++) {
 							if (marcas[i].tapacantos)  { %>
-							<option value="<%= marcas[i].nombre %>" <%=(marcas[i].nombre==tapacantos[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
+							<option value="<%= marcas[i]._id.toString() %>" <%=(marcas[i]._id.toString()==tapacantos[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
@@ -544,17 +552,19 @@
 			  <tr id="row_<%= ID %>">
 				  <td id="p_provedor_<%= ID %>">
 					<select id="provedor_pegamento_<%= ID %>">
+						<option value="">(seleccione un provedor)</option>
 						<% for (var i=0; i < provedor.length; i++) {
 							if (provedor[i].items.includes("Pegamento"))  { %>
-							<option value="<%= provedor[i].nombre %>" <%=(provedor[i].nombre==pegamento[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
+							<option value="<%= provedor[i]._id.toString() %>" <%=(provedor[i]._id.toString()==pegamento[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
 				  <td id="p_marca_<%= ID %>">
 					<select id="marca_pegamento_<%= ID %>">
+						<option value="">(seleccione una marca)</option>
 						<% for (var i=0; i < marcas.length; i++) {
 							if (marcas[i].pegamento)  { %>
-							<option value="<%= marcas[i].nombre %>" <%=(marcas[i].nombre==pegamento[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
+							<option value="<%= marcas[i]._id.toString() %>" <%=(marcas[i]._id.toString()==pegamento[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
@@ -588,33 +598,37 @@
 			  <tr id="row_<%= ID %>">
 				  <td class="item_td" id="f_color_<%= ID %>">
 					<select id="color_fondo_<%= ID %>">
+						<option value="">(seleccione un color)</option>
 						<% for (var i=0; i < color.length; i++) {
 							if (color[i].fondo)  { %>
-							<option value="<%= color[i].nombre %>" <%=(color[i].nombre==fondo[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
+							<option value="<%= color[i]._id.toString() %>" <%=(color[i]._id.toString()==fondo[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
 				  <td class="item_td" id="f_provedor_<%= ID %>">
 					<select id="provedor_fondo_<%= ID %>">
+						<option value="">(seleccione un provedor)</option>
 						<% for (var i=0; i < provedor.length; i++) {
 							if (provedor[i].items.includes("Fondo"))  { %>
-							<option value="<%= provedor[i].nombre %>" <%=(provedor[i].nombre==fondo[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
+							<option value="<%= provedor[i]._id.toString() %>" <%=(provedor[i]._id.toString()==fondo[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
 				  <td class="item_td" id="f_medidas_<%= ID %>">
 					<select id="medidas_fondo_<%= ID %>">
+						<option value="">(seleccione una medida)</option>
 						<% for (var i=0; i < medidas.length; i++) {
 							if (medidas[i].fondo)  { %>
-							<option value="<%= medidas[i].nombre %>" <%=(medidas[i].nombre==fondo[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
+							<option value="<%= medidas[i]._id.toString() %>" <%=(medidas[i]._id.toString()==fondo[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>
 				  <td class="item_td" id="f_marca_<%= ID %>">
 					<select id="marca_fondo_<%= ID %>">
+						<option value="">(seleccione una marca)</option>
 						<% for (var i=0; i < marcas.length; i++) {
 							if (marcas[i].fondo)  { %>
-							<option value="<%= marcas[i].nombre %>" <%=(marcas[i].nombre==fondo[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
+							<option value="<%= marcas[i]._id.toString() %>" <%=(marcas[i]._id.toString()==fondo[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
 						<% }} %>
 					</select>
 				  </td>

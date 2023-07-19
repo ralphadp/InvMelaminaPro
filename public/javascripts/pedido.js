@@ -54,7 +54,11 @@ function addCarrito() {
         newCell.style.borderBottom = "1px solid"
         newCell.style.borderColor = "rgba(255,255,255,0.3)";
         newCell.style.fontSize ="14px";
-        newCell.appendChild(document.createTextNode(historialUnit[DATA_INDEX_NAME[index]]));
+        if (DATA_INDEX_NAME[index] == "color" || DATA_INDEX_NAME[index] == "medida" || DATA_INDEX_NAME[index] == "marca" || DATA_INDEX_NAME[index] == "item") {
+            newCell.appendChild(document.createTextNode(historialUnit.text[DATA_INDEX_NAME[index]]));
+        } else {
+            newCell.appendChild(document.createTextNode(historialUnit[DATA_INDEX_NAME[index]]));
+        }
     }
     //save object by clonning
     newRow.pedido = JSON.parse(JSON.stringify(historialUnit));
@@ -146,10 +150,10 @@ let setHistorial = function() {
     let NONE = "(ninguno)";
     historialUnit.fecha          = document.getElementById(ids.TIME_ID).value;
     historialUnit.numIngreso     = $('#'+ids.INGRESO_ID).val();
-    historialUnit.item           = $('#'+ids.ITEM_ID).find(":selected").text();
+    historialUnit.item           = $('#'+ids.ITEM_ID).find(":selected").val();
 
     let item = historialUnit.item;
-    historialUnit.cliente        = (tipo_cliente==1||tipo_cliente==3)?$('#'+ids.CLIENTE_ID).find(":selected").text():document.getElementById("complete_name").value;
+    historialUnit.cliente        = (tipo_cliente==1||tipo_cliente==3)?$('#'+ids.CLIENTE_ID).find(":selected").val():document.getElementById("complete_name").value;
     if (tipo_cliente == 2) {
         historialUnit.celular   = document.getElementById("phone").value;
         historialUnit.email     = document.getElementById("email").value;
@@ -163,8 +167,17 @@ let setHistorial = function() {
     historialUnit.precioCompra   = "";
     historialUnit.precioVenta    = $('#'+ids.PRECIO_ID).val();
     historialUnit.cantidad       = $('#'+ids.CANTIDAD_ID).val();
-    historialUnit.marca          = $('#'+ids.MARCA_ID).find(":selected").text();
-    historialUnit.pu             = PRODUCTO.precio_venta;
+    historialUnit.marca          = $('#'+ids.MARCA_ID).find(":selected").val();
+    historialUnit.pu             = PRODUCTO.contenido.precio_venta;
+
+    historialUnit.text = {
+        item: $('#'+ids.ITEM_ID).find(":selected").text(),
+        cliente: (tipo_cliente==1||tipo_cliente==3)?$('#'+ids.CLIENTE_ID).find(":selected").text():document.getElementById("complete_name").value,
+        marca: $('#'+ids.MARCA_ID).find(":selected").text(),
+        color: ($('#'+ids.ITEM_ID).find(":selected").text()=="Pegamento")?'(ninguno)':$('#'+ids.COLOR_ID).find(":selected").text(),
+        medida: ($('#'+ids.ITEM_ID).find(":selected").text()=="Pegamento")?'(ninguno)':$('#'+ids.MEDIDA_ID).find(":selected").text()
+    };
+        
 
     if (item != "Pegamento") {
         historialUnit.color    = $('#'+ids.COLOR_ID).find(":selected").val();
@@ -225,13 +238,23 @@ let removerUltimoPedidoDelCarrito = function() {
 }
 
 function DatosCliente(select) {
-    let selectedValue = Number(select.value);
-    NotaVenta.direccion = pedido_cliente[selectedValue].direccion;
-    NotaVenta.celular   = pedido_cliente[selectedValue].celular;
-    NotaVenta.email     = pedido_cliente[selectedValue].email;
-    NotaVenta.empresa   = pedido_cliente[selectedValue].empresa;
-    NotaVenta.ci        = pedido_cliente[selectedValue].ci;
-    NotaVenta.nit       = pedido_cliente[selectedValue].nit;
+    let selectedValue = select.value;
+
+    if (selectedValue.length == 0) {
+        NotaVenta.direccion = "";
+        NotaVenta.celular   = "";
+        NotaVenta.email     = "";
+        NotaVenta.empresa   = "";
+        NotaVenta.ci        = "";
+        NotaVenta.nit       = "";
+    } else {
+        NotaVenta.direccion = cliente[selectedValue].direccion;
+        NotaVenta.celular   = cliente[selectedValue].celular;
+        NotaVenta.email     = cliente[selectedValue].email;
+        NotaVenta.empresa   = cliente[selectedValue].empresa;
+        NotaVenta.ci        = cliente[selectedValue].ci;
+        NotaVenta.nit       = cliente[selectedValue].nit;
+    }
 }
 
 function PrePrint() {
@@ -253,9 +276,9 @@ function PrePrint() {
     }
     
     NotaVenta.Item          = $('#'+ids.ITEM_ID).find(":selected").text();
-    NotaVenta.Medida        = $('#'+ids.MEDIDA_ID).find(":selected").val();
-    NotaVenta.Marca         = $('#'+ids.MARCA_ID).find(":selected").val();
-    NotaVenta.Color         = $('#'+ids.COLOR_ID).find(":selected").val();
+    NotaVenta.Medida        = $('#'+ids.MEDIDA_ID).find(":selected").text();
+    NotaVenta.Marca         = $('#'+ids.MARCA_ID).find(":selected").text();
+    NotaVenta.Color         = $('#'+ids.COLOR_ID).find(":selected").text();
     NotaVenta.Fecha         = $('#'+ids.TIME_ID).val();
     NotaVenta.Unidad        = $('#'+ids.UNIDAD_ID).val();
     NotaVenta.Cantidad      = $('#'+ids.CANTIDAD_ID).val();
@@ -304,7 +327,7 @@ function PrePrintCarrito() {
     $('#celular-print').text(NotaVenta.celular);
     $('#email-print').text(NotaVenta.email);
     $('#ci-print').text(NotaVenta.ci);
-    $('#numero-venta').text("Nº 000" + $('#pedido').text());
+    $('#numero-venta').text("Nº 0000" + $('#pedido').text());
 
     var TotalPrecio = 0;
     var pedidoNum = 1;
@@ -322,16 +345,16 @@ function PrePrintCarrito() {
         newCell.appendChild(document.createTextNode(pedidoNum++));
         newCell = newRow.insertCell();
         newCell.style.width = "100px";
-        newCell.appendChild(document.createTextNode(carrito.item));
+        newCell.appendChild(document.createTextNode(carrito.text.item));
         newCell = newRow.insertCell();
         newCell.style.width = "100px";
-        newCell.appendChild(document.createTextNode(carrito.medida));
+        newCell.appendChild(document.createTextNode(carrito.text.medida));
         newCell = newRow.insertCell();
         newCell.style.width = "100px";
-        newCell.appendChild(document.createTextNode(carrito.color));
+        newCell.appendChild(document.createTextNode(carrito.text.color));
         newCell = newRow.insertCell();
         newCell.style.width = "100px";
-        newCell.appendChild(document.createTextNode(carrito.marca));
+        newCell.appendChild(document.createTextNode(carrito.text.marca));
         newCell = newRow.insertCell();
         newCell.style.width = "70px";
         newCell.style.borderLeft ="1px solid";
@@ -402,7 +425,7 @@ async function Print(formTarget) {
     PrePrintCarrito();
 
     var printData = document.getElementById(formTarget);
-    newWindow = window.open("PEDIDO");
+    newWindow = window.open("PEDIDO","melaminapro","melamina");
     newWindow.document.write(printData.outerHTML);
     
     await new Promise(r => setTimeout(r, 1500));
@@ -428,7 +451,7 @@ function obtenerPrecioStandard() {
     ids.verify();
 
     let queryPrecio = {
-        item:     $('#' + ids.ITEM_ID).find(":selected").text(),
+        item:     $('#' + ids.ITEM_ID).find(":selected").text(),//to look at collection 
         color:    $('#' + ids.COLOR_ID).find(":selected").val(),
         medida:   $('#' + ids.MEDIDA_ID).find(":selected").val(),
         marca:    $('#' + ids.MARCA_ID).find(":selected").val(),
@@ -503,7 +526,7 @@ let fillPropiedad = function(selectedItem, nombrePropiedad, item_propiedad) {
     for (var i = 0; i < item_propiedad.length; i++) {
         var propiedad = item_propiedad[i];
         if (propiedad[selectedItem] == true) {
-            addOption(selected, propiedad.nombre, propiedad.nombre, propiedad["codigo"] ? propiedad["codigo"] : false);
+            addOption(selected, items[propiedad.nombre]._id.toString(), propiedad.nombre, propiedad["codigo"] ? propiedad["codigo"] : false);
         }
     }
 }
@@ -562,12 +585,13 @@ let getIDS = function() {
     }
 }
 
-let selectItem = function() {
+let selectItem = function(selected) {
     let ids = new getIDS();
     ids.verify();
 
     cleanVerifyItem();
-    let selectedItem = document.getElementById(ids.ITEM_ID).value.toLowerCase();
+    let selectedItem = selected.options[selected.selectedIndex].text.toLowerCase()
+    //let selectedItem = document.getElementById(ids.ITEM_ID).value.toLowerCase();
 
     if (selectedItem == "pegamento") {
         cleanColor(ids);
@@ -637,7 +661,7 @@ $(".verify").on("change", function() {
     var propiedad = $("option:selected", this).prevObject[0].id;
     _KEY[propiedad] = this.value;
     PRODUCTO = fetchProducto(_KEY);
-
+console.log(PRODUCTO);
     if (PRODUCTO) {
         if (PRODUCTO.existencia == 0) {
             document.getElementById('product_message').style.background = "red";
@@ -649,6 +673,7 @@ $(".verify").on("change", function() {
         }
     } else {
         if (_KEY.item.length>0 && _KEY.color.length>0 && _KEY.medida.length>0 && _KEY.marca.length>0) {
+            document.getElementById('product_message').style.background = "transparent";
             document.getElementById('product_message').style.color = "red";
             document.getElementById('product_message').innerHTML = "El presente producto no existe en el catalogo";
         }
