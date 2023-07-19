@@ -1202,7 +1202,7 @@ app.post('/nueva_melamina',(req, res) => {
             let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
             CollectionInventario.findOne({codigo: hash}).then(results => {
 
-                console.log(results);
+                console.log("Existe inventario? ",results);
 
                 if (!results) {
                     console.log("Nuevo md5", hash);
@@ -1295,7 +1295,7 @@ app.post('/nuevo_tapacantos',(req, res) => {
 
             CollectionInventario.findOne({codigo: hash}).then(results => {
 
-                console.log(results);
+                console.log("Existe inventario? ",results);
 
                 if (!results) {
                     console.log("Nuevo md5", hash);
@@ -1388,7 +1388,7 @@ app.post('/nuevo_pegamento',(req, res) => {
 
             CollectionInventario.findOne({codigo: hash}).then(results => {
 
-                console.log(results);
+                console.log("Existe inventario? ",results);
 
                 if (!results) {
                     console.log("Nuevo md5", hash);
@@ -1479,7 +1479,7 @@ app.post('/nuevo_fondo',(req, res) => {
             let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
             CollectionInventario.findOne({codigo: hash}).then(results => {
 
-                console.log(results);
+                console.log("Existe inventario? ", results);
 
                 if (!results) {
                     console.log("Nuevo md5", hash);
