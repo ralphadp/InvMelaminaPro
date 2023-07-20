@@ -1222,13 +1222,16 @@ app.post('/nueva_melamina',(req, res) => {
         console.log(producto);
 
         let CollectionMelamina = client.db().collection("collectionmelamina");
+        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+
+        req.body.hash_inventario = hash;
         CollectionMelamina.insertOne(req.body).then(results => {
 
             console.log(results);
 
             let CollectionInventario = client.db().collection("inventario");
             console.log(producto._id.toString(), req.body.color, req.body.medidas, req.body.marca);
-            let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+
             CollectionInventario.findOne({codigo: hash}).then(results => {
 
                 console.log("Existe inventario? ",results);
@@ -1314,7 +1317,6 @@ app.delete('/delete_melamina/:id', (req, res) => {
 
     var CollectionMelamina = client.db().collection("collectionmelamina");
     let cid = new ObjectID(req.params.id);
-    let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
 
     CollectionMelamina.deleteOne({"_id": cid }).then(result => {
         console.log(result);
@@ -1324,7 +1326,6 @@ app.delete('/delete_melamina/:id', (req, res) => {
     })
     .catch(error => console.error(error))
     .finally(data => client.close())
-
 })
 
 app.post('/nuevo_tapacantos',(req, res) => {
@@ -1337,7 +1338,9 @@ app.post('/nuevo_tapacantos',(req, res) => {
         console.log(producto);
     
         let CollectionTapacantos = client.db().collection("collectiontapacantos");
+        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
 
+        req.body.hash_inventario = hash;
         CollectionTapacantos.insertOne(req.body).then(results => {
 
             console.log(results);
@@ -1453,14 +1456,15 @@ app.post('/nuevo_pegamento',(req, res) => {
         console.log("item:",producto);
 
         let CollectionPegamento = client.db().collection("collectionpegamento");
+        let hash = MD5(producto._id.toString() + req.body.marca).toString();
 
+        req.body.hash_inventario = hash;
         CollectionPegamento.insertOne(req.body).then(results => {
 
             console.log(results);
 
             let CollectionInventario = client.db().collection("inventario");
             console.log(producto._id.toString(),  req.body.marca);
-            let hash = MD5(producto._id.toString() + req.body.marca).toString();
 
             CollectionInventario.findOne({codigo: hash}).then(results => {
 
@@ -1569,14 +1573,16 @@ app.post('/nuevo_fondo',(req, res) => {
     CollectionItem.findOne({nombre:"Fondo"}).then(producto => {
         console.log(producto);
         let CollectionPegamento = client.db().collection("collectionfondo");
+        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
 
+        req.body.hash_inventario = hash;
         CollectionPegamento.insertOne(req.body).then(results => {
 
             console.log(results);
 
             let CollectionInventario = client.db().collection("inventario");
             console.log(producto._id.toString(), req.body.color, req.body.medidas, req.body.marca);
-            let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+
             CollectionInventario.findOne({codigo: hash}).then(results => {
 
                 console.log("Existe inventario? ", results);

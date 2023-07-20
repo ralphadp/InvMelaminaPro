@@ -769,6 +769,7 @@ function Melamina() {
 					<td class='item_td numericAllow' id='a_precio_compra_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='a_precio_venta_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='a_laminaxpaquete_${next_index}' contenteditable='true'></td>
+					<td style="display:none" id="a_hash_${next_index}"></td>
 					<td><button type='button' title='Guardar' id='ga_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='ba_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -940,6 +941,7 @@ function Tapacantos() {
 					<td class='item_td numericAllow' id='t_rollosxcaja_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='t_precio_venta_metros_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='t_precio_compra_metros_${next_index}' contenteditable='true'></td>
+					<td style="display:none" id="t_hash_${next_index}"></td>
 					<td><button type='button' title='Guardar' id='gt_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='bt_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -1079,6 +1081,7 @@ function Pegamento() {
 					</td>
 					<td class='numericAllow' id='p_precio_compra_${next_index}' contenteditable='true'></td>
 					<td class='numericAllow' id='p_precio_venta_${next_index}' contenteditable='true'></td>
+					<td style="display:none" id="p_hash_${next_index}"></td>
 					<td><button type='button' title='Guardar' id='gp_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='bp_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -1240,6 +1243,7 @@ function Fondo() {
 					<td class='item_td numericAllow' id='f_precio_compra_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='f_precio_venta_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='f_laminaxpaquete_${next_index}' contenteditable='true'></td>
+					<td style="display:none" id="f_hash_${next_index}"></td>
 					<td><button type='button' title='Guardar' id='gf_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='bf_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
