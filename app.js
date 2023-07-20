@@ -412,7 +412,7 @@ app.post('/addicionar_pedido',(req, res) => {
                             AVISO = "<p>SE ACABA DE AGOTAR "+tipoUnidad+" PARA ["+req.body.marca+"]</p>";
                         }
                         console.log(`Un Pedido addicionado al historial...`);
-                        res.status(200).json({ok: true, message: "Historial e Inventario actualizados." + AVISO});
+                        res.status(200).json({ok: true, numPedido: Number(req.body.numIngreso), message: "Historial e Inventario actualizados." + AVISO});
                         res.end();
                         //Salvar cliente nuevo
                         if (typeof(req.body.ci) != "undefined") {

@@ -16,6 +16,7 @@
 		var item_unidad = <%- JSON.stringify(unidad); %>;
 		var item_inventario = <%- JSON.stringify(inventario); %>;
 		var items = <%- JSON.stringify(items); %>;
+		var histo = <%- JSON.stringify(historial); %>;
 		
 		function fetchProducto(key) {
 			let indexHash = CryptoJS.MD5(key.item + key.color + key.medida + key.marca);
@@ -216,7 +217,7 @@
 								<div class="inner">
 									<div class="form-heading">
 										<h3>Pedido Interno</h3>
-										<span>Pedido #<span id="pedido"><%- historial.length + 1 %></span></span>
+										<span>Pedido #<span id="pedido"></span></span>
 									</div>
 									<div class="form-images">
 										<img src="images/P8240373.JPG">

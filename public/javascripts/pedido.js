@@ -106,6 +106,7 @@ function salvarPedidos(Pedido) {
         if (response.ok) {
             console.log(response.message);
             document.getElementById("message").innerHTML  += response.message + ". Item guardado! <br>";
+            localStorage.setItem("NUM_PEDIDO", Number(response.numPedido) + 1);
             verifyResponsesDone();
         } else {
             console.log(response.status, response.statusText);
@@ -149,8 +150,9 @@ let setHistorial = function() {
 
     let NONE = "(ninguno)";
     historialUnit.fecha          = document.getElementById(ids.TIME_ID).value;
-    historialUnit.numIngreso     = $('#'+ids.INGRESO_ID).val();
+    historialUnit.numIngreso     = Number(document.getElementById(ids.INGRESO_ID).innerText);
     historialUnit.item           = $('#'+ids.ITEM_ID).find(":selected").val();
+    localStorage.setItem("NUM_PEDIDO", historialUnit.numIngreso);
 
     let item = historialUnit.item;
     historialUnit.cliente        = (tipo_cliente==1||tipo_cliente==3)?$('#'+ids.CLIENTE_ID).find(":selected").val():document.getElementById("complete_name").value;
@@ -532,7 +534,7 @@ let fillPropiedad = function(selectedItem, nombrePropiedad, item_propiedad) {
 }
 
 let getIDS = function() {
-    this.INGRESO_ID  = "ingreso";
+    this.INGRESO_ID  = "pedido";
     this.CLIENTE_ID  = "cliente";
     this.ITEM_ID     = "item";
     this.COLOR_ID    = "color";
@@ -549,7 +551,7 @@ let getIDS = function() {
 
     this.verify = function() {
         if (document.getElementById("form-total-p-1").style.display === "block") {
-            this.INGRESO_ID  = "ingreso_ex";
+            this.INGRESO_ID  = "pedido";
             this.CLIENTE_ID  = "cliente_ex"
             this.ITEM_ID = "item_ex";
             this.COLOR_ID = "color_ex";
@@ -565,7 +567,7 @@ let getIDS = function() {
             this.PRECIO_MENSAJE = "precio-mensaje_ex";
             return 2;
         } else if (document.getElementById("form-total-p-2").style.display === "block") {
-            this.INGRESO_ID  = "ingreso_re";
+            this.INGRESO_ID  = "pedido";
             this.CLIENTE_ID  = "cliente_re";
             this.ITEM_ID = "item_re";
             this.COLOR_ID = "color_re";
@@ -681,7 +683,20 @@ console.log(PRODUCTO);
     }
 });
 
+function printPedido() {
+    let pedido = localStorage.getItem('NUM_PEDIDO');
+    if (!pedido) {
+        pedido = 1;
+        if (histo && histo.length > 0) {
+            pedido = Number(histo[histo.length-1].numIngreso) + 1;
+        }
+    }
+    document.getElementById('pedido').innerText = pedido;
+}
+
 $(function() {
+    printPedido();
+
     var inputTimestamp1 = document.getElementById('timestamp1');
     var inputTimestamp2 = document.getElementById('timestamp2');
     var inputTimestamp3 = document.getElementById('timestamp3');
