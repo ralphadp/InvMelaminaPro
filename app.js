@@ -476,7 +476,9 @@ app.post('/obtener_precio', (req, res) => {
     console.log("parametros de consulta:", jsonQuery);
 
     Collection.findOne(jsonQuery).then((result) => {
-        let precio = .0, precio_metros =.0;
+        let precio = .0;
+        let precio_metros = .0;
+        let precio_caja = 0;
 
         console.log('producto encontrado:', result);
         if (typeof result == 'undefined' || result == null) {
@@ -487,9 +489,11 @@ app.post('/obtener_precio', (req, res) => {
         if (req.body.tipo_entrada == "ingreso") {
             precio = result.precio_compra;
             precio_metros = result.precio_compra_metros;
+            precio_caja = result.precio_compra_caja?result.precio_compra_caja:0;
         } else if (req.body.tipo_entrada == "pedido") {
             precio = result.precio_venta;
             precio_metros = result.precio_venta_metros;
+            precio_caja = result.precio_venta_caja?result.precio_venta_caja:0;
         }
 
         let EXPLICACION = "";
@@ -519,9 +523,13 @@ app.post('/obtener_precio', (req, res) => {
                 producto.cajas = req.body.cantidad;
                 producto.rollos = 0;
                 producto.metros =  0;
-
-                EXPLICACION = `${req.body.cantidad} x ${result.rollosxcaja}(rxc) x ${precio} Bs`;
-                precio = (req.body.cantidad * result.rollosxcaja) * precio;
+                if (precio_caja) {
+                    EXPLICACION = `${req.body.cantidad} x ${precio_caja} Bs`;
+                    precio = req.body.cantidad * precio_caja;
+                } else {
+                    EXPLICACION = `${req.body.cantidad} x ${result.rollosxcaja}(rxc) x ${precio} Bs`;
+                    precio = (req.body.cantidad * result.rollosxcaja) * precio;
+                }
             } else {
                 let e_message;
                 if (req.body.unidad.length <= 0) {

@@ -37,7 +37,6 @@ let MAX_REQUESTS;
 let DATA_INDEX_NAME = ["fecha","item","color","medida","marca","nombreDeUnidad","cantidad","precioVenta"];
 
 
-
 function addCarrito() {
     let ids = new getIDS();
     let tipo_cliente = ids.verify();
@@ -74,20 +73,6 @@ function addCarrito() {
     newCell.appendChild(button);
 }
 
-/*function getCarritos() {
-    let ids = new getIDS();
-    let tipo_cliente = ids.verify();
-
-    var Pedidos = [];
-    var table_carrito = document.getElementById(ids.CARRITO).getElementsByTagName('tbody')[0];
-
-    for (let index = 0; index < table_carrito.children.length; index++) {
-        Pedidos[index] = table_carrito.children[index].pedido;
-    }
-
-    return Pedidos;
-}*/
-
 function verifyResponsesDone() {
     if (++responseAlertCounter >= MAX_REQUESTS) {
         window.location.reload();
@@ -121,28 +106,33 @@ function salvarPedidos(Pedido) {
     });
 };
 
-function salvarPedido() {
-    fetch('/addicionar_pedido/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(historialUnit)
-    })
-    .then(response => response.json())
-    .then(response => {
-        if (response.ok) {
-            console.log(response.message);
-            alert(response.message + ". Item guardado!");
-            window.location.reload();
-        } else {
-            console.log(response.status, response.statusText);
-            alert(response.message);
+let cleanHistorial = function() {
+    for (var key in historialUnit) {
+        if (historialUnit.hasOwnProperty(key)) {
+            delete historialUnit[key];
         }
-    })
-    .catch(error => {
-        alert("Error: " + error.message);
-        console.log(error.message);
-    });
-};
+    }
+
+    historialUnit = {
+        cliente        : "",
+        numIngreso     : "",
+        fecha          : "",
+        item           : "",
+        color          : "",
+        medida         : "",
+        marca          : "",
+        nombreDeUnidad : "",
+        cantidad       : "",
+        precio         : "",
+        embalaje       : "",
+        precioCompra   : "",
+        precioVenta    : "",
+        metrosXRollo   : "",
+        precioVentaMts : "",
+        codigo         : "",
+        tipo_entrada   : "pedido",
+    };
+}
 
 let setHistorial = function() {
     let ids = new getIDS();
@@ -170,7 +160,13 @@ let setHistorial = function() {
     historialUnit.precioVenta    = $('#'+ids.PRECIO_ID).val();
     historialUnit.cantidad       = $('#'+ids.CANTIDAD_ID).val();
     historialUnit.marca          = $('#'+ids.MARCA_ID).find(":selected").val();
-    historialUnit.pu             = PRODUCTO.contenido.precio_venta;
+    if (historialUnit.nombreDeUnidad == "metros") {
+        historialUnit.pu             = PRODUCTO.contenido.precio_venta_metros;
+    } else if (historialUnit.nombreDeUnidad == "caja") {
+        historialUnit.pu             = PRODUCTO.contenido.precio_venta_caja;
+    } else {
+        historialUnit.pu             = PRODUCTO.contenido.precio_venta;
+    }
 
     historialUnit.text = {
         item: $('#'+ids.ITEM_ID).find(":selected").text(),
@@ -197,11 +193,6 @@ let setHistorial = function() {
     }
 }
 
-let GuardarPedido = function() {
-    setHistorial();
-    salvarPedido();
-}
-
 let GuardarPedidos = function() {
     let ids = new getIDS();
     let tipo_cliente = ids.verify();
@@ -223,6 +214,7 @@ let addicionarPedidoAlCarrito = function() {
     if (PRODUCTO && PRODUCTO.existencia <= 0) {
         return;
     }
+    cleanHistorial();
     setHistorial();
     addCarrito();
 }
@@ -333,7 +325,9 @@ function PrePrintCarrito() {
 
     var TotalPrecio = 0;
     var pedidoNum = 1;
+    //get table from NOTE invoice
     var pedido_nota = document.getElementById('pedido-body').getElementsByTagName('tbody')[0];
+    //get table from Carito
     var table_carrito = document.getElementById(ids.CARRITO).getElementsByTagName('tbody')[0];
 
     for (let i = 0; i < table_carrito.children.length; i++) {
@@ -423,7 +417,8 @@ function cleanNotaTable() {
 }
 
 async function Print(formTarget) {
-    //PrePrint();
+    cleanNotaTable();
+
     PrePrintCarrito();
 
     var printData = document.getElementById(formTarget);
@@ -434,8 +429,6 @@ async function Print(formTarget) {
 
     newWindow.print();
     newWindow.close();
-
-    cleanNotaTable();
 }
 
 function toprint() {
@@ -548,6 +541,8 @@ let getIDS = function() {
     this.DIVCOLOR    = "divcolor";
     this.CARRITO     = "carrito_interno";
     this.PRECIO_MENSAJE = "precio-mensaje";
+    this.PRODUCT_MENSAJE = "product_message";
+    this.CLIENTE_TIPO = "interno";
 
     this.verify = function() {
         if (document.getElementById("form-total-p-1").style.display === "block") {
@@ -565,6 +560,8 @@ let getIDS = function() {
             this.DIVCOLOR = "divcolor_ex";
             this.CARRITO  = "carrito_externo";
             this.PRECIO_MENSAJE = "precio-mensaje_ex";
+            this.PRODUCT_MENSAJE = "product_message_ex";
+            this.CLIENTE_TIPO = "externo";
             return 2;
         } else if (document.getElementById("form-total-p-2").style.display === "block") {
             this.INGRESO_ID  = "pedido";
@@ -581,6 +578,8 @@ let getIDS = function() {
             this.DIVCOLOR = "divcolor_re";
             this.CARRITO  = "carrito_regular";
             this.PRECIO_MENSAJE = "precio-mensaje_re";
+            this.PRODUCT_MENSAJE = "product_message_re";
+            this.CLIENTE_TIPO = "regular";
             return 3;
         }
         return 1;
@@ -591,7 +590,7 @@ let selectItem = function(selected) {
     let ids = new getIDS();
     ids.verify();
 
-    cleanVerifyItem();
+    _CLIENTE[ids.CLIENTE_TIPO].clean();
     let selectedItem = selected.options[selected.selectedIndex].text.toLowerCase()
     //let selectedItem = document.getElementById(ids.ITEM_ID).value.toLowerCase();
 
@@ -644,46 +643,59 @@ document.getElementById("form-total-t-0").addEventListener("click", go0);
 document.getElementById("form-total-t-1").addEventListener("click", go1);
 document.getElementById("form-total-t-2").addEventListener("click", go2);
 
-var _KEY = {
-    item:"",
-    color:"",
-    medida:"",
-    marca:""
+function _KEY() {
+    this.item   ='';
+    this.color  ='';
+    this.medida ='';
+    this.marca  ='';
+    this.AllFilled = () => {
+        return this.item.length > 0 
+        && this.color.length > 0 
+        && this.medida.length > 0 
+        && this.marca.length > 0;
+    };
+    this.clean = () => {
+        this.item   ='';
+        this.color  ='';
+        this.medida ='';
+        this.marca  ='';
+    };
+};
+var _CLIENTE = {
+    interno: new _KEY(),
+    externo: new _KEY(),
+    regular: new _KEY(),
 };
 var PRODUCTO;
 
-function cleanVerifyItem() {
-    _KEY.item="";
-    _KEY.color="";
-    _KEY.medida=""
-    _KEY.marca="";
-}
-
 $(".verify").on("change", function() {
-    var propiedad = $("option:selected", this).prevObject[0].id;
-    _KEY[propiedad] = this.value;
-    PRODUCTO = fetchProducto(_KEY);
-console.log(PRODUCTO);
+    let ids = new getIDS();
+    ids.verify();
+
+    var propiedad = $("option:selected", this).prevObject[0].name;
+    _CLIENTE[ids.CLIENTE_TIPO][propiedad] = this.value;
+    PRODUCTO = fetchProducto(_CLIENTE[ids.CLIENTE_TIPO]);
+
     if (PRODUCTO) {
         if (PRODUCTO.existencia == 0) {
-            document.getElementById('product_message').style.background = "red";
-            document.getElementById('product_message').style.color = "#55e8d5";
-            document.getElementById('product_message').innerHTML = "El producto esta agotado, " + PRODUCTO.existencia+ " items.";
+            document.getElementById(ids.PRODUCT_MENSAJE).style.background = "red";
+            document.getElementById(ids.PRODUCT_MENSAJE).style.color = "#55e8d5";
+            document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "El producto esta agotado, " + PRODUCTO.existencia+ " items.";
         } else {
-            document.getElementById('product_message').style.background = "transparent";
-            document.getElementById('product_message').style.color = "#55e8d5";
-            document.getElementById('product_message').innerHTML = "Este producto tiene " + PRODUCTO.existencia+ " items aun.";
+            document.getElementById(ids.PRODUCT_MENSAJE).style.background = "transparent";
+            document.getElementById(ids.PRODUCT_MENSAJE).style.color = "#55e8d5";
+            document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "Este producto tiene " + PRODUCTO.existencia+ " items aun.";
         }
     } else {
-        if (_KEY.item.length>0 && _KEY.color.length>0 && _KEY.medida.length>0 && _KEY.marca.length>0) {
-            document.getElementById('product_message').style.background = "transparent";
-            document.getElementById('product_message').style.color = "red";
-            document.getElementById('product_message').innerHTML = "El presente producto no existe en el catalogo";
+        if (_CLIENTE[ids.CLIENTE_TIPO].AllFilled()) {
+            document.getElementById(ids.PRODUCT_MENSAJE).style.background = "transparent";
+            document.getElementById(ids.PRODUCT_MENSAJE).style.color = "red";
+            document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "El presente producto no existe en el catalogo";
         }
     }
 });
 
-function printPedido() {
+function setNumPedido() {
     let pedido;
     if (histo && histo.length > 0) {
         pedido = Number(histo[histo.length-1].numIngreso) + 1;
@@ -697,7 +709,7 @@ function printPedido() {
 }
 
 $(function() {
-    printPedido();
+    setNumPedido();
 
     var inputTimestamp1 = document.getElementById('timestamp1');
     var inputTimestamp2 = document.getElementById('timestamp2');

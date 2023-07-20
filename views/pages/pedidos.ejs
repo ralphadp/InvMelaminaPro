@@ -399,7 +399,7 @@
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label for="item_ex" class="special-label-1">Item </label>
-											<select name="item_ex" id="item_ex" class="form-control" onchange="selectItem(this)">
+											<select name="item" id="item_ex" class="form-control verify" onchange="selectItem(this)">
 												<option value="" selected="">(Elija el item)</option>
                                                 <% for(let index = 0; index < item.length; index++) {%>
                                                     <option value="<%= item[index]._id.toString() %>"><%= item[index].nombre %></option>
@@ -411,7 +411,7 @@
 										</div>
 										<div class="form-holder form-holder-2" id="divmedida_ex">
 											<label for="medida_ex" class="special-label-1">Medida </label>
-											<select name="medida_ex" id="medida_ex" class="form-control">
+											<select name="medida" id="medida_ex" class="form-control verify">
 												<option value="" selected="">(Elija las medidas)</option>
 											</select>
 											<span class="select-btn">
@@ -420,7 +420,7 @@
 										</div>
 										<div class="form-holder form-holder-2" id="divcolor_ex">
 											<label for="color_ex" class="special-label-1">Color </label>
-											<select name="color_ex" id="color_ex" class="form-control">
+											<select name="color" id="color_ex" class="form-control verify">
 												<option value="" selected="">(Escoja el color)</option>
 											</select>
 											<span class="select-btn">
@@ -429,12 +429,17 @@
 										</div>
 										<div class="form-holder form-holder-2" id="divmarca_ex">
 											<label for="marca_ex" class="special-label-1">Marca </label>
-											<select name="marca_ex" id="marca_ex" class="form-control">
+											<select name="marca" id="marca_ex" class="form-control verify">
 												<option value="" selected="">(Elija la marca)</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label id="product_message_ex" for="room" class="special-label-1">Una Cinta de 18 mts y fondo de 200x150 adjuntos.</label>
 										</div>
 									</div>
 									<div class="form-row">
@@ -524,7 +529,7 @@
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label for="item_re" class="special-label-1">Item </label>
-											<select name="item_re" id="item_re" class="form-control" onchange="selectItem(this)">
+											<select name="item" id="item_re" class="form-control verify" onchange="selectItem(this)">
 												<option value="" selected="">(Elija el item)</option>
                                                 <% for(let index = 0; index < item.length; index++) {%>
                                                     <option value="<%= item[index]._id.toString() %>"><%= item[index].nombre %></option>
@@ -536,7 +541,7 @@
 										</div>
 										<div class="form-holder form-holder-2" id="divmedida_re">
 											<label for="medida_re" class="special-label-1">Medida</label>
-											<select name="medida_re" id="medida_re" class="form-control">
+											<select name="medida" id="medida_re" class="form-control verify">
 												<option value="" selected="">(Elija las medidas)</option>
                                                 <% for(let index = 0; index < medida.length; index++) {%>
                                                     <option value="<%= medida[index]._id.toString() %>"><%= medida[index].nombre %></option>
@@ -548,7 +553,7 @@
 										</div>
 										<div class="form-holder form-holder-2" id="divcolor_re">
 											<label for="color_re" class="special-label-1">Color </label>
-											<select name="color_re" id="color_re" class="form-control">
+											<select name="color" id="color_re" class="form-control verify">
 												<option value="" selected="">(Escoja el color)</option>
                                                 <% for(let index = 0; index < color.length; index++) {%>
                                                     <option style="background: <%= color[index].codigo %>;" 
@@ -563,7 +568,7 @@
 										</div>
 										<div class="form-holder form-holder-2" id="divmarca_re">
 											<label for="marca_re" class="special-label-1">Marca </label>
-											<select name="marca_re" id="marca_re" class="form-control">
+											<select name="marca" id="marca_re" class="form-control verify">
 												<option value="" selected="">(Elija la marca)</option>
                                                 <% for(let index = 0; index < marca.length; index++) {%>
                                                     <option value="<%= marca[index]._id.toString() %>"><%= marca[index].nombre %></option>
@@ -572,6 +577,11 @@
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label id="product_message_re" for="room" class="special-label-1">Una Cinta de 18 mts y fondo de 200x150 adjuntos.</label>
 										</div>
 									</div>
 									<div class="form-row">
