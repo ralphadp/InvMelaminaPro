@@ -26,9 +26,9 @@ let GuardarIngreso = function() {
     historialUnit.cliente        = $('[name="provedor"]').find(":selected").val();
     historialUnit.nombreDeUnidad = $('#unidad').find(":selected").text();
     historialUnit.embalaje       = (item == "Pegamento") ? "Bolsa" : ((item == "Tapacanto" ? "Caja" : ((item == "Melamina" ? "Paquete" : "Paquete"))));;
-    historialUnit.precioCompra   = $('#precio').val();
+    historialUnit.precioCompra   = Number($('#precio').val());
     historialUnit.precioVenta    = "";
-    historialUnit.cantidad       = $('#cantidad').val();
+    historialUnit.cantidad       = Number($('#cantidad').val());
     historialUnit.marca          = $('#marca').find(":selected").val();
 
     historialUnit.text = {
