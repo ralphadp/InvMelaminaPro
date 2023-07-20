@@ -456,8 +456,9 @@ app.post('/obtener_precio', (req, res) => {
     let tipoItem = req.body.item.toLowerCase();
     var Collection = client.db().collection("collection" + tipoItem);
     var jsonQuery;
-console.log(req.body);
-console.log('provedor:',req.body.provedor);
+
+    console.log(req.body);
+    console.log('provedor de compra:',req.body.provedor);
     if (typeof(req.body.provedor) == "undefined") {
         jsonQuery = {
             "color": req.body.color,
@@ -472,11 +473,12 @@ console.log('provedor:',req.body.provedor);
             "marca": req.body.marca
         }
     }
-console.log(jsonQuery);
+    console.log("parametros de consulta:", jsonQuery);
 
     Collection.findOne(jsonQuery).then((result) => {
         let precio = .0, precio_metros =.0;
-console.log('result:', result);
+
+        console.log('producto encontrado:', result);
         if (typeof result == 'undefined' || result == null) {
             res.status(404).json({ok: false, precio: 0.0, message: "Este producto no esta en catalogo"});
             res.end();
@@ -499,6 +501,7 @@ console.log('result:', result);
 
                 producto.cajas = Math.trunc(producto.rollos / result.rollosxcaja);
 
+                EXPLICACION = `${req.body.cantidad} x ${precio_metros} Bs`;
                 precio = req.body.cantidad * precio_metros;
             } else if (req.body.unidad == "rollos") {
                 producto.cajas = Math.trunc(req.body.cantidad / result.rollosxcaja);
@@ -510,17 +513,25 @@ console.log('result:', result);
 
                 producto.metros =  0;
 
+                EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
                 precio = req.body.cantidad * precio;
             } else if (req.body.unidad == "cajas") {
                 producto.cajas = req.body.cantidad;
                 producto.rollos = 0;
                 producto.metros =  0;
-                precio = (req.body.cantidad * result.rollosxcaja) * precio;
+
                 EXPLICACION = `${req.body.cantidad} x ${result.rollosxcaja} x ${precio} Bs`;
+                precio = (req.body.cantidad * result.rollosxcaja) * precio;
             } else {
-                res.status(404).json({ok: true, precio: precio, message: "Unidad desconocida [" + req.body.unidad + "]."});
+                let e_message;
+                if (req.body.unidad.length <= 0) {
+                    e_message = "No se envio la Unidad del pedido.";
+                } else {
+                    e_message = "Unidad desconocida [" + req.body.unidad + "]";
+                }
+                res.status(404).json({ok: true, precio: precio, message: e_message});
                 res.end();
-                throw "("+req.body.unidad + ") es una unidad desconocida.";
+                throw e_message;
             }
         } else if (tipoItem == "melamina" || tipoItem == "fondo") {
             producto = {paquetes:0, laminas:0};
@@ -532,22 +543,40 @@ console.log('result:', result);
                     producto.laminas = producto.laminas - result.laminaxpaquete;
                 }
 
+                EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
                 precio = req.body.cantidad * precio;
             } else if (req.body.unidad == "paquetes") {
                 producto.laminas = 0;
                 producto.paquetes = req.body.cantidad;
-                precio = (req.body.cantidad * result.laminaxpaquete) * precio;
+
                 EXPLICACION = `${req.body.cantidad} x ${result.laminaxpaquete} x ${precio} Bs`;
+                precio = (req.body.cantidad * result.laminaxpaquete) * precio;
             } else {
-                res.status(404).json({ok: true, precio: precio, message: "Unidad desconocida [" + req.body.unidad + "]"});
+                let e_message;
+                if (req.body.unidad.length <= 0) {
+                    e_message = "No se envio la Unidad del pedido.";
+                } else {
+                    e_message = "Unidad desconocida [" + req.body.unidad + "]";
+                }
+                res.status(404).json({ok: true, precio: precio, message: e_message});
                 res.end();
-                throw "("+req.body.unidad + ") es una unidad desconocida";
+                throw e_message;
             }
         } else if (tipoItem == "pegamento") {
+
+            let e_message;
+            if (req.body.unidad.length <= 0) {
+                e_message = "No se envio la Unidad del pedido.";
+                res.status(404).json({ok: true, precio: precio, message: e_message});
+                res.end();
+                throw e_message;
+            }
+
             producto = {bolsa:0};
             producto.bolsa = req.body.cantidad;
-            precio = req.body.cantidad * precio;
+
             EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
+            precio = req.body.cantidad * precio;
         } else {
             res.status(200).json({ok: true, precio: precio, message: "["+tipoItem + "] es un producto no conocido."});
             res.end();

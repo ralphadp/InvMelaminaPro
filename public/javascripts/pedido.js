@@ -665,6 +665,7 @@ console.log(PRODUCTO);
     if (PRODUCTO) {
         if (PRODUCTO.existencia == 0) {
             document.getElementById('product_message').style.background = "red";
+            document.getElementById('product_message').style.color = "#55e8d5";
             document.getElementById('product_message').innerHTML = "El producto esta agotado, " + PRODUCTO.existencia+ " items.";
         } else {
             document.getElementById('product_message').style.background = "transparent";

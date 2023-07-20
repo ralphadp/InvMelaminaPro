@@ -672,6 +672,8 @@ span.row-small {
     margin-left: 10px;
     font-size: 12px;
     padding: 3px;
+    cursor: pointer;
+    border-radius: 5px;
 }
 .precio:hover {
     background: #32998b
@@ -684,7 +686,7 @@ span.row-small {
     padding: 3px;
     border-radius: 5px;
 }
-#precio-mensaje {
+#precio-mensaje, #precio-mensaje_ex, #precio-mensaje_re {
     color: red;
     font-size: 12px;
 }
