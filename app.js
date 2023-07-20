@@ -501,7 +501,7 @@ app.post('/obtener_precio', (req, res) => {
 
                 producto.cajas = Math.trunc(producto.rollos / result.rollosxcaja);
 
-                EXPLICACION = `${req.body.cantidad} x ${precio_metros} Bs`;
+                EXPLICACION = `${req.body.cantidad} x ${precio_metros}(pm) Bs`;
                 precio = req.body.cantidad * precio_metros;
             } else if (req.body.unidad == "rollos") {
                 producto.cajas = Math.trunc(req.body.cantidad / result.rollosxcaja);
@@ -520,7 +520,7 @@ app.post('/obtener_precio', (req, res) => {
                 producto.rollos = 0;
                 producto.metros =  0;
 
-                EXPLICACION = `${req.body.cantidad} x ${result.rollosxcaja} x ${precio} Bs`;
+                EXPLICACION = `${req.body.cantidad} x ${result.rollosxcaja}(rxc) x ${precio} Bs`;
                 precio = (req.body.cantidad * result.rollosxcaja) * precio;
             } else {
                 let e_message;
@@ -549,7 +549,7 @@ app.post('/obtener_precio', (req, res) => {
                 producto.laminas = 0;
                 producto.paquetes = req.body.cantidad;
 
-                EXPLICACION = `${req.body.cantidad} x ${result.laminaxpaquete} x ${precio} Bs`;
+                EXPLICACION = `${req.body.cantidad} x ${result.laminaxpaquete}(lxp) x ${precio} Bs`;
                 precio = (req.body.cantidad * result.laminaxpaquete) * precio;
             } else {
                 let e_message;
