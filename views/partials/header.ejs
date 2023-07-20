@@ -64,7 +64,7 @@
         <a id="preferencias_menu" class="nav-link" href="/preferencias">Preferencias</a>
       </li>
       <li class="nav-item">
-        <a id="about_menu" class="nav-link" href="/">About</a>
+        <a id="about_menu" class="nav-link" style="cursor: pointer;" onclick="$('#about').show()">About</a>
       </li>
     </ul>
 </nav>
@@ -77,4 +77,13 @@
     <p>Existen varios productos que estan bajo el rango de existencia, Vea el <a style="color:red!important;" href="/inventario">Inventario</a> para ver mas informacion.</p>
   </div>
   <div class="top-msg-close" style="cursor: pointer;" onclick="$('#alert-message').hide()">&#10005;</div>    
+</div>
+
+<div id="about" style="background: #FFFFFF;position:fixed;margin-left:50%;margin-top:50%;width:400px;height:400px;margin-left:-200px;margin-top:-200px;display:none;top: 50%;left: 50%;border-radius: 10px;">
+    <div style="cursor: pointer;float: right;padding: 20px;font-size: 12px;" onclick="$('#about').hide()">&#10005;</div>
+    <div style="padding: 50px">
+        <h4><a href="/inventario">Melamina Pro</a></h4>
+        <img src="images/melaninapro_image.png" alt="Melamina pro"></img>
+        <p>Welcome to Melamina Pro</p>
+    </div>
 </div>
