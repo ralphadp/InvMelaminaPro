@@ -604,42 +604,42 @@ app.get('/contenidos', function(req, res) {
     DB.collection("collectiontapacantos").find().toArray().then(tapacantos_results => {
         tapacantos_results.forEach((tapacantos) => {
             tapacantos.color_id = tapacantos.color;
-            tapacantos.color = colores[tapacantos.color].nombre;
+            tapacantos.color = (colores[tapacantos.color])?colores[tapacantos.color].nombre:'';
             tapacantos.medidas_id = tapacantos.medidas;
-            tapacantos.medidas = medidas[tapacantos.medidas].nombre;
+            tapacantos.medidas = (medidas[tapacantos.medidas])?medidas[tapacantos.medidas].nombre:'';
             tapacantos.provedor_id = tapacantos.provedor;
-            tapacantos.provedor = provedores[tapacantos.provedor].nombre;
+            tapacantos.provedor = (provedores[tapacantos.provedor])?provedores[tapacantos.provedor].nombre:'';
             tapacantos.marca_id = tapacantos.marca;
-            tapacantos.marca = marcas[tapacantos.marca].nombre;
+            tapacantos.marca = (marcas[tapacantos.marca])?marcas[tapacantos.marca].nombre:'';
         });
         DB.collection("collectionmelamina").find().toArray().then(melamina_results => {
             melamina_results.forEach((melamina) => {
                 melamina.color_id = melamina.color;
-                melamina.color = colores[melamina.color].nombre;
+                melamina.color = (colores[melamina.color])?colores[melamina.color].nombre:'';
                 melamina.medidas_id = melamina.medidas;
-                melamina.medidas = medidas[melamina.medidas].nombre;
+                melamina.medidas = (medidas[melamina.medidas])?medidas[melamina.medidas].nombre:'';
                 melamina.provedor_id = melamina.provedor;
-                melamina.provedor = provedores[melamina.provedor].nombre;
+                melamina.provedor = (provedores[melamina.provedor])?provedores[melamina.provedor].nombre:'';
                 melamina.marca_id = melamina.marca;
-                melamina.marca = marcas[melamina.marca].nombre;
+                melamina.marca = (marcas[melamina.marca])?marcas[melamina.marca].nombre:'';
             });
             DB.collection("collectionpegamento").find().toArray().then(pegamento_results => {
                 pegamento_results.forEach((pegamento) => {
                     pegamento.provedor_id = pegamento.provedor;
-                    pegamento.provedor = provedores[pegamento.provedor].nombre;
+                    pegamento.provedor = (provedores[pegamento.provedor])?provedores[pegamento.provedor].nombre:'';
                     pegamento.marca_id = pegamento.marca;
-                    pegamento.marca = marcas[pegamento.marca].nombre;
+                    pegamento.marca = (marcas[pegamento.marca])?marcas[pegamento.marca].nombre:'';
                 });
                 DB.collection("collectionfondo").find().toArray().then(fondo_results => {
                     fondo_results.forEach((fondo) => {
                         fondo.color_id = fondo.color;
-                        fondo.color = colores[fondo.color].nombre;
+                        fondo.color = (colores[fondo.color])?colores[fondo.color].nombre:'';
                         fondo.medidas_id = fondo.medidas;
-                        fondo.medidas = medidas[fondo.medidas].nombre;
+                        fondo.medidas = (medidas[fondo.medidas])?medidas[fondo.medidas].nombre:'';
                         fondo.provedor_id = fondo.provedor;
-                        fondo.provedor = provedores[fondo.provedor].nombre;
+                        fondo.provedor = (provedores[fondo.provedor])?provedores[fondo.provedor].nombre:'';
                         fondo.marca_id = fondo.marca;
-                        fondo.marca = marcas[fondo.marca].nombre;
+                        fondo.marca = (marcas[fondo.marca])?marcas[fondo.marca].nombre:'';
                     });
                     DB.collection("collectionCliente").find().toArray().then(cliente_results => {
                         res.render('pages/contenidos', { 
