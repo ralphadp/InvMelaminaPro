@@ -152,7 +152,7 @@
 	    .table-editable {  
 	        position: relative;
 		    background-color: white;
-	        width: 750px!important;   
+	        width: 920px!important;  
 	        border-collapse: collapse;   
 	        margin:50px auto;  
 	      .glyphicon {  
@@ -163,7 +163,7 @@
 	        padding: 10px;   
 	        border: 1px solid #ccc;   
 	        text-align: left;   
-	        font-size: 18px;  
+	        font-size: 16px;
 	    }  
 	    .table-remove {  
 	      color: #700;  
@@ -482,7 +482,7 @@
 	  </div>
 	  <div id="tapacantos" class="container_table">
 		<span class="form-label"><h5>Tapacantos   <button type="button" onclick="add_row()">+</button></h5></span>
-		<div class="table-editable" style="width: 1000px!important;">
+		<div class="table-editable" style="width: 1000px!important;  margin:0px!important;">
 		  <table class="table" id="tapacantos_data_table">
 			<tr>
 			  <th> Color </th>  
@@ -493,8 +493,9 @@
 			  <th> Precio Venta (rollos)</th>
 			  <th> Metros x Rollo </th>
 			  <th> Rollos x Caja </th>
+			  <th> Precio Compra (caja)</th>
+			  <th> Precio Venta (caja)</th>
 			  <th> Precio Venta (metros) </th>
-			  <th> Precio Compra (metros) </th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < tapacantos.length; index++) {
@@ -540,8 +541,9 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_<%= ID %>"><%= tapacantos[index].precio_venta %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_metrosxrollo_<%= ID %>"><%= tapacantos[index].metrosxrollo %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_rollosxcaja_<%= ID %>"><%= tapacantos[index].rollosxcaja %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_compra_caja_<%= ID %>"><%= tapacantos[index].precio_compra_caja %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_caja_<%= ID %>"><%= tapacantos[index].precio_venta_caja %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_metros_<%= ID %>"><%= tapacantos[index].precio_venta_metros %></td>
-				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_compra_metros_<%= ID %>"><%= tapacantos[index].precio_compra_metros %></td>
 				  <td style="display:none" id="f_hash_<%= ID %>"><%= tapacantos[index].hash_inventario %></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gt_<%= ID %>" onclick="guardarEditado(this.id)">o</button>

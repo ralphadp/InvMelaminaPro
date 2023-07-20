@@ -37,10 +37,12 @@
             padding-left: 5px;
             padding-right: 5px;
         }
-
         #contenidos_menu {
 			background-color: bisque;
 		}
+        .sort {
+            height: 50px!important;
+        }
     </style>
 </head>
 <body>
@@ -63,23 +65,27 @@
                         <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta</button></th>
                         <th class=""><button class="sort" data-sort="MetrosXRollo">Metros x Rollo</button></th>
                         <th class=""><button class="sort" data-sort="RollosXCaja">Rollos x Caja</button></th>
-                        <th class=""><button class="sort" data-sort="PrecioCompraXMetros">Precio de Compra x Metros</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioCompraXMetros">Precio de Compra x Caja</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioCompraXMetros">Precio de Venta x Caja</button></th>
                         <th class=""><button class="sort" data-sort="PrecioVentaXMetros">Precio de Venta x Metros</button></th>
                     </tr>
                 </thead>
                 <tbody class="list">
-                    <%  for (let index = tapacantos.length-1; index >= 0; index--) { %>
+                    <%  for (let index = tapacantos.length-1; index >= 0; index--) { 
+                            let tapacanto = tapacantos[index];
+                        %>
                         <tr class="row-data">
-                            <td class="Provedor" id="<%=tapacantos[index].provedor_id %>"><%= tapacantos[index].provedor %></td>
-                            <td class="Medidas" id="<%=tapacantos[index].medidas_id %>"><%= tapacantos[index].medidas %></td>
-                            <td class="Color" id="<%=tapacantos[index].color_id %>"><%= tapacantos[index].color%></td>
-                            <td class="Marca" id="<%=tapacantos[index].marca_id %>"><%= tapacantos[index].marca %></td>
-                            <td class="PrecioCompra"><%= tapacantos[index].precio_compra %> Bs(rollo) </td>
-                            <td class="PrecioVenta"><%= tapacantos[index].precio_venta %> Bs(rollo)</td>
-                            <td class="MetrosXRollo"><%= tapacantos[index].metrosxrollo %></td>
-                            <td class="RollosXCaja"><%= tapacantos[index].rollosxcaja %></td>
-                            <td class="PrecioCompraXMetros"><%= tapacantos[index].precio_compra_metros %> Bs</td>
-                            <td class="PrecioVentaXMetros"><%= tapacantos[index].precio_venta_metros %> Bs</td>
+                            <td class="Provedor" id="<%=tapacantos[index].provedor_id %>"><%= tapacanto.provedor %></td>
+                            <td class="Medidas" id="<%=tapacantos[index].medidas_id %>"><%= tapacanto.medidas %></td>
+                            <td class="Color" id="<%=tapacantos[index].color_id %>"><%= tapacanto.color%></td>
+                            <td class="Marca" id="<%=tapacantos[index].marca_id %>"><%= tapacanto.marca %></td>
+                            <td class="PrecioCompra"><%= tapacanto.precio_compra %> Bs(rollo) </td>
+                            <td class="PrecioVenta"><%= tapacanto.precio_venta %> Bs(rollo)</td>
+                            <td class="MetrosXRollo"><%= tapacanto.metrosxrollo %></td>
+                            <td class="RollosXCaja"><%= tapacanto.rollosxcaja %></td>
+                            <td class="PrecioCompraXCaja"><%= tapacanto.precio_compra_caja?tapacanto.precio_compra_caja:'' %> Bs</td>
+                            <td class="PrecioVentaXCaja"><%= tapacanto.precio_venta_caja?tapacanto.precio_venta_caja:'' %> Bs</td>
+                            <td class="PrecioVentaXMetros"><%= tapacanto.precio_venta_metros %> Bs</td>
                         </tr>
                     <% } %>
                 </tbody>
@@ -209,7 +215,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
     <script>
         var options_tapacantos = {
-            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','MetrosXRollo','RollosXCaja','PrecioCompraXMetros','PrecioVentaXMetros' ]
+            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','MetrosXRollo','RollosXCaja','PrecioCompraXCaja','PrecioVentaXCaja','PrecioVentaXMetros' ]
         };
         var options_melamina = {
             valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','LaminaXPaquete' ]
