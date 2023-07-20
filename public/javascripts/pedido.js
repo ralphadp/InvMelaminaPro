@@ -684,11 +684,13 @@ console.log(PRODUCTO);
 });
 
 function printPedido() {
-    let pedido = localStorage.getItem('NUM_PEDIDO');
-    if (!pedido) {
-        pedido = 1;
-        if (histo && histo.length > 0) {
-            pedido = Number(histo[histo.length-1].numIngreso) + 1;
+    let pedido;
+    if (histo && histo.length > 0) {
+        pedido = Number(histo[histo.length-1].numIngreso) + 1;
+    } else {
+        pedido = localStorage.getItem('NUM_PEDIDO');
+        if (!pedido) {
+            pedido = 1;
         }
     }
     document.getElementById('pedido').innerText = pedido;
