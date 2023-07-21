@@ -284,7 +284,7 @@ app.post('/addicionar_ingreso', (req, res) => {
             let resultTotal = {existencia: 0};
             let cantidad = 0;
             let cantidadExistente = Number(INVENTARIO.existencia);
-            console.log("exis:",cantidadExistente);
+
             //Calcular entrada en base a unidad
             if (tipoUnidad == "laminas" || tipoUnidad == "rollos" || tipoUnidad == "bolsas" || tipoUnidad == "hojas") {
                 cantidad = Number(req.body.cantidad);
@@ -295,11 +295,8 @@ app.post('/addicionar_ingreso', (req, res) => {
             } else if (tipoUnidad == "cajas") {
                 if (tipoItem == "tapatornillos") {
                     var NUM_HOJAS = Number(item[0].hojaxcaja);
-                    console.log("NUM_HOJAS",NUM_HOJAS);
                     cantidad = (Number(req.body.cantidad) * NUM_HOJAS);
-                    console.log("cant",cantidad);
                     req.body.hojasxcaja = NUM_HOJAS;
-                    console.log(req.body.hojasxcaja);
                 } else {
                     var NUM_ROLLOS = Number(item[0].rollosxcaja);
                     cantidad = (Number(req.body.cantidad) * NUM_ROLLOS);
