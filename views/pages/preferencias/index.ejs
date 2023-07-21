@@ -19,7 +19,7 @@
 			background-color: bisque;
 		}
 		#booking {
-			height: 70vh!important;
+			height: 80vh!important;
 		}
 	</style>
 </head>
@@ -94,6 +94,18 @@
 										<span class="select-arrow"></span>
 									</div>
 								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<span class="form-label">Min Cant. Tapatornillo</span>
+										<select class="form-control" id="tapatornillos_min">
+											<option value="1" <%= (controMinimo["Tapatornillos"]==1)?'selected':'' %>>1 tapatornillo</option>
+											<% for (var index = 2; index < 25; index++) { %>
+											<option value="<%=index %>" <%= (controMinimo["Tapatornillos"]==index)?'selected':'' %>><%=index %> tapatornillos</option>
+											<% } %>
+										</select>
+										<span class="select-arrow"></span>
+									</div>
+								</div>
 							</div>
 							<div class="form-btn">
 								<button class="submit-btn" type="button" onclick="guardarControlMinimos()">Guardar</button>
@@ -112,6 +124,7 @@
 									<option value="tapacantos">Catalogo Tapacantos</option>
 									<option value="pegamento">Catalogo Pegamentos</option>
 									<option value="fondo">Catalogo Fondos</option>
+									<option value="tapatornillos">Catalogo Tapatornillos</option>
 								</select>
 								<span class="select-arrow"></span>
 								<!-- <span class="form-label"><button class="form-btn" onclick="DisplayMelaninaEditForm(true); return false;">Editar</button></span>
@@ -220,6 +233,7 @@
             <th> Melamina </th>  
             <th> Tapacantos </th>  
             <th> Fondos </th>
+			<th> Tapatornillos </th>
             <th></th>
           </tr>
 		  <tbody class="list">
@@ -231,6 +245,7 @@
                 <td><input type="checkbox" id="c_melamina_<%= ID %>" <%=(color[index].melamina == true)?'checked':'' %> /></td>
                 <td><input type="checkbox" id="c_tapacantos_<%= ID %>" <%=(color[index].tapacantos == true)?'checked':'' %> /></td>
                 <td><input type="checkbox" id="c_fondo_<%= ID %>" <%=(color[index].fondo == true)?'checked':'' %> /></td>
+				<td><input type="checkbox" id="c_tapatornillos_<%= ID %>" <%=(color[index].tapatornillos == true)?'checked':'' %> /></td>
             	<td>
             		<button type="button" title="Guardar" id="gc_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
             		<button type="button" title="Borrar" id="bc_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -258,6 +273,7 @@
 			  <th> Tapacantos </th>  
 			  <th> Pegamento </th>  
 			  <th> Fondos </th>
+			  <th> Tapatornillos </th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < marcas.length; index++) {
@@ -268,6 +284,7 @@
 				  <td><input type="checkbox" id="m_tapacantos_<%= ID %>" <%=(marcas[index].tapacantos == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="m_pegamento_<%= ID %>" <%=(marcas[index].pegamento == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="m_fondo_<%= ID %>" <%=(marcas[index].fondo == true)?'checked':'' %> /></td>
+				  <td><input type="checkbox" id="m_tapatornillos_<%= ID %>" <%=(marcas[index].tapatornillos == true)?'checked':'' %> /></td>
 				  <td>
 					  <button type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="bm_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -286,6 +303,7 @@
 			  <th> Melamina </th>  
 			  <th> Tapacantos </th>  
 			  <th> Fondos </th>
+			  <th> Tapatornillos </th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < medidas.length; index++) {
@@ -295,6 +313,7 @@
 				  <td><input type="checkbox" id="e_melamina_<%= ID %>" <%=(medidas[index].melamina == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="e_tapacantos_<%= ID %>" <%=(medidas[index].tapacantos == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="e_fondo_<%= ID %>" <%=(medidas[index].fondo == true)?'checked':'' %> /></td>
+				  <td><input type="checkbox" id="e_tapatornillos_<%= ID %>" <%=(medidas[index].tapatornillos == true)?'checked':'' %> /></td>
 				  <td>
 					  <button type="button" title="Guardar" id="ge_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
 					  <button type="button" title="Borrar" id="be_<%= ID %>"onclick="borrar(this.id)">X</button>
@@ -330,9 +349,10 @@
 							<td class="itemtd">Tapacantos</td>
 							<td class="itemtd">Pegamento</td>
 							<td class="itemtd">Fondo</td>
+							<td class="itemtd">Tapatornillo</td>
 						</tr>
 						<tr>
-						<%  var productos = ["Melamina","Tapacantos","Pegamento","Fondo"];
+						<%  var productos = ["Melamina","Tapacantos","Pegamento","Fondo","Tapatornillos"];
 							productos.forEach((producto) => {
 								var elegido = false;
 								provedor[index].items.forEach((item) => {
@@ -664,11 +684,79 @@
 		  </table>
 		</div>
 	  </div>
+	  <div id="tapatornillos" class="container_table">
+		<span class="form-label"><h5>Tapatornillos   <button type="button" onclick="add_row()">+</button></h5></span>
+		<div class="table-editable">
+		  <table class="table" id="tapatornillos_data_table">
+			<tr>
+			  <th> Color </th>  
+			  <th> Provedor </th>  
+			  <th> Medidas </th>
+			  <th> Marca </th>
+			  <th> Precio Compra (hoja)</th>
+			  <th> Precio Venta (hoja)</th>
+			  <th> Tornillo x Hoja </th>
+			  <th> Hoja x Caja </th>
+			  <th></th>
+			</tr>
+			 <% for (let index = 0; index < tapatornillos.length; index++) {
+					 var ID = tapatornillos[index]._id.toString() %>
+			  <tr id="row_<%= ID %>">
+				  <td class="item_td" id="f_color_<%= ID %>">
+					<select id="color_tapatornillos_<%= ID %>">
+						<option value="" style="background:yellow">(seleccione un color)</option>
+						<% for (var i=0; i < color.length; i++) {
+							if (color[i].tapatornillos)  { %>
+							<option value="<%= color[i]._id.toString() %>" <%=(color[i]._id.toString()==tapatornillos[index].color) ? 'selected' : '' %>><%= color[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td" id="f_provedor_<%= ID %>">
+					<select id="provedor_tapatornillos_<%= ID %>">
+						<option value="" style="background:yellow">(seleccione un provedor)</option>
+						<% for (var i=0; i < provedor.length; i++) {
+							if (provedor[i].items.includes("Tapatornillos"))  { %>
+							<option value="<%= provedor[i]._id.toString() %>" <%=(provedor[i]._id.toString()==tapatornillos[index].provedor) ? 'selected' : '' %>><%= provedor[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td" id="f_medidas_<%= ID %>">
+					<select id="medidas_tapatornillos_<%= ID %>">
+						<option value="" style="background:yellow">(seleccione una medida)</option>
+						<% for (var i=0; i < medidas.length; i++) {
+							if (medidas[i].tapatornillos)  { %>
+							<option value="<%= medidas[i]._id.toString() %>" <%=(medidas[i]._id.toString()==tapatornillos[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td" id="f_marca_<%= ID %>">
+					<select id="marca_tapatornillos_<%= ID %>">
+						<option value="" style="background:yellow">(seleccione una marca)</option>
+						<% for (var i=0; i < marcas.length; i++) {
+							if (marcas[i].tapatornillos)  { %>
+							<option value="<%= marcas[i]._id.toString() %>" <%=(marcas[i]._id.toString()==tapatornillos[index].marca) ? 'selected' : '' %>><%= marcas[i].nombre %></option>
+						<% }} %>
+					</select>
+				  </td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_compra_<%= ID %>"><%= tapatornillos[index].precio_compra %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_<%= ID %>"><%= tapatornillos[index].precio_venta %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_tornilloxhoja_<%= ID %>"><%= tapatornillos[index].tornilloxhoja %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_hojaxcaja_<%= ID %>"><%= tapatornillos[index].hojaxcaja %></td>
+				  <td style="display:none" id="t_hash_<%= ID %>"><%= tapatornillos[index].hash_inventario %></td>
+				  <td>
+					  <button type="button" title="Guardar" id="gf_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
+					  <button type="button" title="Borrar" id="bf_<%= ID %>"onclick="borrar(this.id)">X</button>
+				  </td>
+				</tr>
+			 <% } %>
+		  </table>
+		</div>
+	  </div>
   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
     <script src="javascripts/preferencias.js"></script>
     <script>
-		var CATALOGOS = ["color","marca","medidas","provedor","item","cliente","melamina","tapacantos","pegamento","fondo"];
+		var CATALOGOS = ["color","marca","medidas","provedor","item","cliente","melamina","tapacantos","pegamento","fondo","tapatornillos"];
 		var SELECTED_CATALOGO = "color";
 		var objCatalog = null;
 	

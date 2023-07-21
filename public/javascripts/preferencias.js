@@ -16,7 +16,8 @@ function Color() {
 	    codigo: "",
 	    melamina: false,
 	    tapacantos: false,
-	    fondo: false
+	    fondo: false,
+		tapatornillos: false
 	};
 
 	this.getRowBuild = function(next_index) {
@@ -26,6 +27,7 @@ function Color() {
 					<td><input id='c_melamina_${next_index}' type='checkbox'/></td>
 					<td><input id='c_tapacantos_${next_index}' type='checkbox'/></td>
 					<td><input id='c_fondo_${next_index}' type='checkbox'/></td>
+					<td><input id='c_tapatornillos_${next_index}' type='checkbox'/></td>
 					<td><button type='button' title='Guardar' id='gc_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='bc_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -38,6 +40,7 @@ function Color() {
 		this.att.melamina =   $("#c_melamina_" + row_id).is(":checked");
 		this.att.tapacantos = $("#c_tapacantos_" + row_id).is(":checked");
 		this.att.fondo =      $("#c_fondo_" + row_id).is(":checked");
+		this.att.tapatornillos = $("#c_tapatornillos_" + row_id).is(":checked");
 	}
 
 /*UPDATE*/
@@ -78,7 +81,7 @@ function Color() {
 	        if (response.ok) {
 	            console.log(response.message);
 				document.getElementById("message").style.background = "#a4f1a4";
-	            document.getElementById("message").innerHTML = response.message + ". Color guardado! <br>";
+	            document.getElementById("message").innerHTML = response.message + ". Color Nuevo guardado! <br>";
 	            if (response.action == "reload") {
 	            	 window.location.reload();
 	            }
@@ -128,7 +131,8 @@ function Marca() {
 	    melamina: false,
 	    tapacantos: false,
 		pegamento: false,
-	    fondo: false
+	    fondo: false,
+		tapatornillos: false,
 	};
 
 	this.getRowBuild = function(next_index) {
@@ -138,6 +142,7 @@ function Marca() {
 					<td><input id='m_tapacantos_${next_index}' type='checkbox'/></td>
 					<td><input id='m_pegamento_${next_index}' type='checkbox'/></td>
 					<td><input id='m_fondo_${next_index}' type='checkbox'/></td>
+					<td><input id='m_tapatornillos_${next_index}' type='checkbox'/></td>
 					<td><button type='button' title='Guardar' id='gm_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='bm_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -150,6 +155,7 @@ function Marca() {
 		this.att.tapacantos = $("#m_tapacantos_" + row_id).is(":checked");
 		this.att.pegamento =  $("#m_pegamento_" + row_id).is(":checked");
 		this.att.fondo =      $("#m_fondo_" + row_id).is(":checked");
+		this.att.tapatornillos = $("#m_tapatornillos_" + row_id).is(":checked");
 	}
 
 /*UPDATE*/
@@ -239,7 +245,8 @@ function Medidas() {
 	    nombre: "",
 	    melamina: false,
 	    tapacantos: false,
-	    fondo: false
+	    fondo: false,
+		tapatornillos: false
 	};
 
 	this.getRowBuild = function(next_index) {
@@ -248,6 +255,7 @@ function Medidas() {
 					<td><input id='e_melamina_${next_index}' type='checkbox'/></td>
 					<td><input id='e_tapacantos_${next_index}' type='checkbox'/></td>
 					<td><input id='e_fondo_${next_index}' type='checkbox'/></td>
+					<td><input id='e_tapatornillos_${next_index}' type='checkbox'/></td>
 					<td><button type='button' title='Guardar' id='ge_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
 						<button type='button' title='Borrar' id='be_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
 					</td>
@@ -259,6 +267,7 @@ function Medidas() {
 		this.att.melamina =   $("#e_melamina_" + row_id).is(":checked");
 		this.att.tapacantos = $("#e_tapacantos_" + row_id).is(":checked");
 		this.att.fondo =      $("#e_fondo_" + row_id).is(":checked");
+		this.att.tapatornillos = $("#e_tapatornillos_" + row_id).is(":checked");
 	}
 
 /*UPDATE*/
@@ -365,12 +374,14 @@ function Provedor() {
 								<td class="itemtd">Tapacantos</td>
 								<td class="itemtd">Pegamento</td>
 								<td class="itemtd">Fondo</td>
+								<td class="itemtd">Tapatornillo</td>
 							</tr>
 							<tr>
 								<td class="itemtd"><input id="p_items_${next_index}_Melamina" type="checkbox"/></td>
 								<td class="itemtd"><input id="p_items_${next_index}_Tapacantos" type="checkbox"/></td>
 								<td class="itemtd"><input id="p_items_${next_index}_Pegamento" type="checkbox"/></td>
 								<td class="itemtd"><input id="p_items_${next_index}_Fondo" type="checkbox"/></td>
+								<td class="itemtd"><input id="p_items_${next_index}_Tapatornillos" type="checkbox"/></td>
 							</tr>
 						</table>
 					</td>
@@ -387,7 +398,8 @@ function Provedor() {
 		this.att.email     = document.getElementById("p_email_" + row_id).innerText.trim();
 
 		let index = 0;
-		["Melamina","Tapacantos","Pegamento","Fondo"].forEach((producto) => {
+		this.att.items.length = 0;
+		["Melamina","Tapacantos","Pegamento","Fondo","Tapatornillos"].forEach((producto) => {
 			if (document.getElementById("p_items_" + row_id + "_" + producto).checked) {
 				this.att.items[index++] = producto;
 			}
@@ -1345,19 +1357,190 @@ function Fondo() {
 	};
 };
 
+function Tapatornillos() {
+	this.att = {
+	    color:"",
+		provedor:"",
+		medidas:"",
+		marca:"",
+		precio_compra:0,
+		precio_venta:0,
+		tornilloxhoja:0,
+		hojaxcaja:0
+	};
+
+	this.getRowBuild = function(next_index, listas) {
+		var colorOptions;
+		for (var i=0; i < listas.color.length; i++) {
+			if (listas.color[i].tapatornillos) {
+				colorOptions += `<option value="${listas.color[i]._id.toString()}">${listas.color[i].nombre}</option>`;
+			}
+		}
+		var medidasOptions;
+		for (var i=0; i < listas.medidas.length; i++) {
+			if (listas.medidas[i].tapatornillos) {
+				medidasOptions += `<option value="${listas.medidas[i]._id.toString()}">${listas.medidas[i].nombre}</option>`;
+			}
+		}
+		var provedorOptions;
+		for (var i=0; i < listas.provedor.length; i++) {
+			if (listas.provedor[i].items.includes("Tapatornillos")) {
+				provedorOptions += `<option value="${listas.provedor[i]._id.toString()}">${listas.provedor[i].nombre}</option>`;
+			}
+		}
+		var marcaOptions;
+		for (var i=0; i < listas.marca.length; i++) {
+			if (listas.marca[i].tapatornillos) {
+				marcaOptions += `<option value="${listas.marca[i]._id.toString()}">${listas.marca[i].nombre}</option>`;
+			}
+		}
+
+		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
+					<td class='item_td' id='t_tapatornillos_${next_index}'>
+						<select id="color_tapatornillos_${next_index}">
+							<option value="" style="background:yellow" selected>(seleccione un color)</option>
+							${colorOptions}
+						</select>
+					</td>
+					<td class='item_td' id='t_provedor_${next_index}'>
+					    <select id="provedor_tapatornillos_${next_index}">
+							<option value="" style="background:yellow" selected>(seleccione un provedor)</option>
+							${provedorOptions}
+						</select>
+					</td>
+					<td class='item_td' id='t_medidas_${next_index}'>
+					    <select id="medidas_tapatornillos_${next_index}">
+							<option value="" style="background:yellow" selected>(seleccione una medida)</option>
+							${medidasOptions}
+						</select>
+					</td>
+					<td class='item_td' id='t_marca_${next_index}'>
+					    <select id="marca_tapatornillos_${next_index}">
+							<option value="" style="background:yellow" selected>(seleccione una marca)</option>
+							${marcaOptions}
+						</select>
+					</td>
+					<td class='item_td numericAllow' id='t_precio_compra_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='t_precio_venta_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='t_tornilloxhoja_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='t_hojaxcaja_${next_index}' contenteditable='true'></td>
+					<td style="display:none" id="t_hash_${next_index}"></td>
+					<td><button type='button' title='Guardar' id='gf_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
+						<button type='button' title='Borrar' id='bf_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					</td>
+				</tr>`;
+	}
+
+	this.assignar = function(row_id) {
+		this.att.color = getSelectedOption("color_tapatornillos_" + row_id);
+		this.att.provedor = getSelectedOption("provedor_tapatornillos_" + row_id);
+		this.att.medidas = getSelectedOption("medidas_tapatornillos_" + row_id);
+		this.att.marca = getSelectedOption("marca_tapatornillos_" + row_id);
+		this.att.precio_compra = document.getElementById("t_precio_compra_" + row_id).innerText;
+		this.att.precio_venta = document.getElementById("t_precio_venta_" + row_id).innerText;
+		this.att.tornilloxhoja = document.getElementById("t_tornilloxhoja_" + row_id).innerText;
+		this.att.hojaxcaja = document.getElementById("t_hojaxcaja_" + row_id).innerText;
+		this.att.hash_inventario = document.getElementById("t_hash_" + row_id).innerText;
+	}
+
+/*UPDATE*/
+	this.guardarEditado = function(id) {
+		fetch('/actualizar_tapatornillos/' + id + '/', {
+	        method: 'PUT',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify(this.att)
+	    })
+	    .then(response => response.json())
+	    .then(response => {
+	        if (response.ok) {
+	            console.log(response.message);
+				document.getElementById("message").style.background = "#a4f1a4";
+	            document.getElementById("message").innerHTML = response.message + ". Tapatornillos addicionado! <br>";
+	        } else {
+	            console.log(response.status, response.statusText);
+				document.getElementById("message").style.background = "red";
+	            document.getElementById("message").innerHTML = response.message + "<br>";
+	        }
+	    })
+	    .catch(error => {
+			document.getElementById("message").style.background = "red";
+	        document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+	        console.log(error.message);
+	    });
+	};
+
+/*ADD*/
+	this.guardarNuevo = function() {
+		fetch('/nuevo_tapatornillos/', {
+	        method: 'POST',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify(this.att)
+	    })
+	    .then(response => response.json())
+	    .then(response => {
+	        if (response.ok) {
+	            console.log(response.message);
+				document.getElementById("message").style.background = "#a4f1a4";
+	            document.getElementById("message").innerHTML = response.message + ". Tapatornillos guardado!<br>";
+	            if (response.action == "reload") {
+	            	 window.location.reload();
+	            }
+	        } else {
+	            console.log(response.status, response.statusText);
+				document.getElementById("message").style.background = "red";
+	            document.getElementById("message").innerHTML = response.message + "<br>";
+	        }
+	    })
+	    .catch(error => {
+			document.getElementById("message").style.background = "red";
+	        document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+	        console.log(error.message);
+	    });
+	};
+
+/*DELETE*/
+	this.borrar = function(id) {
+	    fetch('/delete_tapatornillos/' + id + '/', {
+	        method: 'DELETE',
+	        headers: { 'Content-Type': 'application/json' },
+	    })
+		.then(response => response.json())
+	    .then(response => {
+	        if (response.ok) {
+	            console.log(response.message);
+				document.getElementById("message").style.background = "#a4f1a4";
+	            document.getElementById("message").innerHTML = response.message + ". Tapatornillos eliminado! <br>";
+	            document.getElementById("row_" + id).outerHTML = ""; ///need to move this code
+	        } else {
+	            console.log(response.status, response.statusText);
+				document.getElementById("message").style.background = "red";
+	            document.getElementById("message").innerHTML = response.message + "<br>";
+	        }
+	    })
+	    .catch(error => {
+			document.getElementById("message").style.background = "red";
+	        document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+	        alert(error.message);
+	    });
+	};
+};
+
+
 function ControlProducto() {
 	this.att = {
-	    melamina:  null,
-		tapacantos:null,
-		pegamento: null,
-		fondo:     null,
+	    melamina:      null,
+		tapacantos:    null,
+		pegamento:     null,
+		fondo:         null,
+		tapatornillos: null
 	};
 
 	this.asignar = function() {
-		this.att.melamina   = getSelectedOption("melamina_min");
-		this.att.tapacantos = getSelectedOption("tapacantos_min");
-		this.att.pegamento  = getSelectedOption("pegamento_min");
-		this.att.fondo      = getSelectedOption("fondo_min");
+		this.att.melamina      = getSelectedOption("melamina_min");
+		this.att.tapacantos    = getSelectedOption("tapacantos_min");
+		this.att.pegamento     = getSelectedOption("pegamento_min");
+		this.att.fondo         = getSelectedOption("fondo_min");
+		this.att.tapatornillos = getSelectedOption("tapatornillos_min");
 	}
 
 /*UPDATE*/
@@ -1372,7 +1555,7 @@ function ControlProducto() {
 	        if (response.ok) {
 	            console.log(response.message);
 				document.getElementById("message").style.background = "#a4f1a4";
-	            document.getElementById("message").innerHTML = response.message + ". Fondo addicionado! <br>";
+	            document.getElementById("message").innerHTML = response.message + ". Min para Producto guardado! <br>";
 	        } else {
 	            console.log(response.status, response.statusText);
 				document.getElementById("message").style.background = "red";

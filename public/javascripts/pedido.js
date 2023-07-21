@@ -161,11 +161,15 @@ let setHistorial = function() {
     historialUnit.cantidad       = $('#'+ids.CANTIDAD_ID).val();
     historialUnit.marca          = $('#'+ids.MARCA_ID).find(":selected").val();
     if (historialUnit.nombreDeUnidad == "metros") {
-        historialUnit.pu             = PRODUCTO.contenido.precio_venta_metros;
+        historialUnit.pu       = PRODUCTO.contenido.precio_venta_metros;
     } else if (historialUnit.nombreDeUnidad == "caja") {
-        historialUnit.pu             = PRODUCTO.contenido.precio_venta_caja;
+        if (item == "tapatornillos") {
+            historialUnit.pu   = PRODUCTO.contenido.precio_venta * PRODUCTO.contenido.hojaxcaja;
+        } else {
+            historialUnit.pu   = PRODUCTO.contenido.precio_venta_caja;
+        }
     } else {
-        historialUnit.pu             = PRODUCTO.contenido.precio_venta;
+        historialUnit.pu       = PRODUCTO.contenido.precio_venta;
     }
 
     historialUnit.text = {

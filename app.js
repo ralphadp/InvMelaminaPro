@@ -111,6 +111,13 @@ app.get('/pedidos', function(req, res) {
                         rInventario[hash].contenido = fondo;
                     }
                 })
+            DB.collection("collectiontapatornillos").find().toArray().then(resultsTapatornillos => {
+                resultsTapatornillos.forEach((tapatornillos) => {
+                    let hash = MD5(items["Tapatornillos"]._id.toString() + tapatornillos.color + tapatornillos.medidas + tapatornillos.marca).toString();
+                    if (rInventario[hash]) {
+                        rInventario[hash].contenido = tapatornillos;
+                    }
+                })
             DB.collection("color").find().toArray().then(resultsColor => {
                 resultsColor.forEach((color) => {
                     items[color.nombre] = color;
@@ -153,6 +160,8 @@ app.get('/pedidos', function(req, res) {
                     .catch(error => console.error(error))
                 })
                 .catch(error => console.error(error))
+            })
+            .catch(error => console.error(error))
             })
             .catch(error => console.error(error))
         })
@@ -274,19 +283,28 @@ app.post('/addicionar_ingreso', (req, res) => {
             var codigo = item[0]._id;
             let resultTotal = {existencia: 0};
             let cantidad = 0;
-            let cantidadExistente = INVENTARIO.existencia;
-
+            let cantidadExistente = Number(INVENTARIO.existencia);
+            console.log("exis:",cantidadExistente);
             //Calcular entrada en base a unidad
-            if (tipoUnidad == "laminas" || tipoUnidad == "rollos" || tipoUnidad == "bolsas") {
+            if (tipoUnidad == "laminas" || tipoUnidad == "rollos" || tipoUnidad == "bolsas" || tipoUnidad == "hojas") {
                 cantidad = Number(req.body.cantidad);
             } else if (tipoUnidad == "paquetes") {
-                var NUM_LAMINAS = item[0].laminaxpaquete;
+                var NUM_LAMINAS = Number(item[0].laminaxpaquete);
                 cantidad = (Number(req.body.cantidad) * NUM_LAMINAS);
                 req.body.laminaxpaquete = NUM_LAMINAS;    
             } else if (tipoUnidad == "cajas") {
-                var NUM_ROLLOS = item[0].rollosxcaja;
-                cantidad = (Number(req.body.cantidad) * NUM_ROLLOS);
-                req.body.rollosxcaja = NUM_ROLLOS;
+                if (tipoItem == "tapatornillos") {
+                    var NUM_HOJAS = Number(item[0].hojaxcaja);
+                    console.log("NUM_HOJAS",NUM_HOJAS);
+                    cantidad = (Number(req.body.cantidad) * NUM_HOJAS);
+                    console.log("cant",cantidad);
+                    req.body.hojasxcaja = NUM_HOJAS;
+                    console.log(req.body.hojasxcaja);
+                } else {
+                    var NUM_ROLLOS = Number(item[0].rollosxcaja);
+                    cantidad = (Number(req.body.cantidad) * NUM_ROLLOS);
+                    req.body.rollosxcaja = NUM_ROLLOS;
+                }
             } else if (tipoUnidad == "metros") {
                 let metros = INVENTARIO.metraje;
                 let metrosExistentes = metros;
@@ -362,16 +380,22 @@ app.post('/addicionar_pedido',(req, res) => {
             let total = {existencia:0};
 
             //Calcular entrada en base a unidad
-            if (tipoUnidad == "laminas" || tipoUnidad == "rollos" || tipoUnidad == "bolsas") {
+            if (tipoUnidad == "laminas" || tipoUnidad == "rollos" || tipoUnidad == "bolsas" || tipoUnidad == "hojas") {
                 cantidad = Number(req.body.cantidad);
             } else if (tipoUnidad == "paquetes") {
-                var NUM_LAMINAS = item[0].laminaxpaquete;
+                var NUM_LAMINAS = Number(item[0].laminaxpaquete);
                 cantidad = (Number(req.body.cantidad) * NUM_LAMINAS);
                 req.body.laminaxpaquete = NUM_LAMINAS;
             } else if (tipoUnidad == "cajas") {
-                var NUM_ROLLOS = item[0].rollosxcaja;
-                cantidad = (Number(req.body.cantidad) * NUM_ROLLOS);
-                req.body.rollosxcaja = NUM_ROLLOS;
+                if (tipoItem == "tapatornillos") {
+                    var NUM_HOJAS = Number(item[0].hojaxcaja);
+                    cantidad = (Number(req.body.cantidad) * NUM_HOJAS);
+                    req.body.hojasxcaja = NUM_HOJAS;
+                } else{
+                    var NUM_ROLLOS = Number(item[0].rollosxcaja);
+                    cantidad = (Number(req.body.cantidad) * NUM_ROLLOS);
+                    req.body.rollosxcaja = NUM_ROLLOS;
+                }
             } else if (tipoUnidad == "metros") {
                 let metros = INVENTARIO.metraje;
                 let metrosExistentes = metros;
@@ -584,7 +608,33 @@ app.post('/obtener_precio', (req, res) => {
                 res.end();
                 throw e_message;
             }
-        } else if (tipoItem == "pegamento") {
+        } else if (tipoItem == "tapatornillos") {
+            producto = {hojas:0, cajas:0};
+            if (req.body.unidad == "hojas") {
+                producto.cajas = Math.trunc(req.body.cantidad / result.hojaxcaja);
+                producto.hojas = req.body.cantidad;
+
+                EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
+                precio = req.body.cantidad * precio;
+            } else if (req.body.unidad == "cajas") {
+                producto.hojas = req.body.cantidad * result.hojaxcaja;
+                producto.cajas = req.body.cantidad;
+
+                EXPLICACION = `${req.body.cantidad} x ${result.hojaxcaja}(hxc) x ${precio} Bs`;
+                precio = (req.body.cantidad * result.hojaxcaja) * precio;
+            } else {
+                let e_message;
+                if (req.body.unidad.length <= 0) {
+                    e_message = "No se envio la Unidad del pedido.";
+                } else {
+                    e_message = "Unidad desconocida [" + req.body.unidad + "]";
+                }
+                res.status(404).json({ok: true, precio: precio, message: e_message});
+                res.end();
+                throw e_message;
+            }
+        }
+        else if (tipoItem == "pegamento") {
 
             let e_message;
             if (req.body.unidad.length <= 0) {
@@ -700,19 +750,33 @@ app.get('/contenidos', function(req, res) {
                         fondo.marca_id = fondo.marca;
                         fondo.marca = (marcas[fondo.marca])?marcas[fondo.marca].nombre:'';
                     });
-                    DB.collection("collectionCliente").find().toArray().then(cliente_results => {
-                        res.render('pages/contenidos', { 
-                            tapacantos: tapacantos_results,
-                            melamina:   melamina_results,
-                            pegamento:  pegamento_results,
-                            fondo:      fondo_results,
-                            cliente:    cliente_results,
-                            _inventario: resultsInventario,
-                            _control: resultsControl
+                    DB.collection("collectiontapatornillos").find().toArray().then(tapatornillos_results => {
+                        tapatornillos_results.forEach((tapatornillo) => {
+                            tapatornillo.color_id = tapatornillo.color;
+                            tapatornillo.color = (colores[tapatornillo.color])?colores[tapatornillo.color].nombre:'';
+                            tapatornillo.medidas_id = tapatornillo.medidas;
+                            tapatornillo.medidas = (medidas[tapatornillo.medidas])?medidas[tapatornillo.medidas].nombre:'';
+                            tapatornillo.provedor_id = tapatornillo.provedor;
+                            tapatornillo.provedor = (provedores[tapatornillo.provedor])?provedores[tapatornillo.provedor].nombre:'';
+                            tapatornillo.marca_id = tapatornillo.marca;
+                            tapatornillo.marca = (marcas[tapatornillo.marca])?marcas[tapatornillo.marca].nombre:'';
                         });
+                        DB.collection("collectionCliente").find().toArray().then(cliente_results => {
+                            res.render('pages/contenidos', { 
+                                tapacantos: tapacantos_results,
+                                melamina:   melamina_results,
+                                pegamento:  pegamento_results,
+                                fondo:      fondo_results,
+                                tapatornillos:tapatornillos_results,
+                                cliente:    cliente_results,
+                                _inventario: resultsInventario,
+                                _control: resultsControl
+                            });
+                        })
+                        .catch(error => console.error(error))
+                        .finally(data => client.close())
                     })
                     .catch(error => console.error(error))
-                    .finally(data => client.close())
                 })
                 .catch(error => console.error(error))
             })
@@ -821,23 +885,29 @@ app.get('/inventario', function(req, res) {
                         resultFondo.forEach((Fondo) => {
                             rInventario.fetchInventarioValues("Fondo", Fondo);
                         });
-                        DB.collection("control_producto").find().toArray().then(resultControl => {
-                            resultControl.forEach(element => {
-                                control[element.item] = element;
+                        DB.collection("collectiontapatornillos").find().toArray().then(resultTapatornillos => {
+                            resultTapatornillos.forEach((tapatornillos) => {
+                                rInventario.fetchInventarioValues("Tapatornillos", tapatornillos);
                             });
-                            res.render('pages/inventario', {
-                                colores: colores,
-                                medidas: medidas,
-                                marcas: marcas,
-                                inventario: rInventario,
-                                control: control,
-                                size: (Object.keys(rInventario).length - 1),  //less 1 function
-                                _inventario: resultsInventario,
-                                _control: resultControl
-                            });
+                            DB.collection("control_producto").find().toArray().then(resultControl => {
+                                resultControl.forEach(element => {
+                                    control[element.item] = element;
+                                });
+                                res.render('pages/inventario', {
+                                    colores: colores,
+                                    medidas: medidas,
+                                    marcas: marcas,
+                                    inventario: rInventario,
+                                    control: control,
+                                    size: (Object.keys(rInventario).length - 1),  //less 1 function
+                                    _inventario: resultsInventario,
+                                    _control: resultControl
+                                });
+                            })
+                            .catch(error => console.error(error))
+                            .finally(data => client.close())
                         })
                         .catch(error => console.error(error))
-                        .finally(data => client.close())
                     })
                     .catch(error => console.error(error))
                 })
@@ -875,6 +945,7 @@ app.get('/preferencias', function(req, res) {
     var CollectionTapacantos = client.db().collection("collectiontapacantos");
     var CollectionPegamento = client.db().collection("collectionpegamento");
     var CollectionFondo = client.db().collection("collectionfondo");
+    var CollectionTapatornillos = client.db().collection("collectiontapatornillos");
 
     CollectionInventario.find().toArray().then(resultsInventario => {
     CollectionControlProducto.find().toArray().then(resultsControl => {
@@ -888,24 +959,28 @@ app.get('/preferencias', function(req, res) {
                                 CollectionTapacantos.find().toArray().then(resultsTapacantos => {
                                     CollectionPegamento.find().toArray().then(resultsPegamento => {
                                         CollectionFondo.find().toArray().then(resultsFondo => {
-                                            res.render('pages/preferencias/index', {
-                                                control: resultsControl,
-                                                color: resultsColor,
-                                                marcas: resultsMarcas,
-                                                medidas: resultsMedidas,
-                                                provedor: resultsProvedor,
-                                                item: resultsItem,
-                                                cliente: resultsCliente,
-                                                melamina: resultsMelamina,
-                                                tapacantos: resultsTapacantos,
-                                                pegamento: resultsPegamento,
-                                                fondo: resultsFondo,
-                                                _inventario: resultsInventario,
-                                                _control: resultsControl
-                                            });
+                                            CollectionTapatornillos.find().toArray().then(resultsTapatornillos => {
+                                                res.render('pages/preferencias/index', {
+                                                    control: resultsControl,
+                                                    color: resultsColor,
+                                                    marcas: resultsMarcas,
+                                                    medidas: resultsMedidas,
+                                                    provedor: resultsProvedor,
+                                                    item: resultsItem,
+                                                    cliente: resultsCliente,
+                                                    melamina: resultsMelamina,
+                                                    tapacantos: resultsTapacantos,
+                                                    pegamento: resultsPegamento,
+                                                    fondo: resultsFondo,
+                                                    tapatornillos: resultsTapatornillos,
+                                                    _inventario: resultsInventario,
+                                                    _control: resultsControl
+                                                });
+                                            })
+                                            .catch(error => console.error(error))
+                                            .finally(data => client.close())
                                         })
                                         .catch(error => console.error(error))
-                                        .finally(data => client.close())
                                     })
                                     .catch(error => console.error(error))
                                 })
@@ -1295,7 +1370,7 @@ app.post('/nueva_melamina',(req, res) => {
                     let inv = {
                         codigo: hash,
                         existencia: 0,
-                        metraje:0
+                        metraje:-1
                     };
 
                     CollectionInventario.insertOne(inv).then(results => {
@@ -1529,7 +1604,7 @@ app.post('/nuevo_pegamento',(req, res) => {
                     let inv = {
                         codigo: hash,
                         existencia: 0,
-                        metraje:0
+                        metraje:-2
                     };
 
                     CollectionInventario.insertOne(inv).then(results => {
@@ -1646,7 +1721,7 @@ app.post('/nuevo_fondo',(req, res) => {
                     let inv = {
                         codigo: hash,
                         existencia: 0,
-                        metraje:0
+                        metraje:-3
                     };
 
                     CollectionInventario.insertOne(inv).then(results => {
@@ -1729,6 +1804,123 @@ app.delete('/delete_fondo/:id', (req, res) => {
         console.log(result);
         console.log(`Fondo ${req.params.id} borrado...`);
         res.status(200).json({ok: true, message: "Fondo (" + req.params.id + ") borrado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+})
+
+app.post('/nuevo_tapatornillos',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    console.log("Tapatornillos",req.body);
+
+    let CollectionItem = client.db().collection("item");
+    CollectionItem.findOne({nombre:"Tapatornillos"}).then(producto => {
+        console.log(producto);
+        let CollectionTapatornillos = client.db().collection("collectiontapatornillos");
+        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+
+        req.body.hash_inventario = hash;
+        CollectionTapatornillos.insertOne(req.body).then(results => {
+
+            console.log(results);
+
+            let CollectionInventario = client.db().collection("inventario");
+            console.log(producto._id.toString(), req.body.color, req.body.medidas, req.body.marca);
+
+            CollectionInventario.findOne({codigo: hash}).then(results => {
+
+                console.log("Existe inventario? ", results);
+
+                if (!results) {
+                    console.log("Nuevo md5", hash);
+                    let inv = {
+                        codigo: hash,
+                        existencia: 0,
+                        metraje:-4
+                    };
+
+                    CollectionInventario.insertOne(inv).then(results => {
+                        console.log(results);
+                        console.log(`Un Tapatornillos nuevo fue adicionado al catalogo e inventario...`);
+
+                        res.status(200).json({ok: true, message: "Un Tapatornillos nuevo fue adicionado al catalogo e inventario....", action: "reload"});
+                        res.end();
+
+                    })
+                    .catch(error => console.error(error))
+                    .finally(data => client.close());
+                } else {
+                    console.log(`Un Tapatornillos nuevo fue adicionado al catalogo...`);
+
+                    res.status(200).json({ok: true, message: "Un Tapatornillos nuevo fue adicionado al catalogo....", action: "reload"});
+                    res.end();
+                    client.close();
+                }
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+})
+
+app.put('/actualizar_tapatornillos/:id',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+
+    let CollectionItem = client.db().collection("item");
+    CollectionItem.findOne({nombre:"Tapatornillos"}).then(producto => {
+
+        console.log("Tapatornillos: ", req.body);
+        let idc = new ObjectID(req.params.id);
+        console.log(req.params.id, idc);
+
+        let hashOld = req.body.hash_inventario;
+        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+        req.body.hash_inventario = hash;
+
+        let CollectionTapatornillos = client.db().collection("collectiontapatornillos");
+
+        CollectionTapatornillos.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+
+            console.log(hash, hashOld);
+            if (hash != hashOld) {
+                let CollectionInventario = client.db().collection("inventario");
+                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hash}}).then(results => {
+                    console.log(results);
+                    console.log(`Fue actualizado en catalogo e inventario...`);
+
+                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado al catalogo e inventario....", action: "reload"});
+                    res.end();
+                })
+                .catch(error => console.error(error))
+                .finally(data => client.close());
+            } else {
+                console.log(results);
+                console.log(`Tapatornillos de color ${req.body.color} actualizado...`);
+                res.status(200).json({ok: true, message: "Tapatornillos (" + req.body.color + ") actualizado.", action: "none"});
+                res.end();
+                client.close();
+            }
+        })
+        .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))  
+})
+
+app.delete('/delete_tapatornillos/:id', (req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+
+    var CollectionTapatornillos = client.db().collection("collectiontapatornillos");
+    let cid = new ObjectID(req.params.id);
+
+    CollectionTapatornillos.deleteOne({"_id": cid }).then(result => {
+        console.log(result);
+        console.log(`Tapatornillos ${req.params.id} borrado...`);
+        res.status(200).json({ok: true, message: "Tapatornillos (" + req.params.id + ") borrado.", action: "none"});
         res.end();
     })
     .catch(error => console.error(error))

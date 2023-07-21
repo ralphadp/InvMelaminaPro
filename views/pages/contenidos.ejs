@@ -179,6 +179,42 @@
             </table>
         </div>
 
+        <h4>TAPATORNILLOS</h4>
+        <div id="tapatornillos" class="listado">
+            Busqueda: <input class="search" placeholder="Search" />
+            <table class="contenido">
+                <thead>
+                    <tr class="row100 head">
+                        <th class=""><button class="sort" data-sort="Provedor">Provedor</button></th>
+                        <th class=""><button class="sort" data-sort="Medidas">Medidas</button></th>
+                        <th class=""><button class="sort" data-sort="Color">Color</button></th>
+                        <th class=""><button class="sort" data-sort="Marca">Marca</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioCompra">Precio de Compra</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta</button></th>
+                        <th class=""><button class="sort" data-sort="MetrosXRollo">Tornillo x Hoja</button></th>
+                        <th class=""><button class="sort" data-sort="RollosXCaja">Hoja x Caja</button></th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+                    <%  let tapatornillo;
+                        for (let index = tapatornillos.length-1; index >= 0; index--) { 
+                            tapatornillo = tapatornillos[index];
+                        %>
+                        <tr class="row-data">
+                            <td class="Provedor" id="<%=tapatornillo.provedor_id %>"><%= tapatornillo.provedor %></td>
+                            <td class="Medidas" id="<%=tapatornillo.medidas_id %>"><%= tapatornillo.medidas %></td>
+                            <td class="Color" id="<%=tapatornillo.color_id %>"><%= tapatornillo.color%></td>
+                            <td class="Marca" id="<%=tapatornillo.marca_id %>"><%= tapatornillo.marca %></td>
+                            <td class="PrecioCompra"><%= tapatornillo.precio_compra %> Bs(Hoja) </td>
+                            <td class="PrecioVenta"><%= tapatornillo.precio_venta %> Bs(Hoja)</td>
+                            <td class="MetrosXRollo"><%= tapatornillo.tornilloxhoja %></td>
+                            <td class="RollosXCaja"><%= tapatornillo.hojaxcaja %></td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
         <h5>CLIENTES</h5>
         <div id="cliente" class="listado">
             Busqueda: <input class="search" placeholder="Search" />
@@ -226,6 +262,9 @@
         var options_fondo = {
             valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','LaminaXPaquete' ]
         };
+        var options_tapatornillos = {
+            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','tornilloxhoja','hojaxcaja' ]
+        };
         var options_cliente = {
             valueNames: [ 'CI', 'Nombre', 'NIT', 'Telefono', 'Direccion', 'Email', 'Tipo', 'Empresa' ]
         };
@@ -234,6 +273,7 @@
         var melaminaList = new List('melamina', options_melamina);
         var pegamentoList = new List('pegamento', options_pegamento);
         var fondoList = new List('fondo', options_fondo);
+        var fondoList = new List('tapatornillos', options_fondo);
         var clienteList = new List('cliente', options_cliente);
 
     </script>
