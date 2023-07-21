@@ -77,8 +77,10 @@ function obtenerPrecioStandard() {
     .then(response => {
         if (response.ok) {
             document.getElementById('precio').value = response.precio;
+            document.getElementById(ids.PRECIO_MENSAJE).style.color = "#90ee90";
             document.getElementById("precio-mensaje").textContent = response.message;
         } else {
+            document.getElementById(ids.PRECIO_MENSAJE).style.color = "red";
             document.getElementById("precio-mensaje").textContent = response.message;
         }
     })
@@ -164,9 +166,9 @@ let selectProvedor = function() {
 }
 
 let selectItem = function(selected) {
-    let selectedItem = selected.options[selected.selectedIndex].text.toLowerCase();
 
-//    let selectedItem = document.getElementById("item").value.toLowerCase();
+    KEY.clean();
+    let selectedItem = selected.options[selected.selectedIndex].text.toLowerCase();
 
     if (selectedItem == "pegamento") {
         cleanColor();
@@ -205,6 +207,53 @@ function addIngreso() {
         console.log(error.message);
     });
 };
+
+function _KEY() {
+    this.item   ='';
+    this.color  ='';
+    this.medida ='';
+    this.marca  ='';
+    this.AllFilled = () => {
+        return this.item.length > 0 
+        && this.color.length > 0 
+        && this.medida.length > 0 
+        && this.marca.length > 0;
+    };
+    this.clean = () => {
+        this.item   ='';
+        this.color  ='';
+        this.medida ='';
+        this.marca  ='';
+    };
+};
+var KEY = new _KEY();
+var PRODUCTO;
+
+$(".verify").on("change", function() {
+
+    var propiedad = $("option:selected", this).prevObject[0].name;
+    KEY[propiedad] = this.value;
+    PRODUCTO = fetchProducto(KEY);
+    let PRODUCT_MESSAGE = document.getElementById("product_message");
+
+    if (PRODUCTO) {
+        if (PRODUCTO.existencia == 0) {
+            PRODUCT_MESSAGE.style.background = "red";
+            PRODUCT_MESSAGE.style.color = "#55e8d5";
+            PRODUCT_MESSAGE.innerHTML = "El producto esta agotado, " + PRODUCTO.existencia+ " items.";
+        } else {
+            PRODUCT_MESSAGE.style.background = "transparent";
+            PRODUCT_MESSAGE.style.color = "#55e8d5";
+            PRODUCT_MESSAGE.innerHTML = "Este producto tiene " + PRODUCTO.existencia+ " items aun.";
+        }
+    } else {
+        if (KEY.AllFilled()) {
+            PRODUCT_MESSAGE.style.background = "transparent";
+            PRODUCT_MESSAGE.style.color = "red";
+            PRODUCT_MESSAGE.innerHTML = "El presente producto no existe en el catalogo";
+        }
+    }
+});
 
 $(function() {
     function getTimestamp() {

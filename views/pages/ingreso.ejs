@@ -5,6 +5,9 @@
 	<title>Ingresos</title>
 	<%- include('../partials/head-compras-ventas'); %>
     <link rel="stylesheet" href="stylesheets/stylein.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
+	
     <script>
         var provedor_items = <%- JSON.stringify(provedor); %>;
         var item_color = <%- JSON.stringify(color); %>;
@@ -12,6 +15,14 @@
         var item_marca = <%- JSON.stringify(marca); %>;
         var item_unidad = <%- JSON.stringify(unidad); %>;
         var items = <%- JSON.stringify(items); %>;
+        var item_inventario = <%- JSON.stringify(inventario); %>;
+
+        function fetchProducto(key) {
+			let indexHash = CryptoJS.MD5(key.item + key.color + key.medida + key.marca);
+			let h = indexHash.toString();
+			return item_inventario[h];
+		}
+
     </script>
     <style>
 		#compras_menu {
@@ -69,7 +80,7 @@
                                     <div class="form-row">
                                         <div class="form-holder form-holder-2">
                                             <label for="room" class="special-label-1">Item</label>
-                                            <select name="item" id="item" class="form-control" onchange="selectItem(this)">
+                                            <select name="item" id="item" class="form-control verify" onchange="selectItem(this)">
                                                 <option value="" selected="">(Elija el item)</option>
                                                 <% for(let index = 0; index < item.length; index++) {%>
                                                     <option value="<%= item[index]._id.toString() %>"><%= item[index].nombre %></option>
@@ -81,7 +92,7 @@
                                         </div>
                                         <div class="form-holder form-holder-2" id="divcolor">
                                             <label for="room" class="special-label-1">Color</label>
-                                            <select name="color" id="color" class="form-control">
+                                            <select name="color" id="color" class="form-control verify">
                                                 <option value="" selected="">(Escoja el color)</option>
                                                 <% for(let index = 0; index < color.length; index++) {%>
                                                     <option style="background: <%= color[index].codigo %>;" 
@@ -96,7 +107,7 @@
                                         </div>
                                         <div class="form-holder form-holder-2" id="divmedida">
                                             <label for="room" class="special-label-1">Medida</label>
-                                            <select name="medida" id="medida" class="form-control">
+                                            <select name="medida" id="medida" class="form-control verify">
                                                 <option value="" selected="">(Elija las medidas)</option>
                                                 <% for(let index = 0; index < medida.length; index++) {%>
                                                     <option value="<%= medida[index]._id.toString() %>"><%= medida[index].nombre %></option>
@@ -108,7 +119,7 @@
                                         </div>
                                         <div class="form-holder form-holder-2" id="divmarca">
 											<label for="marca" class="special-label-1">Marca</label>
-											<select name="marca" id="marca" class="form-control">
+											<select name="marca" id="marca" class="form-control verify">
 												<option value="" selected="">(Elija la marca)</option>
                                                 <% for(let index = 0; index < marca.length; index++) {%>
                                                     <option value="<%= marca[index]._id.toString() %>"><%= marca[index].nombre %></option>
@@ -119,6 +130,11 @@
 											</span>
 										</div>
                                     </div>
+                                    <div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label id="product_message" for="room" class="special-label-1">____________________________________</label>
+										</div>
+									</div>
                                     <div class="form-row">
                                         <div class="form-holder form-holder-2">
                                             <label for="cantidad" class="special-label-1">Cantidad</label>

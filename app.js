@@ -190,8 +190,51 @@ app.get('/ingresos', function(req, res) {
     var items = {};
 
     DB.collection("inventario").find().toArray().then(resultsInventario => {
+        var rInventario = {};
+        resultsInventario.forEach((value) => {
+            rInventario[value.codigo] = value;
+        });
     DB.collection("control_producto").find().toArray().then(resultsControl => {
-
+    DB.collection("item").find().toArray().then(resultsItem => {
+        var items = {};
+        resultsItem.forEach((item) => {
+            items[item.nombre] = item;
+        });
+    DB.collection("collectionmelamina").find().toArray().then(resultMelamina => {
+        resultMelamina.forEach((melamina) => {
+            let hash = MD5(items["Melamina"]._id.toString() + melamina.color + melamina.medidas + melamina.marca).toString();
+            if (rInventario[hash]) {
+                rInventario[hash].contenido = melamina;
+            }
+        })
+    DB.collection("collectiontapacantos").find().toArray().then(resultsTapacantos => {
+        resultsTapacantos.forEach((tapacantos) => {
+            let hash = MD5(items["Tapacantos"]._id.toString() + tapacantos.color + tapacantos.medidas + tapacantos.marca).toString();
+            if (rInventario[hash]) {
+                rInventario[hash].contenido = tapacantos;
+            }
+        })
+    DB.collection("collectionpegamento").find().toArray().then(resultsPegamento => {
+        resultsPegamento.forEach((pegamento) => {
+            let hash = MD5(items["Pegamento"]._id.toString() + pegamento.marca).toString();
+            if (rInventario[hash]) {
+                rInventario[hash].contenido = pegamento;
+            }
+        })
+    DB.collection("collectionfondo").find().toArray().then(resultsFondo => {
+        resultsFondo.forEach((fondo) => {
+            let hash = MD5(items["Fondo"]._id.toString() + fondo.color + fondo.medidas + fondo.marca).toString();
+            if (rInventario[hash]) {
+                rInventario[hash].contenido = fondo;
+            }
+        })
+    DB.collection("collectiontapatornillos").find().toArray().then(resultsTapatornillos => {
+        resultsTapatornillos.forEach((tapatornillos) => {
+            let hash = MD5(items["Tapatornillos"]._id.toString() + tapatornillos.color + tapatornillos.medidas + tapatornillos.marca).toString();
+            if (rInventario[hash]) {
+                rInventario[hash].contenido = tapatornillos;
+            }
+        })
     DB.collection("collectionprovedor").find().toArray().then(resultsProvedor => {
         DB.collection("item").find().toArray().then(resultsItem => {
             resultsItem.forEach((item)=>{
@@ -225,6 +268,7 @@ app.get('/ingresos', function(req, res) {
                                     marca: resultMarcas,
                                     unidad: resultUnidad,
                                     historial: resultHistorial,
+                                    inventario: rInventario,
                                     _inventario: resultsInventario,
                                     _control: resultsControl
                                 });
@@ -241,6 +285,18 @@ app.get('/ingresos', function(req, res) {
             .catch(error => console.error(error))
         })
         .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
     })
@@ -668,7 +724,7 @@ app.get('/reporte', function(req, res) {
     DB.collection("inventario").find().toArray().then(resultsInventario => {
         DB.collection("control_producto").find().toArray().then(resultsControl => {
             res.render('pages/reporte01', { 
-                _inventario: resultsControl,
+                _inventario: resultsInventario,
                 _control: resultsControl
              });
         })
