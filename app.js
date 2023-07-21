@@ -67,12 +67,13 @@ app.get('/pedidos', function(req, res) {
     var DB = client.db();
     var items = {};
     var persona = {};
-
+    
     DB.collection("inventario").find().toArray().then(resultsInventario => {
         var rInventario = {};
         resultsInventario.forEach((value) => {
             rInventario[value.codigo] = value;
         });
+    DB.collection("control_producto").find().toArray().then(resultsControl => {
     ///use redis to speed and save internally       
     DB.collection("collectionCliente").find().toArray().then(resultsCliente => {
         resultsCliente.forEach((cliente) => {
@@ -139,7 +140,9 @@ app.get('/pedidos', function(req, res) {
                                     marca: resultMarcas,
                                     unidad: resultUnidad,
                                     historial: resultHistorial,
-                                    inventario: rInventario
+                                    inventario: rInventario,
+                                    _inventario: resultsInventario,
+                                    _control: resultsControl
                                 });
                             })
                             .catch(error => console.error(error))
@@ -166,6 +169,8 @@ app.get('/pedidos', function(req, res) {
     .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
 });
 
 // ingresos page
@@ -174,6 +179,9 @@ app.get('/ingresos', function(req, res) {
     client.connect();
     var DB = client.db();
     var items = {};
+
+    DB.collection("inventario").find().toArray().then(resultsInventario => {
+    DB.collection("control_producto").find().toArray().then(resultsControl => {
 
     DB.collection("collectionprovedor").find().toArray().then(resultsProvedor => {
         DB.collection("item").find().toArray().then(resultsItem => {
@@ -207,7 +215,9 @@ app.get('/ingresos', function(req, res) {
                                     medida: resultMedida,
                                     marca: resultMarcas,
                                     unidad: resultUnidad,
-                                    historial: resultHistorial
+                                    historial: resultHistorial,
+                                    _inventario: resultsInventario,
+                                    _control: resultsControl
                                 });
                             })
                             .catch(error => console.error(error))
@@ -222,6 +232,10 @@ app.get('/ingresos', function(req, res) {
             .catch(error => console.error(error))
         })
         .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
 });
@@ -600,16 +614,21 @@ app.post('/obtener_precio', (req, res) => {
 
 // reporte page
 app.get('/reporte', function(req, res) {
-  const client = new MongoClient(uri);
-  client.connect();
-  var Collection = client.db().collection("collectionmelamina");
+    const client = new MongoClient(uri);
+    client.connect();
+    let DB = client.db();
 
-  Collection.find().toArray()
-      .then(results => {
-          res.render('pages/reporte01', { melamina: results });
-      })
-      .catch(error => console.error(error))
-      .finally(data => client.close())
+    DB.collection("inventario").find().toArray().then(resultsInventario => {
+        DB.collection("control_producto").find().toArray().then(resultsControl => {
+            res.render('pages/reporte01', { 
+                _inventario: resultsControl,
+                _control: resultsControl
+             });
+        })
+        .catch(error => console.error(error))
+        .finally(data => client.close())
+    })
+    .catch(error => console.error(error))
 });
 
 // tapacantos_standar page
@@ -621,7 +640,10 @@ app.get('/contenidos', function(req, res) {
     let medidas = {};
     let provedores = {};
     let marcas = {};
-    
+
+    DB.collection("inventario").find().toArray().then(resultsInventario => {
+    DB.collection("control_producto").find().toArray().then(resultsControl => {
+   
     DB.collection("color").find().toArray().then(color_results => {
         color_results.forEach((color)=>{
             colores[color._id.toString()] = color;
@@ -684,7 +706,9 @@ app.get('/contenidos', function(req, res) {
                             melamina:   melamina_results,
                             pegamento:  pegamento_results,
                             fondo:      fondo_results,
-                            cliente:    cliente_results
+                            cliente:    cliente_results,
+                            _inventario: resultsInventario,
+                            _control: resultsControl
                         });
                     })
                     .catch(error => console.error(error))
@@ -705,22 +729,35 @@ app.get('/contenidos', function(req, res) {
     .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    
-  });
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+});
 
 // historia page
 app.get('/historial', function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
-    var Collection = client.db().collection("historial");
+    var DB = client.db();
   
-    Collection.find().toArray()
-        .then(results => {
-            res.render('pages/historial', { historial: results });
+    DB.collection("inventario").find().toArray().then(resultsInventario => {
+    DB.collection("control_producto").find().toArray().then(resultsControl => {
+
+        DB.collection("historial").find().toArray().then(results => {
+            res.render('pages/historial', { 
+                historial: results,
+                _inventario: resultsInventario,
+                _control: resultsControl
+            });
         })
         .catch(error => console.error(error))
         .finally(data => client.close())
-  });
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+});
 
 // historia page
 app.get('/inventario', function(req, res) {
@@ -794,7 +831,9 @@ app.get('/inventario', function(req, res) {
                                 marcas: marcas,
                                 inventario: rInventario,
                                 control: control,
-                                size: (Object.keys(rInventario).length - 1)  //less 1 function
+                                size: (Object.keys(rInventario).length - 1),  //less 1 function
+                                _inventario: resultsInventario,
+                                _control: resultControl
                             });
                         })
                         .catch(error => console.error(error))
@@ -823,6 +862,8 @@ app.get('/inventario', function(req, res) {
 app.get('/preferencias', function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
+    
+    var CollectionInventario = client.db().collection("inventario");
     var CollectionControlProducto = client.db().collection("control_producto");
     var CollectionColor = client.db().collection("color");
     var CollectionMarcas = client.db().collection("marcas");
@@ -835,6 +876,7 @@ app.get('/preferencias', function(req, res) {
     var CollectionPegamento = client.db().collection("collectionpegamento");
     var CollectionFondo = client.db().collection("collectionfondo");
 
+    CollectionInventario.find().toArray().then(resultsInventario => {
     CollectionControlProducto.find().toArray().then(resultsControl => {
     CollectionColor.find().toArray().then(resultsColor => {
         CollectionMarcas.find().toArray().then(resultsMarcas => {
@@ -858,6 +900,8 @@ app.get('/preferencias', function(req, res) {
                                                 tapacantos: resultsTapacantos,
                                                 pegamento: resultsPegamento,
                                                 fondo: resultsFondo,
+                                                _inventario: resultsInventario,
+                                                _control: resultsControl
                                             });
                                         })
                                         .catch(error => console.error(error))
@@ -878,6 +922,8 @@ app.get('/preferencias', function(req, res) {
             .catch(error => console.error(error))
         })
         .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
     })

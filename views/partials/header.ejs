@@ -69,16 +69,51 @@
     </ul>
 </nav>
 <div id="message"></div>
+<% 
+    let alert = 0;
+    let controlValues = {};
+
+    _control.forEach((control) => {
+        controlValues[control.item] = Number(control.minimo);
+    });
+
+    _inventario.forEach((inventario) => {
+        if (inventario.metraje >= 0 ) {
+          if (inventario.existencia <= controlValues["Tapacantos"]) {
+            alert++;
+          }
+        } else if (inventario.metraje = -1 ) {
+          if (inventario.existencia <= controlValues["Melamina"]) {
+            alert++;
+          }
+        } else if (inventario.metraje = -2 ) {
+          if (inventario.existencia <= controlValues["Pegamento"]) {
+            alert++;
+          }
+        } else if (inventario.metraje = -3 ) {
+          if (inventario.existencia <= controlValues["Fondo"]) {
+            alert++;
+          }
+        } else if (inventario.metraje = -4 ) {
+          if (inventario.existencia <= controlValues["Tapatornillos"]) {
+            alert++;
+          }
+        }
+    });
+
+    console.log("ALERT!!!",alert);
+    if (alert) {
+%>
 <div class="top-msg" id="alert-message">
   <div class="top-msg-ico">
     !
   </div>
   <div class="top-msg-inner">
-    <p>Existen varios productos que estan bajo el rango de existencia, Vea el <a style="color:red!important;" href="/inventario">Inventario</a> para ver mas informacion.</p>
+    <p>Existen <%-alert %> productos que estan bajo el rango de existencia, Vea el <a style="color:red!important;" href="/inventario">Inventario</a> para ver mas informacion.</p>
   </div>
   <div class="top-msg-close" style="cursor: pointer;" onclick="$('#alert-message').hide()">&#10005;</div>    
 </div>
-
+<% } %>
 <div id="about" style="background: #FFFFFF;position:fixed;margin-left:50%;margin-top:50%;width:400px;height:400px;margin-left:-200px;margin-top:-200px;display:none;top: 50%;left: 50%;border-radius: 10px;">
     <div style="cursor: pointer;float: right;padding: 20px;font-size: 12px;" onclick="$('#about').hide()">&#10005;</div>
     <div style="padding: 50px">
