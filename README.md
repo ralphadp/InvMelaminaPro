@@ -16,3 +16,6 @@ main page  http://localhost:3000/inventario
 sales http://localhost:3000/pedidos
 
 buys http://localhost:3000/ingresos
+
+To affect the package version
+#npm version patch -git-tag-version false
