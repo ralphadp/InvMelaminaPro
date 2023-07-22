@@ -1,3 +1,4 @@
+let carritoReg = 1;
 let NotaVenta = function() {
     var NumeroPedido;
     var NombreCliente;
@@ -47,12 +48,20 @@ function addCarrito() {
     var newRow = tbodyRef.insertRow();
     var newCell;
 
+    newCell = newRow.insertCell();
+    newCell.style.color = "white";
+    newCell.style.borderBottom = "1px solid"
+    newCell.style.borderColor = "rgba(255,255,255,0.3)";
+    newCell.style.fontSize ="12px";
+    newCell.style.padding = "1px!important";
+    newCell.appendChild(document.createTextNode(carritoReg++));
     for (let index=0; index < DATA_INDEX_NAME.length; index++) {
         newCell = newRow.insertCell();
         newCell.style.color = "white";
         newCell.style.borderBottom = "1px solid"
         newCell.style.borderColor = "rgba(255,255,255,0.3)";
-        newCell.style.fontSize ="14px";
+        newCell.style.fontSize ="12px";
+        newCell.style.padding = "1px!important";
         if (DATA_INDEX_NAME[index] == "color" || DATA_INDEX_NAME[index] == "medida" || DATA_INDEX_NAME[index] == "marca" || DATA_INDEX_NAME[index] == "item") {
             newCell.appendChild(document.createTextNode(historialUnit.text[DATA_INDEX_NAME[index]]));
         } else {
@@ -77,6 +86,7 @@ function verifyResponsesDone() {
     if (++responseAlertCounter >= MAX_REQUESTS) {
         window.location.reload();
         responseAlertCounter = 0;
+        carritoReg = 1;
     }
 }
 
@@ -226,6 +236,7 @@ let addicionarPedidoAlCarrito = function() {
 let removerUltimoPedidoDelCarrito = function() {
     let ids = new getIDS();
     let tipo_cliente = ids.verify();
+    carritoReg--;
 
     var table = document.getElementById(ids.CARRITO);
     var rowCount = table.rows.length;

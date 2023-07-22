@@ -388,8 +388,8 @@ input::-ms-input-placeholder { /* Microsoft Edge */
 .inner .table-responsive tbody td {
 	color: #55e8d5;
 	font-size: 18px;
-	font-weight: 700;
-	padding-bottom: 25px;
+	/*font-weight: 700;*/
+	/*padding-bottom: 25px;*/
 }
 .form-register .actions {
 	padding: 0 45px 45px;
@@ -689,4 +689,26 @@ span.row-small {
 #precio-mensaje, #precio-mensaje_ex, #precio-mensaje_re {
     color: red;
     font-size: 12px;
+}
+
+.navbar {
+    margin-bottom: 0px!important;
+}
+
+.form-control {
+    height: 64px!important;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: #43ccba;
+}
+
+.carrito-button {
+    background-color: white;
+    color: #43ccba;
+    font-size: 20px;
+    font-weight: bold;
+    border-color: white;
+    border-radius: 4px;
+    width: 30px;
 }

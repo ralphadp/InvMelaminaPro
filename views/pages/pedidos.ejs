@@ -5,6 +5,9 @@
 	<meta charset="utf-8">
 	<title>Pedidos</title>
 	<%- include('../partials/head-compras-ventas'); %>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
 	<link rel="stylesheet" href="stylesheets/stylepe.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
@@ -69,7 +72,7 @@
     			color: white;
 			}
 			.carrito-header {
-				width:160px;
+				width: 10px;
 				font-size: 14px;
 				padding: 5px;
 			}
@@ -312,11 +315,22 @@
 											<input style="color: #55e8d5" type="text" class="form-control" id="timestamp1" name="timestamp" readonly="">
 										</div>
 									</div>
-									<div class="form-row">
+									<div class="form-row form-row-date">
 										<div class="form-holder form-holder-2">
-											<table class="carrito" id="carrito_interno">
+											<div class="form-holder-2" style="display: inline;">
+												<button type="button" class="carrito-button" title="Addicionar al carrito" onclick="addicionarPedidoAlCarrito()">+</button>
+											</div>	
+											<div class="form-holder-2" style="display: inline;">
+												<button type="button" class="carrito-button" title="Borrar del carrito" onclick="removerUltimoPedidoDelCarrito()">-</button>
+											</div>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="table-responsive form-holder form-holder-2" >
+											<table class="table carrito" id="carrito_interno" style="font-size: 12px;">
 												<thead>
 													<tr class="row-head">
+														<th class="carrito-header">No.</th>
 														<th class="carrito-header">Hora</th>
 														<th class="carrito-header">Item</th>
 														<th class="carrito-header">Color</th>
@@ -332,12 +346,6 @@
 												</tbody>
 											</table>
 										</div>
-										<div class="form-holder-2">
-                                            <button type="button" onclick="addicionarPedidoAlCarrito()">+</button>
-										</div>	
-											<div class="form-holder-2">
-											<button type="button" onclick="removerUltimoPedidoDelCarrito()">-</button>
-                                        </div>
 									</div>
 								</div>
 							</section>
@@ -473,11 +481,22 @@
 											</label>
 										</div>
 									</div>
-									<div class="form-row">
+									<div class="form-row form-row-date">
 										<div class="form-holder form-holder-2">
-											<table class="carrito" id="carrito_externo">
+											<div class="form-holder-2" style="display: inline;">
+												<button type="button" class="carrito-button" title="Addicionar al carrito" onclick="addicionarPedidoAlCarrito()">+</button>
+											</div>	
+											<div class="form-holder-2" style="display: inline;">
+												<button type="button" class="carrito-button" title="Borrar del carrito" onclick="removerUltimoPedidoDelCarrito()">-</button>
+											</div>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="table-responsive form-holder form-holder-2">
+											<table class="table carrito" id="carrito_externo">
 												<thead>
 													<tr class="row-head">
+														<th class="carrito-header">No.</th>
 														<th class="carrito-header">Hora</th>
 														<th class="carrito-header">Item</th>
 														<th class="carrito-header">Color</th>
@@ -493,12 +512,6 @@
 												</tbody>
 											</table>
 										</div>
-										<div class="form-holder-2">
-                                            <button type="button" onclick="addicionarPedidoAlCarrito()">+</button>
-										</div>	
-											<div class="form-holder-2">
-											<button type="button" onclick="removerUltimoPedidoDelCarrito()">-</button>
-                                        </div>
 									</div>
 								</div>
 							</section>
@@ -615,11 +628,22 @@
 											</label>
 										</div>
 									</div>
-									<div class="form-row">
+									<div class="form-row form-row-date">
 										<div class="form-holder form-holder-2">
-											<table class="carrito" id="carrito_regular">
+											<div class="form-holder-2" style="display: inline;">
+												<button type="button" class="carrito-button" title="Addicionar al carrito" onclick="addicionarPedidoAlCarrito()">+</button>
+											</div>	
+											<div class="form-holder-2" style="display: inline;">
+												<button type="button" class="carrito-button" title="Borrar del carrito" onclick="removerUltimoPedidoDelCarrito()">-</button>
+											</div>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="table-responsive form-holder form-holder-2">
+											<table class="table carrito" id="carrito_regular">
 												<thead>
 													<tr class="row-head">
+														<th class="carrito-header">No.</th>
 														<th class="carrito-header">Hora</th>
 														<th class="carrito-header">Item</th>
 														<th class="carrito-header">Color</th>
@@ -635,12 +659,6 @@
 												</tbody>
 											</table>
 										</div>
-										<div class="form-holder-2">
-                                            <button type="button" onclick="addicionarPedidoAlCarrito()">+</button>
-										</div>	
-											<div class="form-holder-2">
-											<button type="button" onclick="removerUltimoPedidoDelCarrito()">-</button>
-                                        </div>
 									</div>
 								</div>
 							</section>
@@ -654,52 +672,54 @@
 						</div>
 					</div>
 		        </form>
-				<ul style="list-style-type: none;">
-                    <li>
-                        <span class="row-small-header">Fecha</span>
-                        <span class="row-small-header">Hora</span>
-                        <span class="row-header">Cliente</span>
-                        <span class="row-small-header">Item</span>
-                        <span class="row-header">Color</span>
-                        <span class="row-small-header">Medida</span>
-						<span class="row-small-header">Marca</span>
-						<span class="row-small-header">Unidad</span>
-                        <span class="row-small-header">Cantidad</span>
-						<span class="row-small-header">Venta</span>
-                    </li>
-                    <% var ventaTotal = 0;
-						for(let i = historial.length-1; i >= 0; i--) {
+				<div style="padding-right: 30px;padding-left: 30px;">
+				<div class="table-responsive">
+					<table class="table table-hover" style="font-size: 12px;color:white;">
+						<thead style="background-color: #32998b;">
+							<tr>
+								<th>#</th>	
+								<th>Fecha</th>
+								<th>Hora</th>
+								<th>Cliente</th>
+								<th>Item</th>
+								<th>Color</th>
+								<th>Medida</th>
+								<th>Marca</th>
+								<th>Unidad</th>
+								<th>Cantidad</th>
+								<th>Venta</th>
+							</tr>
+						</thead>
+						<tbody>
+						<% var ventaTotal = 0;
+						for (let i = historial.length-1; i >= 0; i--) {
                         	var [fecha, hora] = historial[i].fecha.split(" ");
 							ventaTotal = ventaTotal + Number(historial[i].precioVenta);
                         %>
-                        <li>
-                            <span class="row-small"><%= fecha %></span>
-                            <span class="row-small"><%= hora %></span>
-                            <span class="row"><%= historial[i].cliente %></span>
-                            <span class="row-small"><%= historial[i].item %></span>
-                            <span class="row"><%= historial[i].color %></span>
-                            <span class="row-small"><%= historial[i].medida %></span>
-							<span class="row-small"><%= historial[i].marca %></span>
-							<span class="row-small"><%= historial[i].nombreDeUnidad %></span>
-                            <span class="row-small"><%= historial[i].cantidad %></span>
-							<span class="row-small"><%= historial[i].precioVenta %> Bs</span>
-                        </li>
+                        <tr>
+							<td><%= historial.length - i %></td>
+                            <td><%= fecha %></td>
+                            <td><%= hora %></td>
+                            <td><%= historial[i].cliente %></td>
+                            <td><%= historial[i].item %></td>
+                            <td><%= historial[i].color %></td>
+                            <td><%= historial[i].medida %></td>
+							<td><%= historial[i].marca %></td>
+							<td><%= historial[i].nombreDeUnidad %></td>
+                            <td><%= historial[i].cantidad %></td>
+							<td><%= historial[i].precioVenta %> Bs</td>
+						</tr>
                     <% } %>
 					<% if (ventaTotal > 0) { %>
-						<li>
-							<span class="row-small-invisible"></span>
-							<span class="row-small-invisible"></span>
-							<span class="row-invisible"></span>
-							<span class="row-small-invisible"></span>
-							<span class="row-invisible"></span>
-							<span class="row-small-invisible"></span>
-							<span class="row-small-invisible"></span>
-							<span class="row-small-invisible"></span>
-							<span class="row-small-invisible"></span>
-							<span class="row-small"><%=ventaTotal %> Bs</span>
-						</li>
+						<tr>
+							<td colspan="10"></td>
+							<td class="row-small"><%=ventaTotal %> Bs</td>
+						</tr>
 					<% } %>
-                </ul>
+						</tbody>
+					</table>
+				</div>
+			    </div>
 			</div>
 		</div>
 	</div>
