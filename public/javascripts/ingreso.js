@@ -77,10 +77,10 @@ function obtenerPrecioStandard() {
     .then(response => {
         if (response.ok) {
             document.getElementById('precio').value = response.precio;
-            document.getElementById(ids.PRECIO_MENSAJE).style.color = "#90ee90";
+            document.getElementById("precio-mensaje").style.color = "#90ee90";
             document.getElementById("precio-mensaje").textContent = response.message;
         } else {
-            document.getElementById(ids.PRECIO_MENSAJE).style.color = "red";
+            document.getElementById("precio-mensaje").style.color = "red";
             document.getElementById("precio-mensaje").textContent = response.message;
         }
     })
@@ -143,13 +143,17 @@ let fillPropiedad = function(selectedItem, nombrePropiedad, item_propiedad) {
 }
 
 let selectProvedor = function() {
+    let PRODUCT_MESSAGE = document.getElementById("product_message");
+    PRODUCT_MESSAGE.style.background = "transparent";
+    PRODUCT_MESSAGE.style.color = "#55e8d5";
+    PRODUCT_MESSAGE.innerHTML = "_________________________________";
+
     let selectedItem = document.getElementById("provedor").value;
     for (var i=0; i<provedor_items.length; i++) {
         var provedor = provedor_items[i];
         if (provedor._id.toString() == selectedItem) {
             let selected = cleanOptionsFrom("item");
             addOption(selected, "", "(Elija el item)");
-            console.log(provedor.items);
             for (var j=0; j<provedor.items.length; j++) {
                 var item_name = provedor.items[j]
                 addOption(selected, items[item_name]._id.toString(), item_name);
@@ -240,11 +244,11 @@ $(".verify").on("change", function() {
         if (PRODUCTO.existencia == 0) {
             PRODUCT_MESSAGE.style.background = "red";
             PRODUCT_MESSAGE.style.color = "#55e8d5";
-            PRODUCT_MESSAGE.innerHTML = "El producto esta agotado, " + PRODUCTO.existencia+ " items.";
+            PRODUCT_MESSAGE.innerHTML = "El Producto [item, color, medida, marca] del inventario esta vacio, " + PRODUCTO.existencia+ " items.";
         } else {
             PRODUCT_MESSAGE.style.background = "transparent";
             PRODUCT_MESSAGE.style.color = "#55e8d5";
-            PRODUCT_MESSAGE.innerHTML = "Este producto tiene " + PRODUCTO.existencia+ " items aun.";
+            PRODUCT_MESSAGE.innerHTML = "Este Producto [item, color, medida, marca] del inventario tiene " + PRODUCTO.existencia+ " items aun.";
         }
     } else {
         if (KEY.AllFilled()) {
