@@ -594,7 +594,7 @@ select option {
 }
 
 .buttonG:hover {
-	background: #32998b
+	background: #32998b;
 }
 
 span.row-invisible {
@@ -674,9 +674,10 @@ span.row-small {
     padding: 3px;
     cursor: pointer;
     border-radius: 5px;
+    text-decoration: none !important;
 }
 .precio:hover {
-    background: #32998b
+    background: #32998b !important;
 }
 .delete {
     color: white;

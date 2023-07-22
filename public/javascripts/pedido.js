@@ -607,7 +607,8 @@ let selectItem = function(selected) {
 
     _CLIENTE[ids.CLIENTE_TIPO].clean();
     let selectedItem = selected.options[selected.selectedIndex].text.toLowerCase()
-    //let selectedItem = document.getElementById(ids.ITEM_ID).value.toLowerCase();
+    PRODUCTO = fetchProducto(_CLIENTE[ids.CLIENTE_TIPO]);
+    document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "_____________________";
 
     if (selectedItem == "pegamento") {
         cleanColor(ids);
