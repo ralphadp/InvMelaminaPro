@@ -107,7 +107,9 @@ app.get('/pedidos', function(req, res) {
             DB.collection("collectionfondo").find().toArray().then(resultsFondo => {
                 resultsFondo.forEach((fondo) => {
                     let hash = MD5(items["Fondo"]._id.toString() + fondo.color + fondo.medidas + fondo.marca).toString();
+                    console.log(hash);
                     if (rInventario[hash]) {
+                        console.log(rInventario[hash]);
                         rInventario[hash].contenido = fondo;
                     }
                 })
@@ -224,7 +226,9 @@ app.get('/ingresos', function(req, res) {
     DB.collection("collectionfondo").find().toArray().then(resultsFondo => {
         resultsFondo.forEach((fondo) => {
             let hash = MD5(items["Fondo"]._id.toString() + fondo.color + fondo.medidas + fondo.marca).toString();
+            console.log(hash);
             if (rInventario[hash]) {
+                console.log(rInventario[hash]);
                 rInventario[hash].contenido = fondo;
             }
         })
@@ -1453,37 +1457,94 @@ app.post('/nueva_melamina',(req, res) => {
 
 app.put('/actualizar_melamina/:id',(req, res) => {
     const client = new MongoClient(uri);
-    client.connect();   
+    client.connect();
 
     let CollectionItem = client.db().collection("item");
+    let CollectionInventario = client.db().collection("inventario");
+
     CollectionItem.findOne({nombre:"Melamina"}).then(producto => {
-        console.log("melamina: ", req.body);
+
+        console.log("Melamina: ", req.body);
         let idc = new ObjectID(req.params.id);
-        console.log(req.params.id, idc);
+        console.log("param: "+req.params.id);
 
-        let hashOld =  req.body.hash_inventario;
-        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
-        req.body.hash_inventario = hash;
+        let hashOld = req.body.hash_inventario;
+        let hashNew = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+        req.body.hash_inventario = hashNew;
 
-        let CollectionMelamina = client.db().collection("collectionmelamina");
-        CollectionMelamina.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        let CollectionProducto = client.db().collection("collectionmelamina");
 
-            console.log(hash, hashOld);
-            if (hash != hashOld) {
-                let CollectionInventario = client.db().collection("inventario");
-                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hash}}).then(results => {
-                    console.log(results);
-                    console.log(`Fue actualizado al catalogo e inventario...`);
+        CollectionProducto.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+            console.log(results);
+            console.log("hash Nuevo:", hashNew, "hash viejo:", hashOld);
+            if (hashNew != hashOld) {
+                CollectionInventario.find({codigo: hashNew}).toArray().then(inventario => {
+                    console.log(inventario);
+                    if (!inventario.length) { //no existe inventario
+                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
+                            console.log(productos);
+                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
+                                //actualiza el inventario existente
+                                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hashNew}}).then(results => {
+                                    console.log(results);
+                                    console.log(`Fue actualizado en catalogo e inventario...`);
 
-                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizada al catalogo e inventario....", action: "reload"});
-                    res.end();
+                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado en catalogo e inventario....", new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            } else {
+                                let inv = {
+                                    codigo: hashNew,
+                                    existencia: 0,
+                                    metraje: -3
+                                };
+
+                                CollectionInventario.insertOne(inv).then(results => {
+                                    console.log(results);
+                                    console.log(`El Melamina se actualizo y se creo un nuevo inventario ${hashNew}...`);
+
+                                    res.status(200).json({ok: true, message: `El Melamina se actualizo y se creo un nuevo inventario ${hashNew}...`, new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            }
+                        })
+                        .catch(error => console.error(error))
+                    } else {  //existe inventario
+                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
+                            console.log(productos);
+                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
+
+                                //Se suma existencia al nuevo inventario enlazado???
+                                CollectionInventario.deleteOne({codigo: hashOld}).then(results => {
+                                    console.log(results);
+                                    console.log(`Se borro inventario viejo y se actualizo Melamina con enlaze a otro inventario...`);
+
+                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Se borro inventario viejo y se actualizo Melamina con enlaze a otro inventario...", new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            } else {
+                                console.log(`Se actualizo Melamina y se cambio el enlaze a otro inventario...`);
+
+                                res.status(200).json({ok: true, message: "(" + req.body.color + ") Se actualizo Melamina y se cambio el enlaze a otro inventario......", new_hash: hashNew, action: "reload"});
+                                res.end();
+                                client.close();
+                            }
+                        })
+                        .catch(error => console.error(error))
+                    }
                 })
                 .catch(error => console.error(error))
-                .finally(data => client.close());
             } else {
+                //no se envio datos actualizado, o no se actualizo en el UI
                 console.log(results);
-                console.log(`Melamina color ${req.body.color} actualizada...`);
-                res.status(200).json({ok: true, message: "Melamina (" + req.body.color + ") actualizada.", action: "none"});
+                console.log(`Melamina  ${idc} conserva los datos...`);
+                res.status(200).json({ok: true, message: "Melamina (" + idc + ") conserva los datos.", new_hash: hashNew, action: "none"});
                 res.end();
                 client.close();
             }
@@ -1497,17 +1558,59 @@ app.delete('/delete_melamina/:id', (req, res) => {
     const client = new MongoClient(uri);
     client.connect();
 
-    var CollectionMelamina = client.db().collection("collectionmelamina");
+    let CollectionItem = client.db().collection("item");
+    var CollectionProducto = client.db().collection("collectionmelamina");
+    var CollectionInventario = client.db().collection("inventario");
     let cid = new ObjectID(req.params.id);
+    console.log("ID: ",req.params.id);
 
-    CollectionMelamina.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Melamina ${req.params.id} borrada...`);
-        res.status(200).json({ok: true, message: "Melamina (" + req.params.id + ") borrada.", action: "none"});
-        res.end();
+    CollectionItem.findOne({nombre:"Melamina"}).then(producto => {
+
+        CollectionProducto.findOne({"_id": cid }).then(melamina => {
+
+            let hash = MD5(producto._id.toString() + melamina.color + melamina.medidas + melamina.marca).toString();
+
+            if (melamina.hash_inventario != hash) {
+                console.log("Discrepancias en hash, inventarioID: ",melamina.hash_inventario, " hash generado:" ,hash);
+
+                res.status(500).json({ok: true, message: "No se pudo borrar Melamina (" + req.params.id + ") revise el codigo de inventario.", action: "none"});
+                res.end();
+                throw "Revise el hash de inventario vs producto...";
+            }
+
+            CollectionProducto.find({"hash_inventario": hash }).toArray().then(result => {
+                let productosDeInventario = result.length;
+                console.log(result);
+
+                CollectionProducto.deleteOne({"_id": cid }).then(result => {
+                    console.log(result);
+
+                    if (productosDeInventario > 1) {
+                        console.log("Invantario [codigo: "+hash+"] se conserva, existe para otros productos.");
+                        console.log(`Melamina ${req.params.id} fue borrado...`);
+
+                        res.status(200).json({ok: true, message: "Melamina (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
+                        res.end();
+                        client.close();
+                    } else {
+                        CollectionInventario.deleteOne({"codigo": hash }).then(result => {
+                            console.log(result);
+                            console.log(`Melamina y su inventario ${req.params.id} fueron borrados...`);
+
+                            res.status(200).json({ok: true, message: "Melamina (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
+                            res.end();
+                        })
+                        .catch(error => console.error(error))
+                        .finally(data => client.close())
+                    }
+                })
+                .catch(error => console.error(error))
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    .finally(data => client.close())
 })
 
 app.post('/nuevo_tapacantos',(req, res) => {
@@ -1573,35 +1676,91 @@ app.put('/actualizar_tapacantos/:id',(req, res) => {
     client.connect();
 
     let CollectionItem = client.db().collection("item");
+    let CollectionInventario = client.db().collection("inventario");
+
     CollectionItem.findOne({nombre:"Tapacantos"}).then(producto => {
- 
+
         console.log("tapacantos: ", req.body);
         let idc = new ObjectID(req.params.id);
-        console.log(req.params.id, idc);
+        console.log("param: "+req.params.id);
 
-        let hashOld =  req.body.hash_inventario;
-        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
-        req.body.hash_inventario = hash;
+        let hashOld = req.body.hash_inventario;
+        let hashNew = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+        req.body.hash_inventario = hashNew;
 
-        let CollectionTapacantos = client.db().collection("collectiontapacantos");
-        CollectionTapacantos.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        let CollectionProducto = client.db().collection("collectiontapacantos");
 
-            console.log(hash, hashOld);
-            if (hash != hashOld) {
-                let CollectionInventario = client.db().collection("inventario");
-                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hash}}).then(results => {
-                    console.log(results);
-                    console.log(`Fue actualizado en catalogo e inventario...`);
+        CollectionProducto.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+            console.log(results);
+            console.log("hash Nuevo:", hashNew, "hash viejo:", hashOld);
+            if (hashNew != hashOld) {
+                CollectionInventario.find({codigo: hashNew}).toArray().then(inventario => {
+                    console.log(inventario);
+                    if (!inventario.length) { //no existe inventario
+                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
+                            console.log(productos);
+                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
+                                //actualiza el inventario existente
+                                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hashNew}}).then(results => {
+                                    console.log(results);
+                                    console.log(`Fue actualizado en catalogo e inventario...`);
 
-                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado al catalogo e inventario....", action: "reload"});
-                    res.end();
+                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado en catalogo e inventario....", new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            } else {
+                                let inv = {
+                                    codigo: hashNew,
+                                    existencia: 0,
+                                    metraje: -3
+                                };
+
+                                CollectionInventario.insertOne(inv).then(results => {
+                                    console.log(results);
+                                    console.log(`El Tapacantos se actualizo y se creo un nuevo inventario ${hashNew}...`);
+
+                                    res.status(200).json({ok: true, message: `El Tapacantos se actualizo y se creo un nuevo inventario ${hashNew}...`, new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            }
+                        })
+                        .catch(error => console.error(error))
+                    } else {  //existe inventario
+                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
+                            console.log(productos);
+                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
+
+                                //Se suma existencia al nuevo inventario enlazado???
+                                CollectionInventario.deleteOne({codigo: hashOld}).then(results => {
+                                    console.log(results);
+                                    console.log(`Se borro inventario viejo y se actualizo Tapacantos con enlaze a otro inventario...`);
+
+                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Se borro inventario viejo y se actualizo Tapacantos con enlaze a otro inventario...", new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            } else {
+                                console.log(`Se actualizo Tapacantos y se cambio el enlaze a otro inventario...`);
+
+                                res.status(200).json({ok: true, message: "(" + req.body.color + ") Se actualizo Tapacantos y se cambio el enlaze a otro inventario......", new_hash: hashNew, action: "reload"});
+                                res.end();
+                                client.close();
+                            }
+                        })
+                        .catch(error => console.error(error))
+                    }
                 })
                 .catch(error => console.error(error))
-                .finally(data => client.close());
             } else {
+                //no se envio datos actualizado, o no se actualizo en el UI
                 console.log(results);
-                console.log(`Tapacantos de color ${req.body.color} actualizado...`);
-                res.status(200).json({ok: true, message: "Tapacantos (" + req.body.color + ") actualizado.", action: "none"});
+                console.log(`Tapacantos  ${idc} conserva los datos...`);
+                res.status(200).json({ok: true, message: "Tapacantos (" + idc + ") conserva los datos.", new_hash: hashNew, action: "none"});
                 res.end();
                 client.close();
             }
@@ -1615,17 +1774,59 @@ app.delete('/delete_tapacantos/:id', (req, res) => {
     const client = new MongoClient(uri);
     client.connect();
 
-    var CollectionTapacantos = client.db().collection("collectiontapacantos");
+    let CollectionItem = client.db().collection("item");
+    var CollectionProducto = client.db().collection("collectiontapacantos");
+    var CollectionInventario = client.db().collection("inventario");
     let cid = new ObjectID(req.params.id);
+    console.log("ID: ",req.params.id);
 
-    CollectionTapacantos.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Tapacantos ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Tapacantos (" + req.params.id + ") borrado.", action: "none"});
-        res.end();
+    CollectionItem.findOne({nombre:"Tapacantos"}).then(producto => {
+
+        CollectionProducto.findOne({"_id": cid }).then(tapacantos => {
+
+            let hash = MD5(producto._id.toString() + tapacantos.color + tapacantos.medidas + tapacantos.marca).toString();
+
+            if (tapacantos.hash_inventario != hash) {
+                console.log("Discrepancias en hash, inventarioID: ",tapacantos.hash_inventario, " hash generado:" ,hash);
+
+                res.status(500).json({ok: true, message: "No se pudo borrar Tapacantos (" + req.params.id + ") revise el codigo de inventario.", action: "none"});
+                res.end();
+                throw "Revise el hash de inventario vs producto...";
+            }
+
+            CollectionProducto.find({"hash_inventario": hash }).toArray().then(result => {
+                let productosDeInventario = result.length;
+                console.log(result);
+
+                CollectionProducto.deleteOne({"_id": cid }).then(result => {
+                    console.log(result);
+
+                    if (productosDeInventario > 1) {
+                        console.log("Invantario [codigo: "+hash+"] se conserva, existe para otros productos.");
+                        console.log(`Tapacantos ${req.params.id} fue borrado...`);
+
+                        res.status(200).json({ok: true, message: "Tapacantos (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
+                        res.end();
+                        client.close();
+                    } else {
+                        CollectionInventario.deleteOne({"codigo": hash }).then(result => {
+                            console.log(result);
+                            console.log(`Tapacantos y su inventario ${req.params.id} fueron borrados...`);
+
+                            res.status(200).json({ok: true, message: "Tapacantos (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
+                            res.end();
+                        })
+                        .catch(error => console.error(error))
+                        .finally(data => client.close())
+                    }
+                })
+                .catch(error => console.error(error))
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    .finally(data => client.close())
 })
 
 app.post('/nuevo_pegamento',(req, res) => {
@@ -1690,36 +1891,91 @@ app.put('/actualizar_pegamento/:id',(req, res) => {
     client.connect();
 
     let CollectionItem = client.db().collection("item");
+    let CollectionInventario = client.db().collection("inventario");
+
     CollectionItem.findOne({nombre:"Pegamento"}).then(producto => {
 
         console.log("pegamento: ", req.body);
         let idc = new ObjectID(req.params.id);
-        console.log(req.params.id, idc);
+        console.log("param: "+req.params.id);
 
-        let hashOld =  req.body.hash_inventario;
-        let hash = MD5(producto._id.toString() + req.body.marca).toString();
-        req.body.hash_inventario = hash;
+        let hashOld = req.body.hash_inventario;
+        let hashNew = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+        req.body.hash_inventario = hashNew;
 
-        let CollectionPegamento = client.db().collection("collectionpegamento");
+        let CollectionProducto = client.db().collection("collectionpegamento");
 
-        CollectionPegamento.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        CollectionProducto.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+            console.log(results);
+            console.log("hash Nuevo:", hashNew, "hash viejo:", hashOld);
+            if (hashNew != hashOld) {
+                CollectionInventario.find({codigo: hashNew}).toArray().then(inventario => {
+                    console.log(inventario);
+                    if (!inventario.length) { //no existe inventario
+                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
+                            console.log(productos);
+                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
+                                //actualiza el inventario existente
+                                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hashNew}}).then(results => {
+                                    console.log(results);
+                                    console.log(`Fue actualizado en catalogo e inventario...`);
 
-            console.log(hash, hashOld);
-            if (hash != hashOld) {
-                let CollectionInventario = client.db().collection("inventario");
-                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hash}}).then(results => {
-                    console.log(results);
-                    console.log(`Fue actualizado en catalogo e inventario...`);
+                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado en catalogo e inventario....", new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            } else {
+                                let inv = {
+                                    codigo: hashNew,
+                                    existencia: 0,
+                                    metraje: -3
+                                };
 
-                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado al catalogo e inventario....", action: "reload"});
-                    res.end();
+                                CollectionInventario.insertOne(inv).then(results => {
+                                    console.log(results);
+                                    console.log(`El pegamento se actualizo y se creo un nuevo inventario ${hashNew}...`);
+
+                                    res.status(200).json({ok: true, message: `El pegamento se actualizo y se creo un nuevo inventario ${hashNew}...`, new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            }
+                        })
+                        .catch(error => console.error(error))
+                    } else {  //existe inventario
+                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
+                            console.log(productos);
+                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
+
+                                //Se suma existencia al nuevo inventario enlazado???
+                                CollectionInventario.deleteOne({codigo: hashOld}).then(results => {
+                                    console.log(results);
+                                    console.log(`Se borro inventario viejo y se actualizo pegamento con enlaze a otro inventario...`);
+
+                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Se borro inventario viejo y se actualizo pegamento con enlaze a otro inventario...", new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            } else {
+                                console.log(`Se actualizo pegamento y se cambio el enlaze a otro inventario...`);
+
+                                res.status(200).json({ok: true, message: "(" + req.body.color + ") Se actualizo pegamento y se cambio el enlaze a otro inventario......", new_hash: hashNew, action: "reload"});
+                                res.end();
+                                client.close();
+                            }
+                        })
+                        .catch(error => console.error(error))
+                    }
                 })
                 .catch(error => console.error(error))
-                .finally(data => client.close());
             } else {
+                //no se envio datos actualizado, o no se actualizo en el UI
                 console.log(results);
-                console.log(`Pegamento de marca ${req.body.marca} actualizado...`);
-                res.status(200).json({ok: true, message: "Pegamento (" + req.body.color + ") actualizado.", action: "none"});
+                console.log(`pegamento  ${idc} conserva los datos...`);
+                res.status(200).json({ok: true, message: "pegamento (" + idc + ") conserva los datos.", new_hash: hashNew, action: "none"});
                 res.end();
                 client.close();
             }
@@ -1733,17 +1989,59 @@ app.delete('/delete_pegamento/:id', (req, res) => {
     const client = new MongoClient(uri);
     client.connect();
 
-    var CollectionPegamento = client.db().collection("collectionpegamento");
+    let CollectionItem = client.db().collection("item");
+    var CollectionProducto = client.db().collection("collectionpegamento");
+    var CollectionInventario = client.db().collection("inventario");
     let cid = new ObjectID(req.params.id);
+    console.log("Id: ",req.params.id);
 
-    CollectionPegamento.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Pegamento ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Pegamento (" + req.params.id + ") borrado.", action: "none"});
-        res.end();
+    CollectionItem.findOne({nombre:"Pegamento"}).then(producto => {
+
+        CollectionProducto.findOne({"_id": cid }).then(pegamento => {
+
+            let hash = MD5(producto._id.toString() + pegamento.marca).toString();
+
+            if (pegamento.hash_inventario != hash) {
+                console.log("Discrepancias en hash, inventarioID: ",pegamento.hash_inventario, " hash generado:" ,hash);
+
+                res.status(500).json({ok: true, message: "No se pudo borrar Fondo (" + req.params.id + ") revise  el codigo de inventario.", action: "none"});
+                res.end();
+                throw "Revise el hash de inventario vs producto...";
+            }
+
+            CollectionProducto.find({"hash_inventario": hash }).toArray().then(result => {
+                let productosDeInventario = result.length;
+                console.log(result);
+
+                CollectionProducto.deleteOne({"_id": cid }).then(result => {
+                    console.log(result);
+
+                    if (productosDeInventario > 1) {
+                        console.log("Invantario [codigo: "+hash+"] se conserva, existe para otros productos.");
+                        console.log(`Pegamento ${req.params.id} fue borrado...`);
+
+                        res.status(200).json({ok: true, message: "Pegamento (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
+                        res.end();
+                        client.close();
+                    } else {
+                        CollectionInventario.deleteOne({"codigo": hash }).then(result => {
+                            console.log(result);
+                            console.log(`Pegamento y su inventario ${req.params.id} fueron borrados...`);
+
+                            res.status(200).json({ok: true, message: "Pegamento (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
+                            res.end();
+                        })
+                        .catch(error => console.error(error))
+                        .finally(data => client.close())
+                    }
+                })
+                .catch(error => console.error(error))
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    .finally(data => client.close())
 })
 
 app.post('/nuevo_fondo',(req, res) => {
@@ -1807,60 +2105,157 @@ app.put('/actualizar_fondo/:id',(req, res) => {
     client.connect();
 
     let CollectionItem = client.db().collection("item");
+    let CollectionInventario = client.db().collection("inventario");
+
     CollectionItem.findOne({nombre:"Fondo"}).then(producto => {
 
         console.log("fondo: ", req.body);
         let idc = new ObjectID(req.params.id);
-        console.log(req.params.id, idc);
+        console.log("param: "+req.params.id);
 
         let hashOld = req.body.hash_inventario;
-        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
-        req.body.hash_inventario = hash;
+        let hashNew = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+        req.body.hash_inventario = hashNew;
 
-        let CollectionPegamento = client.db().collection("collectionfondo");
+        let CollectionProducto = client.db().collection("collectionfondo");
 
-        CollectionPegamento.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        CollectionProducto.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+            console.log(results);
+            console.log("hash Nuevo:", hashNew, "hash viejo:", hashOld);
+            if (hashNew != hashOld) {
+                CollectionInventario.find({codigo: hashNew}).toArray().then(inventario => {
+                    console.log(inventario);
+                    if (!inventario.length) { //no existe inventario
+                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
+                            console.log(productos);
+                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
+                                //actualiza el inventario existente
+                                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hashNew}}).then(results => {
+                                    console.log(results);
+                                    console.log(`Fue actualizado en catalogo e inventario...`);
 
-            console.log(hash, hashOld);
-            if (hash != hashOld) {
-                let CollectionInventario = client.db().collection("inventario");
-                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hash}}).then(results => {
-                    console.log(results);
-                    console.log(`Fue actualizado en catalogo e inventario...`);
+                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado en catalogo e inventario....", new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            } else {
+                                let inv = {
+                                    codigo: hashNew,
+                                    existencia: 0,
+                                    metraje: -3
+                                };
 
-                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado al catalogo e inventario....", action: "reload"});
-                    res.end();
+                                CollectionInventario.insertOne(inv).then(results => {
+                                    console.log(results);
+                                    console.log(`El fondo se actualizo y se creo un nuevo inventario ${hashNew}...`);
+
+                                    res.status(200).json({ok: true, message: `El fondo se actualizo y se creo un nuevo inventario ${hashNew}...`, new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            }
+                        })
+                        .catch(error => console.error(error))
+                    } else {  //existe inventario
+                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
+                            console.log(productos);
+                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
+
+                                //Se suma existencia al nuevo inventario enlazado???
+                                CollectionInventario.deleteOne({codigo: hashOld}).then(results => {
+                                    console.log(results);
+                                    console.log(`Se borro inventario viejo y se actualizo Fondo con enlaze a otro inventario...`);
+
+                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Se borro inventario viejo y se actualizo Fondo con enlaze a otro inventario...", new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            } else {
+                                console.log(`Se actualizo Fondo y se cambio el enlaze a otro inventario...`);
+
+                                res.status(200).json({ok: true, message: "(" + req.body.color + ") Se actualizo Fondo y se cambio el enlaze a otro inventario......", new_hash: hashNew, action: "reload"});
+                                res.end();
+                                client.close();
+                            }
+                        })
+                        .catch(error => console.error(error))
+                    }
                 })
                 .catch(error => console.error(error))
-                .finally(data => client.close());
             } else {
+                //no se envio datos actualizado, o no se actualizo en el UI
                 console.log(results);
-                console.log(`Fondo de color ${req.body.color} actualizado...`);
-                res.status(200).json({ok: true, message: "Fondo (" + req.body.color + ") actualizado.", action: "none"});
+                console.log(`Fondo  ${idc} conserva los datos...`);
+                res.status(200).json({ok: true, message: "Fondo (" + idc + ") conserva los datos.", new_hash: hashNew, action: "none"});
                 res.end();
                 client.close();
             }
         })
         .catch(error => console.error(error))
     })
-    .catch(error => console.error(error))  
+    .catch(error => console.error(error))
 })
 
 app.delete('/delete_fondo/:id', (req, res) => {
     const client = new MongoClient(uri);
     client.connect();
 
-    var CollectionPegamento = client.db().collection("collectionfondo");
+    let CollectionItem = client.db().collection("item");
+    var CollectionProducto = client.db().collection("collectionfondo");
+    var CollectionInventario = client.db().collection("inventario");
     let cid = new ObjectID(req.params.id);
+    console.log("Id: ",req.params.id);
 
-    CollectionPegamento.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Fondo ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Fondo (" + req.params.id + ") borrado.", action: "none"});
-        res.end();
+    CollectionItem.findOne({nombre:"Fondo"}).then(producto => {
+
+        CollectionProducto.findOne({"_id": cid }).then(fondo => {
+
+            let hash = MD5(producto._id.toString() + fondo.color + fondo.medidas + fondo.marca).toString();
+
+            if (fondo.hash_inventario != hash) {
+                console.log("Discrepancias en hash, inventarioID: ",fondo.hash_inventario, " hash generado:" ,hash);
+
+                res.status(500).json({ok: true, message: "No se pudo borrar Fondo (" + req.params.id + ") revise  el codigo de inventario.", action: "none"});
+                res.end();
+                throw "Revise el hash de inventario vs producto...";
+            }
+
+            CollectionProducto.find({"hash_inventario": hash }).toArray().then(result => {
+                let productosDeInventario = result.length;
+                console.log(result);
+
+                CollectionProducto.deleteOne({"_id": cid }).then(result => {
+                    console.log(result);
+
+                    if (productosDeInventario > 1) {
+                        console.log("Invantario [codigo: "+hash+"] se conserva, existe para otros productos.");
+                        console.log(`Fondo ${req.params.id} fue borrado...`);
+
+                        res.status(200).json({ok: true, message: "Fondo (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
+                        res.end();
+                        client.close();
+                    } else {
+                        CollectionInventario.deleteOne({"codigo": hash }).then(result => {
+                            console.log(result);
+                            console.log(`Fondo y su inventario ${req.params.id} fueron borrados...`);
+
+                            res.status(200).json({ok: true, message: "Fondo (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
+                            res.end();
+                        })
+                        .catch(error => console.error(error))
+                        .finally(data => client.close())
+                    }
+                })
+                .catch(error => console.error(error))
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    .finally(data => client.close())
 })
 
 app.post('/nuevo_tapatornillos',(req, res) => {
@@ -1924,60 +2319,157 @@ app.put('/actualizar_tapatornillos/:id',(req, res) => {
     client.connect();
 
     let CollectionItem = client.db().collection("item");
+    let CollectionInventario = client.db().collection("inventario");
+
     CollectionItem.findOne({nombre:"Tapatornillos"}).then(producto => {
 
-        console.log("Tapatornillos: ", req.body);
+        console.log("tapatornillos: ", req.body);
         let idc = new ObjectID(req.params.id);
-        console.log(req.params.id, idc);
+        console.log("param: "+req.params.id);
 
         let hashOld = req.body.hash_inventario;
-        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
-        req.body.hash_inventario = hash;
+        let hashNew = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+        req.body.hash_inventario = hashNew;
 
-        let CollectionTapatornillos = client.db().collection("collectiontapatornillos");
+        let CollectionProducto = client.db().collection("collectiontapatornillos");
 
-        CollectionTapatornillos.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        CollectionProducto.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+            console.log(results);
+            console.log("hash Nuevo:", hashNew, "hash viejo:", hashOld);
+            if (hashNew != hashOld) {
+                CollectionInventario.find({codigo: hashNew}).toArray().then(inventario => {
+                    console.log(inventario);
+                    if (!inventario.length) { //no existe inventario
+                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
+                            console.log(productos);
+                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
+                                //actualiza el inventario existente
+                                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hashNew}}).then(results => {
+                                    console.log(results);
+                                    console.log(`Fue actualizado en catalogo e inventario...`);
 
-            console.log(hash, hashOld);
-            if (hash != hashOld) {
-                let CollectionInventario = client.db().collection("inventario");
-                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hash}}).then(results => {
-                    console.log(results);
-                    console.log(`Fue actualizado en catalogo e inventario...`);
+                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado en catalogo e inventario....", new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            } else {
+                                let inv = {
+                                    codigo: hashNew,
+                                    existencia: 0,
+                                    metraje: -3
+                                };
 
-                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado al catalogo e inventario....", action: "reload"});
-                    res.end();
+                                CollectionInventario.insertOne(inv).then(results => {
+                                    console.log(results);
+                                    console.log(`El tapatornillos se actualizo y se creo un nuevo inventario ${hashNew}...`);
+
+                                    res.status(200).json({ok: true, message: `El tapatornillos se actualizo y se creo un nuevo inventario ${hashNew}...`, new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            }
+                        })
+                        .catch(error => console.error(error))
+                    } else {  //existe inventario
+                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
+                            console.log(productos);
+                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
+
+                                //Se suma existencia al nuevo inventario enlazado???
+                                CollectionInventario.deleteOne({codigo: hashOld}).then(results => {
+                                    console.log(results);
+                                    console.log(`Se borro inventario viejo y se actualizo tapatornillos con enlaze a otro inventario...`);
+
+                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Se borro inventario viejo y se actualizo tapatornillos con enlaze a otro inventario...", new_hash: hashNew, action: "reload"});
+                                    res.end();
+                                })
+                                .catch(error => console.error(error))
+                                .finally(data => client.close());
+                            } else {
+                                console.log(`Se actualizo tapatornillos y se cambio el enlaze a otro inventario...`);
+
+                                res.status(200).json({ok: true, message: "(" + req.body.color + ") Se actualizo tapatornillos y se cambio el enlaze a otro inventario......", new_hash: hashNew, action: "reload"});
+                                res.end();
+                                client.close();
+                            }
+                        })
+                        .catch(error => console.error(error))
+                    }
                 })
                 .catch(error => console.error(error))
-                .finally(data => client.close());
             } else {
+                //no se envio datos actualizado, o no se actualizo en el UI
                 console.log(results);
-                console.log(`Tapatornillos de color ${req.body.color} actualizado...`);
-                res.status(200).json({ok: true, message: "Tapatornillos (" + req.body.color + ") actualizado.", action: "none"});
+                console.log(`tapatornillos  ${idc} conserva los datos...`);
+                res.status(200).json({ok: true, message: "tapatornillos (" + idc + ") conserva los datos.", new_hash: hashNew, action: "none"});
                 res.end();
                 client.close();
             }
         })
         .catch(error => console.error(error))
     })
-    .catch(error => console.error(error))  
+    .catch(error => console.error(error))
 })
 
 app.delete('/delete_tapatornillos/:id', (req, res) => {
     const client = new MongoClient(uri);
     client.connect();
 
-    var CollectionTapatornillos = client.db().collection("collectiontapatornillos");
+    let CollectionItem = client.db().collection("item");
+    var CollectionProducto = client.db().collection("collectiontapatornillos");
+    var CollectionInventario = client.db().collection("inventario");
     let cid = new ObjectID(req.params.id);
+    console.log("ID: ",req.params.id);
 
-    CollectionTapatornillos.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Tapatornillos ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Tapatornillos (" + req.params.id + ") borrado.", action: "none"});
-        res.end();
+    CollectionItem.findOne({nombre:"Tapatornillos"}).then(producto => {
+
+        CollectionProducto.findOne({"_id": cid }).then(tapatornillos => {
+
+            let hash = MD5(producto._id.toString() + tapatornillos.color + tapatornillos.medidas + tapatornillos.marca).toString();
+
+            if (tapatornillos.hash_inventario != hash) {
+                console.log("Discrepancias en hash, inventarioID: ",tapatornillos.hash_inventario, " hash generado:" ,hash);
+
+                res.status(500).json({ok: true, message: "No se pudo borrar Tapatornillos (" + req.params.id + ") revise  el codigo de inventario.", action: "none"});
+                res.end();
+                throw "Revise el hash de inventario vs producto...";
+            }
+
+            CollectionProducto.find({"hash_inventario": hash }).toArray().then(result => {
+                let productosDeInventario = result.length;
+                console.log(result);
+
+                CollectionProducto.deleteOne({"_id": cid }).then(result => {
+                    console.log(result);
+
+                    if (productosDeInventario > 1) {
+                        console.log("Invantario [codigo: "+hash+"] se conserva, existe para otros productos.");
+                        console.log(`Tapatornillos ${req.params.id} fue borrado...`);
+
+                        res.status(200).json({ok: true, message: "Tapatornillos (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
+                        res.end();
+                        client.close();
+                    } else {
+                        CollectionInventario.deleteOne({"codigo": hash }).then(result => {
+                            console.log(result);
+                            console.log(`Tapatornillos y su inventario ${req.params.id} fueron borrados...`);
+
+                            res.status(200).json({ok: true, message: "Tapatornillos (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
+                            res.end();
+                        })
+                        .catch(error => console.error(error))
+                        .finally(data => client.close())
+                    }
+                })
+                .catch(error => console.error(error))
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    .finally(data => client.close())
 })
 
 app.put('/actualizar_control_producto/',(req, res) => {
@@ -1996,12 +2488,16 @@ app.put('/actualizar_control_producto/',(req, res) => {
                 console.log(results);
                 CollectionControl.findOneAndUpdate({item: "Fondo"}, {$set: {minimo: Number(req.body.fondo)}}).then(results => {
                     console.log(results);
-                    console.log("Control producto ",req.body," actualizado...");
-                    res.status(200).json({ok: true, message: "Control Producto actualizado.", action: "none"});
-                    res.end();
+                    CollectionControl.findOneAndUpdate({item: "Tapatornillos"}, {$set: {minimo: Number(req.body.tapatornillos)}}).then(results => {
+                        console.log(results);
+                        console.log("Control producto ",req.body," actualizado...");
+                        res.status(200).json({ok: true, message: "Control Producto actualizado.", action: "none"});
+                        res.end();
+                    })
+                    .catch(error => console.error(error))
+                    .finally(data => client.close())
                 })
                 .catch(error => console.error(error))
-                .finally(data => client.close())
             })
             .catch(error => console.error(error))
         })

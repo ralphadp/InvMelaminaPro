@@ -812,6 +812,7 @@ function Melamina() {
 	            console.log(response.message);
 				document.getElementById("message").style.background = "#a4f1a4";
 	            document.getElementById("message").innerHTML = response.message + " en BD! <br>";
+				document.getElementById("a_hash_" + id).innerText = response.new_hash;
 	        } else {
 	            console.log(response.status, response.statusText);
 				document.getElementById("message").style.background = "red";
@@ -988,7 +989,8 @@ function Tapacantos() {
 	        if (response.ok) {
 	            console.log(response.message);
 				document.getElementById("message").style.background = "#a4f1a4";
-	            document.getElementById("message").innerHTML = response.message + ". Tapacantos addicionado! <br>";
+	            document.getElementById("message").innerHTML = response.message + ". en BD! <br>";
+				document.getElementById("t_hash_" + id).innerText = response.new_hash;
 	        } else {
 	            console.log(response.status, response.statusText);
 				document.getElementById("message").style.background = "red";
@@ -1122,7 +1124,8 @@ function Pegamento() {
 	        if (response.ok) {
 	            console.log(response.message);
 				document.getElementById("message").style.background = "#a4f1a4";
-	            document.getElementById("message").innerHTML = response.message + ". Pegamento addicionado! <br>";
+	            document.getElementById("message").innerHTML = response.message + ". en BD! <br>";
+				document.getElementById("p_hash_" + id).innerText = response.new_hash;
 	        } else {
 	            console.log(response.status, response.statusText);
 				document.getElementById("message").style.background = "red";
@@ -1287,7 +1290,8 @@ function Fondo() {
 	        if (response.ok) {
 	            console.log(response.message);
 				document.getElementById("message").style.background = "#a4f1a4";
-	            document.getElementById("message").innerHTML = response.message + ". Fondo addicionado! <br>";
+	            document.getElementById("message").innerHTML = response.message + ". en BD! <br>";
+				document.getElementById("f_hash_" + id).innerText = response.new_hash;
 	        } else {
 	            console.log(response.status, response.statusText);
 				document.getElementById("message").style.background = "red";
@@ -1455,7 +1459,8 @@ function Tapatornillos() {
 	        if (response.ok) {
 	            console.log(response.message);
 				document.getElementById("message").style.background = "#a4f1a4";
-	            document.getElementById("message").innerHTML = response.message + ". Tapatornillos addicionado! <br>";
+	            document.getElementById("message").innerHTML = response.message + ". en BD! <br>";
+				document.getElementById("t_hash_" + id).innerText = response.new_hash;
 	        } else {
 	            console.log(response.status, response.statusText);
 				document.getElementById("message").style.background = "red";
