@@ -193,9 +193,9 @@ app.get('/ingresos', function(req, res) {
 
     DB.collection("inventario").find().toArray().then(resultsInventario => {
         var rInventario = {};
-        resultsInventario.forEach((value) => {
+        /*resultsInventario.forEach((value) => {
             rInventario[value.codigo] = value;
-        });
+        });*/
     DB.collection("control_producto").find().toArray().then(resultsControl => {
     DB.collection("item").find().toArray().then(resultsItem => {
         var items = {};
@@ -204,40 +204,38 @@ app.get('/ingresos', function(req, res) {
         });
     DB.collection("collectionmelamina").find().toArray().then(resultMelamina => {
         resultMelamina.forEach((melamina) => {
-            let hash = MD5(items["Melamina"]._id.toString() + melamina.color + melamina.medidas + melamina.marca).toString();
-            if (rInventario[hash]) {
-                rInventario[hash].contenido = melamina;
-            }
+            let hash = MD5(items["Melamina"]._id.toString() + melamina.provedor + melamina.color + melamina.medidas + melamina.marca).toString();
+            //if (rInventario[hash]) {
+                rInventario[hash] = melamina;
+            //}
         })
     DB.collection("collectiontapacantos").find().toArray().then(resultsTapacantos => {
         resultsTapacantos.forEach((tapacantos) => {
-            let hash = MD5(items["Tapacantos"]._id.toString() + tapacantos.color + tapacantos.medidas + tapacantos.marca).toString();
-            if (rInventario[hash]) {
-                rInventario[hash].contenido = tapacantos;
-            }
+            let hash = MD5(items["Tapacantos"]._id.toString() + tapacantos.provedor + tapacantos.color + tapacantos.medidas + tapacantos.marca).toString();
+            //if (rInventario[hash]) {
+                rInventario[hash] = tapacantos;
+            //}
         })
     DB.collection("collectionpegamento").find().toArray().then(resultsPegamento => {
         resultsPegamento.forEach((pegamento) => {
-            let hash = MD5(items["Pegamento"]._id.toString() + pegamento.marca).toString();
-            if (rInventario[hash]) {
-                rInventario[hash].contenido = pegamento;
-            }
+            let hash = MD5(items["Pegamento"]._id.toString() + pegamento.provedor + pegamento.marca).toString();
+            //if (rInventario[hash]) {
+                rInventario[hash] = pegamento;
+           // }
         })
     DB.collection("collectionfondo").find().toArray().then(resultsFondo => {
         resultsFondo.forEach((fondo) => {
-            let hash = MD5(items["Fondo"]._id.toString() + fondo.color + fondo.medidas + fondo.marca).toString();
-            console.log(hash);
-            if (rInventario[hash]) {
-                console.log(rInventario[hash]);
-                rInventario[hash].contenido = fondo;
-            }
+            let hash = MD5(items["Fondo"]._id.toString() + fondo.provedor + fondo.color + fondo.medidas + fondo.marca).toString();
+            //if (rInventario[hash]) {
+                rInventario[hash] = fondo;
+            //}
         })
     DB.collection("collectiontapatornillos").find().toArray().then(resultsTapatornillos => {
         resultsTapatornillos.forEach((tapatornillos) => {
-            let hash = MD5(items["Tapatornillos"]._id.toString() + tapatornillos.color + tapatornillos.medidas + tapatornillos.marca).toString();
-            if (rInventario[hash]) {
-                rInventario[hash].contenido = tapatornillos;
-            }
+            let hash = MD5(items["Tapatornillos"]._id.toString() + tapatornillos.provedor + tapatornillos.color + tapatornillos.medidas + tapatornillos.marca).toString();
+           // if (rInventario[hash]) {
+                rInventario[hash] = tapatornillos;
+           // }
         })
     DB.collection("collectionprovedor").find().toArray().then(resultsProvedor => {
         DB.collection("item").find().toArray().then(resultsItem => {

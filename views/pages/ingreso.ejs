@@ -19,7 +19,7 @@
         var item_inventario = <%- JSON.stringify(inventario); %>;
 
         function fetchProducto(key) {
-			let indexHash = CryptoJS.MD5(key.item + key.color + key.medida + key.marca);
+			let indexHash = CryptoJS.MD5(key.item + key.provedor + key.color + key.medida + key.marca);
 			let h = indexHash.toString();
 			return item_inventario[h];
 		}
@@ -67,7 +67,7 @@
                                         </div>
                                         <div class="form-holder form-holder-2">
                                             <label for="room" class="special-label-1">Provedor</label>
-                                            <select name="provedor" id="provedor" class="form-control" onchange="selectProvedor()">
+                                            <select name="provedor" id="provedor" class="form-control verify" onchange="selectProvedor()">
                                                 <option value="" selected="">(Elija el provedor)</option>
                                                 <% for(let index = 0; index < provedor.length; index++) {%>
                                                 <option value="<%= provedor[index]._id.toString() %>"><%= provedor[index].nombre %></option>

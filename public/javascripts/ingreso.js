@@ -148,6 +148,8 @@ let selectProvedor = function() {
     PRODUCT_MESSAGE.style.color = "#55e8d5";
     PRODUCT_MESSAGE.innerHTML = "_________________________________";
 
+    KEY.clean();
+
     let selectedItem = document.getElementById("provedor").value;
     for (var i=0; i<provedor_items.length; i++) {
         var provedor = provedor_items[i];
@@ -171,7 +173,6 @@ let selectProvedor = function() {
 
 let selectItem = function(selected) {
 
-    KEY.clean();
     let selectedItem = selected.options[selected.selectedIndex].text.toLowerCase();
 
     if (selectedItem == "pegamento") {
@@ -214,17 +215,20 @@ function addIngreso() {
 
 function _KEY() {
     this.item   ='';
+    this.provedor ='';
     this.color  ='';
     this.medida ='';
     this.marca  ='';
     this.AllFilled = () => {
         return this.item.length > 0 
+        && this.provedor.length > 0 
         && this.color.length > 0 
         && this.medida.length > 0 
         && this.marca.length > 0;
     };
     this.clean = () => {
         this.item   ='';
+        this.provedor ='';
         this.color  ='';
         this.medida ='';
         this.marca  ='';
@@ -244,11 +248,11 @@ $(".verify").on("change", function() {
         if (PRODUCTO.existencia == 0) {
             PRODUCT_MESSAGE.style.background = "red";
             PRODUCT_MESSAGE.style.color = "#55e8d5";
-            PRODUCT_MESSAGE.innerHTML = "El Producto [item, color, medida, marca] del inventario esta vacio, " + PRODUCTO.existencia+ " items.";
+            PRODUCT_MESSAGE.innerHTML = "El Producto del inventario esta vacio, " + PRODUCTO.existencia+ " items.";
         } else {
             PRODUCT_MESSAGE.style.background = "transparent";
             PRODUCT_MESSAGE.style.color = "#55e8d5";
-            PRODUCT_MESSAGE.innerHTML = "Este Producto [item, color, medida, marca] del inventario tiene " + PRODUCTO.existencia+ " items aun.";
+            PRODUCT_MESSAGE.innerHTML = "Este Producto del inventario existe.";
         }
     } else {
         if (KEY.AllFilled()) {
