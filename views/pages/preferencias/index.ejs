@@ -225,7 +225,7 @@
 		}
     </style>
     <div id="color" class="container_table">  
-      <span class="form-label"><h5>Colores   <button type="button" onclick="add_row()">+</button></h5></span>
+      <span class="form-label"><h5>Colores   <button type="button" id="colores_add" onclick="add_row(this)">+</button></h5></span>
       <div class="table-editable">  
         <table class="table" id="color_data_table">
           <tr>  
@@ -265,7 +265,7 @@
 		var colorList = new List('color', options);
 	</script>
 	<div id="marca" class="container_table">
-		<span class="form-label"><h5>Marcas   <button type="button" onclick="add_row()">+</button></h5></span>
+		<span class="form-label"><h5>Marcas   <button type="button" id="marcas_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="marca_data_table">
 			<tr>
@@ -296,7 +296,7 @@
 		</div>
 	  </div>
 	  <div id="medidas" class="container_table">
-		<span class="form-label"><h5>Medidas   <button type="button" onclick="add_row()">+</button></h5></span>
+		<span class="form-label"><h5>Medidas   <button type="button" id="medidas_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="medidas_data_table">
 			<tr>
@@ -325,7 +325,7 @@
 		</div>
 	  </div>
 	  <div id="provedor" class="container_table">
-		<span class="form-label"><h5>Provedor   <button type="button" onclick="add_row()">+</button></h5></span>
+		<span class="form-label"><h5>Provedor   <button type="button" id="provedor_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="provedor_data_table">
 			<tr>
@@ -376,7 +376,7 @@
 		</div>
 	  </div>
 	  <div id="item" class="container_table">
-		<span class="form-label"><h5>Producto(item)   <button type="button" onclick="add_row()">+</button></h5></span>
+		<span class="form-label"><h5>Producto(item)   <button type="button" id="producto_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="item_data_table">
 			<tr>
@@ -401,7 +401,7 @@
 		</div>
 	  </div>
 	  <div id="cliente" class="container_table">
-		<span class="form-label"><h5>Cliente   <button type="button" onclick="add_row()">+</button></h5></span>
+		<span class="form-label"><h5>Cliente   <button type="button" id="cliente_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="cliente_data_table">
 			<tr>
@@ -436,7 +436,7 @@
 		</div>
 	  </div>
 	  <div id="melamina" class="container_table">
-		<span class="form-label"><h5>Melamina   <button type="button" onclick="add_row()">+</button></h5></span>
+		<span class="form-label"><h5>Melamina   <button type="button" id="melamina_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="melamina_data_table">
 			<tr>
@@ -502,7 +502,7 @@
 		</div>
 	  </div>
 	  <div id="tapacantos" class="container_table">
-		<span class="form-label"><h5>Tapacantos   <button type="button" onclick="add_row()">+</button></h5></span>
+		<span class="form-label"><h5>Tapacantos   <button type="button" id="tapacantos_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable" style="width: 1000px!important;  margin:0px!important;">
 		  <table class="table" id="tapacantos_data_table">
 			<tr>
@@ -576,7 +576,7 @@
 		</div>
 	  </div>
 	  <div id="pegamento" class="container_table">
-		<span class="form-label"><h5>Pegamento   <button type="button" onclick="add_row()">+</button></h5></span>
+		<span class="form-label"><h5>Pegamento   <button type="button" id="pegamento_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="pegamento_data_table">
 			<tr>
@@ -620,7 +620,7 @@
 		</div>
 	  </div>
 	  <div id="fondo" class="container_table">
-		<span class="form-label"><h5>Fondo   <button type="button" onclick="add_row()">+</button></h5></span>
+		<span class="form-label"><h5>Fondo   <button type="button" id="fondo_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="fondo_data_table">
 			<tr>
@@ -686,7 +686,7 @@
 		</div>
 	  </div>
 	  <div id="tapatornillos" class="container_table">
-		<span class="form-label"><h5>Tapatornillos   <button type="button" onclick="add_row()">+</button></h5></span>
+		<span class="form-label"><h5>Tapatornillos   <button type="button" id="tapatornillos_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="tapatornillos_data_table">
 			<tr>
@@ -760,6 +760,29 @@
 		var CATALOGOS = ["color","marca","medidas","provedor","item","cliente","melamina","tapacantos","pegamento","fondo","tapatornillos"];
 		var SELECTED_CATALOGO = "color";
 		var objCatalog = null;
+		function ButtonAdd() {
+			this.button = {};
+			this.disableButton = (ID) => {
+				if (!ID) {
+					return false;
+				}
+
+				if (this.button[ID]) {
+					this.button[ID].disabled = false;
+				}
+
+				this.button[ID] = document.getElementById(ID)
+				this.button[ID].disabled = true;
+			}
+
+			this.enableButton = (ID)=> {
+				if (this.button[ID]) {
+					this.button[ID].disabled = false;
+					this.button[ID] = null;
+				}
+			}
+		};
+		var buttonAdd = new ButtonAdd();
 	
 		$(function() {
 			selectEditableTable({value:"color"});
@@ -780,21 +803,27 @@
 			});
 		}
 
-        function add_row() {
+        function add_row(button) {
+			buttonAdd.disableButton(button.id);
+
 		    var table = document.getElementById(SELECTED_CATALOGO + "_data_table");
 		    var table_len = table.rows.length;
 		    var row = table.insertRow(table_len).outerHTML = objCatalog.getRowBuild(table_len - 1, listas);
 		}
 
-        function guardarNuevo(row_id) {
+        function guardarNuevo(row_id, id_add_button) {
         	row_id = row_id.substr(3);
         	objCatalog.assignar(row_id);
         	objCatalog.guardarNuevo();
+
+			buttonAdd.enableButton(id_add_button);
 		}
 
-		function borrarNuevo(row_id) {
+		function borrarNuevo(row_id, id_add_button) {
 			row_id = row_id.substr(3);
 		    document.getElementById("row_" + row_id).outerHTML = "";
+
+			buttonAdd.enableButton(id_add_button);
 		}
 
      	function guardarEditado(row_id) {

@@ -28,8 +28,8 @@ function Color() {
 					<td><input id='c_tapacantos_${next_index}' type='checkbox'/></td>
 					<td><input id='c_fondo_${next_index}' type='checkbox'/></td>
 					<td><input id='c_tapatornillos_${next_index}' type='checkbox'/></td>
-					<td><button type='button' title='Guardar' id='gc_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
-						<button type='button' title='Borrar' id='bc_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					<td><button type='button' title='Guardar' id='gc_${next_index}' onclick='guardarNuevo(this.id,"colores_add")'>o</button>
+						<button type='button' title='Borrar' id='bc_${next_index}' onclick='borrarNuevo(this.id,"colores_add")'>X</button>
 					</td>
 				</tr>`;
 	}
@@ -143,8 +143,8 @@ function Marca() {
 					<td><input id='m_pegamento_${next_index}' type='checkbox'/></td>
 					<td><input id='m_fondo_${next_index}' type='checkbox'/></td>
 					<td><input id='m_tapatornillos_${next_index}' type='checkbox'/></td>
-					<td><button type='button' title='Guardar' id='gm_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
-						<button type='button' title='Borrar' id='bm_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					<td><button type='button' title='Guardar' id='gm_${next_index}' onclick='guardarNuevo(this.id,"marcas_add")'>o</button>
+						<button type='button' title='Borrar' id='bm_${next_index}' onclick='borrarNuevo(this.id,"marcas_add")'>X</button>
 					</td>
 				</tr>`;
 	}
@@ -256,8 +256,8 @@ function Medidas() {
 					<td><input id='e_tapacantos_${next_index}' type='checkbox'/></td>
 					<td><input id='e_fondo_${next_index}' type='checkbox'/></td>
 					<td><input id='e_tapatornillos_${next_index}' type='checkbox'/></td>
-					<td><button type='button' title='Guardar' id='ge_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
-						<button type='button' title='Borrar' id='be_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					<td><button type='button' title='Guardar' id='ge_${next_index}' onclick='guardarNuevo(this.id,"medidas_add")'>o</button>
+						<button type='button' title='Borrar' id='be_${next_index}' onclick='borrarNuevo(this.id,"medidas_add")'>X</button>
 					</td>
 				</tr>`;
 	}
@@ -385,8 +385,8 @@ function Provedor() {
 							</tr>
 						</table>
 					</td>
-					<td><button type='button' title='Guardar' id='gp_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
-						<button type='button' title='Borrar' id='bp_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					<td><button type='button' title='Guardar' id='gp_${next_index}' onclick='guardarNuevo(this.id,"provedor_add")'>o</button>
+						<button type='button' title='Borrar' id='bp_${next_index}' onclick='borrarNuevo(this.id,"provedor_add")'>X</button>
 					</td>
 				</tr>`;
 	}
@@ -500,8 +500,8 @@ function Item() {
 					<td class='stopSpaces' id='i_nombre_${next_index}' contenteditable='true'></td>
 					<td class='stopSpaces' id='i_unidad_${next_index}' contenteditable='true'></td>
 					<td class='stopSpaces' id='i_embalaje_${next_index}' contenteditable='true'></td>
-					<td><button type='button' title='Guardar' id='gi_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
-						<button type='button' title='Borrar' id='bi_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					<td><button type='button' title='Guardar' id='gi_${next_index}' onclick='guardarNuevo(this.id,"producto_add")'>o</button>
+						<button type='button' title='Borrar' id='bi_${next_index}' onclick='borrarNuevo(this.id,"producto_add")'>X</button>
 					</td>
 				</tr>`;
 	}
@@ -616,8 +616,8 @@ function Cliente() {
 					<td id='l_email_${next_index}' contenteditable='true'></td>
 					<td id='l_empresa_${next_index}' contenteditable='true'></td>
 					<td id='l_tipo_${next_index}' contenteditable='true'></td>
-					<td><button type='button' title='Guardar' id='gl_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
-						<button type='button' title='Borrar' id='bl_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					<td><button type='button' title='Guardar' id='gl_${next_index}' onclick='guardarNuevo(this.id,"cliente_add")'>o</button>
+						<button type='button' title='Borrar' id='bl_${next_index}' onclick='borrarNuevo(this.id,"cliente_add")'>X</button>
 					</td>
 				</tr>`;
 	}
@@ -782,8 +782,8 @@ function Melamina() {
 					<td class='item_td numericAllow' id='a_precio_venta_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='a_laminaxpaquete_${next_index}' contenteditable='true'></td>
 					<td style="display:none" id="a_hash_${next_index}"></td>
-					<td><button type='button' title='Guardar' id='ga_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
-						<button type='button' title='Borrar' id='ba_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					<td><button type='button' title='Guardar' id='ga_${next_index}' onclick='guardarNuevo(this.id,"melamina_add")'>o</button>
+						<button type='button' title='Borrar' id='ba_${next_index}' onclick='borrarNuevo(this.id,"melamina_add")'>X</button>
 					</td>
 				</tr>`;
 	}
@@ -956,8 +956,8 @@ function Tapacantos() {
 					<td class='item_td numericAllow' id='t_precio_venta_caja_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='t_precio_venta_metros_${next_index}' contenteditable='true'></td>
 					<td style="display:none" id="t_hash_${next_index}"></td>
-					<td><button type='button' title='Guardar' id='gt_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
-						<button type='button' title='Borrar' id='bt_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					<td><button type='button' title='Guardar' id='gt_${next_index}' onclick='guardarNuevo(this.id,"tapacantos_add")'>o</button>
+						<button type='button' title='Borrar' id='bt_${next_index}' onclick='borrarNuevo(this.id,"tapacantos_add")'>X</button>
 					</td>
 				</tr>`;
 	}
@@ -1098,8 +1098,8 @@ function Pegamento() {
 					<td class='numericAllow' id='p_precio_compra_${next_index}' contenteditable='true'></td>
 					<td class='numericAllow' id='p_precio_venta_${next_index}' contenteditable='true'></td>
 					<td style="display:none" id="p_hash_${next_index}"></td>
-					<td><button type='button' title='Guardar' id='gp_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
-						<button type='button' title='Borrar' id='bp_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					<td><button type='button' title='Guardar' id='gp_${next_index}' onclick='guardarNuevo(this.id,"pegamento_add")'>o</button>
+						<button type='button' title='Borrar' id='bp_${next_index}' onclick='borrarNuevo(this.id,"pegamento_add")'>X</button>
 					</td>
 				</tr>`;
 	}
@@ -1261,8 +1261,8 @@ function Fondo() {
 					<td class='item_td numericAllow' id='f_precio_venta_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='f_laminaxpaquete_${next_index}' contenteditable='true'></td>
 					<td style="display:none" id="f_hash_${next_index}"></td>
-					<td><button type='button' title='Guardar' id='gf_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
-						<button type='button' title='Borrar' id='bf_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					<td><button type='button' title='Guardar' id='gf_${next_index}' onclick='guardarNuevo(this.id,"fondo_add")'>o</button>
+						<button type='button' title='Borrar' id='bf_${next_index}' onclick='borrarNuevo(this.id,"fondo_add")'>X</button>
 					</td>
 				</tr>`;
 	}
@@ -1429,8 +1429,8 @@ function Tapatornillos() {
 					<td class='item_td numericAllow' id='t_tornilloxhoja_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='t_hojaxcaja_${next_index}' contenteditable='true'></td>
 					<td style="display:none" id="t_hash_${next_index}"></td>
-					<td><button type='button' title='Guardar' id='gf_${next_index}' onclick='guardarNuevo(this.id)'>o</button>
-						<button type='button' title='Borrar' id='bf_${next_index}' onclick='borrarNuevo(this.id)'>X</button>
+					<td><button type='button' title='Guardar' id='gf_${next_index}' onclick='guardarNuevo(this.id,"tapatornillos_add")'>o</button>
+						<button type='button' title='Borrar' id='bf_${next_index}' onclick='borrarNuevo(this.id,"tapatornillos_add")'>X</button>
 					</td>
 				</tr>`;
 	}
