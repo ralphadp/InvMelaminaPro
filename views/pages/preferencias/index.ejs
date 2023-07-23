@@ -23,6 +23,7 @@
 			height: 80vh!important;
 		}
 	</style>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -223,9 +224,15 @@
 			color:white;
 			border: 0px;
 		}
+		button.pref {
+			border-radius: 5px;
+			border-color: rgb(133, 104, 73, 0.9);
+			background-color: rgb(133, 104, 73, 0.9);
+			color:white;
+		}
     </style>
     <div id="color" class="container_table">  
-      <span class="form-label"><h5>Colores   <button type="button" id="colores_add" onclick="add_row(this)">+</button></h5></span>
+      <span class="form-label"><h5>Colores   <button class="pref" type="button" id="colores_add" onclick="add_row(this)">+</button></h5></span>
       <div class="table-editable">  
         <table class="table" id="color_data_table">
           <tr>  
@@ -248,8 +255,8 @@
                 <td><input type="checkbox" id="c_fondo_<%= ID %>" <%=(color[index].fondo == true)?'checked':'' %> /></td>
 				<td><input type="checkbox" id="c_tapatornillos_<%= ID %>" <%=(color[index].tapatornillos == true)?'checked':'' %> /></td>
             	<td>
-            		<button type="button" title="Guardar" id="gc_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-            		<button type="button" title="Borrar" id="bc_<%= ID %>"onclick="borrar(this.id)">X</button>
+            		<button class="pref" type="button" title="Guardar" id="gc_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+            		<button class="pref" type="button" title="Borrar" id="bc_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
             	</td>  
           	</tr>    
            <% } %>
@@ -265,7 +272,7 @@
 		var colorList = new List('color', options);
 	</script>
 	<div id="marca" class="container_table">
-		<span class="form-label"><h5>Marcas   <button type="button" id="marcas_add" onclick="add_row(this)">+</button></h5></span>
+		<span class="form-label"><h5>Marcas   <button class="pref" type="button" id="marcas_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="marca_data_table">
 			<tr>
@@ -287,8 +294,8 @@
 				  <td><input type="checkbox" id="m_fondo_<%= ID %>" <%=(marcas[index].fondo == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="m_tapatornillos_<%= ID %>" <%=(marcas[index].tapatornillos == true)?'checked':'' %> /></td>
 				  <td>
-					  <button type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-					  <button type="button" title="Borrar" id="bm_<%= ID %>"onclick="borrar(this.id)">X</button>
+					  <button class="pref" type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+					  <button class="pref" type="button" title="Borrar" id="bm_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
 				  </td>
 				</tr>
 			 <% } %>
@@ -296,7 +303,7 @@
 		</div>
 	  </div>
 	  <div id="medidas" class="container_table">
-		<span class="form-label"><h5>Medidas   <button type="button" id="medidas_add" onclick="add_row(this)">+</button></h5></span>
+		<span class="form-label"><h5>Medidas   <button class="pref" type="button" id="medidas_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="medidas_data_table">
 			<tr>
@@ -316,8 +323,8 @@
 				  <td><input type="checkbox" id="e_fondo_<%= ID %>" <%=(medidas[index].fondo == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="e_tapatornillos_<%= ID %>" <%=(medidas[index].tapatornillos == true)?'checked':'' %> /></td>
 				  <td>
-					  <button type="button" title="Guardar" id="ge_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-					  <button type="button" title="Borrar" id="be_<%= ID %>"onclick="borrar(this.id)">X</button>
+					  <button class="pref" type="button" title="Guardar" id="ge_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+					  <button class="pref" type="button" title="Borrar" id="be_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
 				  </td>
 				</tr>
 			 <% } %>
@@ -325,7 +332,7 @@
 		</div>
 	  </div>
 	  <div id="provedor" class="container_table">
-		<span class="form-label"><h5>Provedor   <button type="button" id="provedor_add" onclick="add_row(this)">+</button></h5></span>
+		<span class="form-label"><h5>Provedor   <button class="pref" type="button" id="provedor_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="provedor_data_table">
 			<tr>
@@ -367,8 +374,8 @@
 					</table>
 				  </td>
 				  <td>
-					  <button type="button" title="Guardar" id="gp_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-					  <button type="button" title="Borrar" id="bp_<%= ID %>"onclick="borrar(this.id)">X</button>
+					  <button class="pref" type="button" title="Guardar" id="gp_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+					  <button class="pref" type="button" title="Borrar" id="bp_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
 				  </td>
 				</tr>
 			 <% } %>
@@ -376,7 +383,7 @@
 		</div>
 	  </div>
 	  <div id="item" class="container_table">
-		<span class="form-label"><h5>Producto(item)   <button type="button" id="producto_add" onclick="add_row(this)">+</button></h5></span>
+		<span class="form-label"><h5>Producto(item)   <button class="pref" type="button" id="producto_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="item_data_table">
 			<tr>
@@ -392,8 +399,8 @@
 				  <td contenteditable="true" class="stopSpaces" id="i_unidad_<%= ID %>"><%= item[index].unidad %></td>
 				  <td contenteditable="true" class="stopSpaces" id="i_embalaje_<%= ID %>"><%= item[index].embalaje %></td>
 				  <td>
-					  <button type="button" title="Guardar" id="gi_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-					  <button type="button" title="Borrar" id="bi_<%= ID %>"onclick="borrar(this.id)">X</button>
+					  <button class="pref" type="button" title="Guardar" id="gi_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+					  <button class="pref" type="button" title="Borrar" id="bi_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
 				  </td>
 				</tr>
 			 <% } %>
@@ -401,7 +408,7 @@
 		</div>
 	  </div>
 	  <div id="cliente" class="container_table">
-		<span class="form-label"><h5>Cliente   <button type="button" id="cliente_add" onclick="add_row(this)">+</button></h5></span>
+		<span class="form-label"><h5>Cliente   <button class="pref" type="button" id="cliente_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="cliente_data_table">
 			<tr>
@@ -427,8 +434,8 @@
 				  <td class="item_td" contenteditable="true" id="l_empresa_<%= ID %>"><%= cliente[index].empresa %></td>
 				  <td class="item_td" class="stopSpaces" contenteditable="true" id="l_tipo_<%= ID %>"><%= cliente[index].tipo %></td>
 				  <td>
-					  <button type="button" title="Guardar" id="gl_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-					  <button type="button" title="Borrar" id="bl_<%= ID %>"onclick="borrar(this.id)">X</button>
+					  <button class="pref" type="button" title="Guardar" id="gl_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+					  <button class="pref" type="button" title="Borrar" id="bl_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
 				  </td>
 				</tr>
 			 <% } %>
@@ -436,7 +443,7 @@
 		</div>
 	  </div>
 	  <div id="melamina" class="container_table">
-		<span class="form-label"><h5>Melamina   <button type="button" id="melamina_add" onclick="add_row(this)">+</button></h5></span>
+		<span class="form-label"><h5>Melamina   <button class="pref" type="button" id="melamina_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="melamina_data_table">
 			<tr>
@@ -493,8 +500,8 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="a_laminaxpaquete_<%= ID %>"><%= melamina[index].laminaxpaquete %></td>
 				  <td style="display:none" id="a_hash_<%= ID %>"><%= melamina[index].hash_inventario %></td>
 				  <td>
-					  <button type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-					  <button type="button" title="Borrar" id="bm_<%= ID %>"onclick="borrar(this.id)">X</button>
+					  <button class="pref" type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+					  <button class="pref" type="button" title="Borrar" id="bm_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
 				  </td>
 				</tr>
 			 <% } %>
@@ -502,7 +509,7 @@
 		</div>
 	  </div>
 	  <div id="tapacantos" class="container_table">
-		<span class="form-label"><h5>Tapacantos   <button type="button" id="tapacantos_add" onclick="add_row(this)">+</button></h5></span>
+		<span class="form-label"><h5>Tapacantos   <button class="pref" type="button" id="tapacantos_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable" style="width: 1000px!important;  margin:0px!important;">
 		  <table class="table" id="tapacantos_data_table">
 			<tr>
@@ -567,8 +574,8 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_metros_<%= ID %>"><%= tapacantos[index].precio_venta_metros %></td>
 				  <td style="display:none" id="f_hash_<%= ID %>"><%= tapacantos[index].hash_inventario %></td>
 				  <td>
-					  <button type="button" title="Guardar" id="gt_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-					  <button type="button" title="Borrar" id="bt_<%= ID %>"onclick="borrar(this.id)">X</button>
+					  <button class="pref" type="button" title="Guardar" id="gt_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+					  <button class="pref" type="button" title="Borrar" id="bt_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
 				  </td>
 				</tr>
 			 <% } %>
@@ -576,7 +583,7 @@
 		</div>
 	  </div>
 	  <div id="pegamento" class="container_table">
-		<span class="form-label"><h5>Pegamento   <button type="button" id="pegamento_add" onclick="add_row(this)">+</button></h5></span>
+		<span class="form-label"><h5>Pegamento   <button class="pref" type="button" id="pegamento_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="pegamento_data_table">
 			<tr>
@@ -611,8 +618,8 @@
 				  <td class="numericAllow" contenteditable="true" id="p_precio_venta_<%= ID %>"><%= pegamento[index].precio_venta %></td>
 				  <td style="display:none" id="p_hash_<%= ID %>"><%= pegamento[index].hash_inventario %></td>
 				  <td>
-					  <button type="button" title="Guardar" id="gp_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-					  <button type="button" title="Borrar" id="bp_<%= ID %>"onclick="borrar(this.id)">X</button>
+					  <button class="pref" type="button" title="Guardar" id="gp_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+					  <button class="pref" type="button" title="Borrar" id="bp_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
 				  </td>
 				</tr>
 			 <% } %>
@@ -620,7 +627,7 @@
 		</div>
 	  </div>
 	  <div id="fondo" class="container_table">
-		<span class="form-label"><h5>Fondo   <button type="button" id="fondo_add" onclick="add_row(this)">+</button></h5></span>
+		<span class="form-label"><h5>Fondo   <button class="pref" type="button" id="fondo_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="fondo_data_table">
 			<tr>
@@ -677,8 +684,8 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="f_laminaxpaquete_<%= ID %>"><%= fondo[index].laminaxpaquete %></td>
 				  <td style="display:none" id="f_hash_<%= ID %>"><%= fondo[index].hash_inventario %></td>
 				  <td>
-					  <button type="button" title="Guardar" id="gf_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-					  <button type="button" title="Borrar" id="bf_<%= ID %>"onclick="borrar(this.id)">X</button>
+					  <button class="pref" type="button" title="Guardar" id="gf_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+					  <button class="pref" type="button" title="Borrar" id="bf_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
 				  </td>
 				</tr>
 			 <% } %>
@@ -686,7 +693,7 @@
 		</div>
 	  </div>
 	  <div id="tapatornillos" class="container_table">
-		<span class="form-label"><h5>Tapatornillos   <button type="button" id="tapatornillos_add" onclick="add_row(this)">+</button></h5></span>
+		<span class="form-label"><h5>Tapatornillos   <button class="pref" type="button" id="tapatornillos_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
 		  <table class="table" id="tapatornillos_data_table">
 			<tr>
@@ -745,8 +752,8 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="t_hojaxcaja_<%= ID %>"><%= tapatornillos[index].hojaxcaja %></td>
 				  <td style="display:none" id="t_hash_<%= ID %>"><%= tapatornillos[index].hash_inventario %></td>
 				  <td>
-					  <button type="button" title="Guardar" id="gf_<%= ID %>" onclick="guardarEditado(this.id)">o</button>
-					  <button type="button" title="Borrar" id="bf_<%= ID %>"onclick="borrar(this.id)">X</button>
+					  <button class="pref" type="button" title="Guardar" id="gf_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+					  <button class="pref" type="button" title="Borrar" id="bf_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
 				  </td>
 				</tr>
 			 <% } %>
