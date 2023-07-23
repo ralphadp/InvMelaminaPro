@@ -809,6 +809,7 @@
 		    var table = document.getElementById(SELECTED_CATALOGO + "_data_table");
 		    var table_len = table.rows.length;
 		    var row = table.insertRow(table_len).outerHTML = objCatalog.getRowBuild(table_len - 1, listas);
+			window.scrollTo(0, document.body.scrollHeight);
 		}
 
         function guardarNuevo(row_id, id_add_button) {
