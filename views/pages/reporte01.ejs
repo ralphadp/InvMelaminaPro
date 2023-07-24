@@ -339,18 +339,20 @@
 			<button type="button" id="c2_clickOctubre" onclick="getVentaCompraMes(9)" class="mes-button">Octubre</button>
 			<button type="button" id="c2_clickNoviembre" onclick="getVentaCompraMes(10)" class="mes-button">Noviembre</button>
 			<button type="button" id="c2_clickDiciembre" onclick="getVentaCompraMes(11)" class="mes-button">Diciembre</button>
+			<p></p>
+			<p></p>
 			<table class="responsive-table" id="table-mes">
 			  <caption>Reporte compra venta del Mes por colores</caption>
 			  <thead>
 				<tr>
 				  <th scope="col">Producto</th>
 				  <th scope="col">Color</th>
-				  <th scope="col">Tipo</th>
+				  <th scope="col">Embalaje</th>
 				  <th scope="col">Cantidad</th>
 				  <th scope="col">Venta (Bs)</th>
 				  <th scope="col">Compra (Bs)</th>
 				  <th scope="col">Color</th>
-				  <th scope="col">Tipo</th>
+				  <th scope="col">Embalaje</th>
 				  <th scope="col">Cantidad</th>
 				  <th scope="col">Venta (Bs)</th>
 				  <th scope="col">Compra (Bs)</th>
@@ -358,6 +360,20 @@
 			  </thead>
 			  <tbody id="table-mes-body">
 			  </tbody>
+			</table>
+			<br><hr><br>
+			<table class="responsive-table" id="table-totales-mes">
+				<caption>Reporte compra venta del Mes Totales</caption>
+				<thead>
+				  <tr>
+					<th scope="col">Producto</th>
+					<th scope="col">Cantidad</th>
+					<th scope="col">Venta (Bs)</th>
+					<th scope="col">Compra (Bs)</th>
+				  </tr>
+				</thead>
+				<tbody id="table-totales-mes-body">
+				</tbody>
 			</table>
 		</div><!-- end frame -->
 

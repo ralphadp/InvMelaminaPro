@@ -569,73 +569,87 @@ function BuildTableMes(chartData) {
     var TotalCompra1 = 0;
     var TotalVenta2 = 0;
     var TotalCompra2 = 0;
+    var pegamento = {
+        cantidad: 0,
+        venta: 0,
+        compra: 0
+    };
 
     document.getElementById("table-mes-body").innerHTML = "";
     var table = document.getElementById('table-mes').getElementsByTagName('tbody')[0];
 
     chartData.forEach((row) => {
 
-        var newRow = table.insertRow();
+        if (row.producto == "Pegamento") {
+            pegamento.cantidad = row.colores.cantidad;
+            pegamento.venta = row.colores.venta;
+            pegamento.compra = row.colores.compra;
+        
+        } else {
 
-        var newCell = newRow.insertCell();
-        newCell.outerHTML = "<th scope='row'>"+row.producto+"</th>";
+            var newRow = table.insertRow();
 
-        newCell = newRow.insertCell();
-        newCell.setAttribute("data-title", "Worldwide Gross");
-        newCell.setAttribute("data-type", "currency");
-        newCell.appendChild(document.createTextNode("Blanco"));
+            var newCell = newRow.insertCell();
+            newCell.outerHTML = "<th scope='row'>"+row.producto+"</th>";
 
-        newCell = newRow.insertCell();
-        newCell.setAttribute("data-title", "Domestic Gross");
-        newCell.setAttribute("data-type", "currency");
-        newCell.appendChild(document.createTextNode(row.blanco.tipo));
+            newCell = newRow.insertCell();
+            newCell.setAttribute("data-title", "Worldwide Gross");
+            newCell.setAttribute("data-type", "currency");
+            newCell.appendChild(document.createTextNode("Blanco"));
 
-        newCell = newRow.insertCell();
-        newCell.setAttribute("data-title", "Domestic Gross");
-        newCell.setAttribute("data-type", "currency");
-        newCell.appendChild(document.createTextNode(row.blanco.cantidad));
+            newCell = newRow.insertCell();
+            newCell.setAttribute("data-title", "Domestic Gross");
+            newCell.setAttribute("data-type", "currency");
+            newCell.appendChild(document.createTextNode(row.blanco.tipo));
 
-        newCell = newRow.insertCell();
-        newCell.setAttribute("data-title", "Domestic Gross");
-        newCell.setAttribute("data-type", "currency");
-        newCell.appendChild(document.createTextNode(row.blanco.venta));
+            newCell = newRow.insertCell();
+            newCell.setAttribute("data-title", "Domestic Gross");
+            newCell.setAttribute("data-type", "currency");
+            newCell.appendChild(document.createTextNode(row.blanco.cantidad));
 
-        newCell = newRow.insertCell();
-        newCell.setAttribute("data-title", "Domestic Gross");
-        newCell.setAttribute("data-type", "currency");
-        newCell.appendChild(document.createTextNode(row.blanco.compra));
+            newCell = newRow.insertCell();
+            newCell.setAttribute("data-title", "Domestic Gross");
+            newCell.setAttribute("data-type", "currency");
+            newCell.appendChild(document.createTextNode(row.blanco.venta));
 
-        newCell = newRow.insertCell();
-        newCell.setAttribute("data-title", "Worldwide Gross");
-        newCell.setAttribute("data-type", "currency");
-        newCell.appendChild(document.createTextNode("Color"));
+            newCell = newRow.insertCell();
+            newCell.setAttribute("data-title", "Domestic Gross");
+            newCell.setAttribute("data-type", "currency");
+            newCell.appendChild(document.createTextNode(row.blanco.compra));
 
-        newCell = newRow.insertCell();
-        newCell.setAttribute("data-title", "Domestic Gross");
-        newCell.setAttribute("data-type", "currency");
-        newCell.appendChild(document.createTextNode(row.colores.tipo));
+            newCell = newRow.insertCell();
+            newCell.setAttribute("data-title", "Worldwide Gross");
+            newCell.setAttribute("data-type", "currency");
+            newCell.appendChild(document.createTextNode("Colores"));
 
-        newCell = newRow.insertCell();
-        newCell.setAttribute("data-title", "Domestic Gross");
-        newCell.setAttribute("data-type", "currency");
-        newCell.appendChild(document.createTextNode(row.colores.cantidad));
+            newCell = newRow.insertCell();
+            newCell.setAttribute("data-title", "Domestic Gross");
+            newCell.setAttribute("data-type", "currency");
+            newCell.appendChild(document.createTextNode(row.colores.tipo));
 
-        newCell = newRow.insertCell();
-        newCell.setAttribute("data-title", "Domestic Gross");
-        newCell.setAttribute("data-type", "currency");
-        newCell.appendChild(document.createTextNode(row.colores.venta));
+            newCell = newRow.insertCell();
+            newCell.setAttribute("data-title", "Domestic Gross");
+            newCell.setAttribute("data-type", "currency");
+            newCell.appendChild(document.createTextNode(row.colores.cantidad));
 
-        newCell = newRow.insertCell();
-        newCell.setAttribute("data-title", "Domestic Gross");
-        newCell.setAttribute("data-type", "currency");
-        newCell.appendChild(document.createTextNode(row.colores.compra));
+            newCell = newRow.insertCell();
+            newCell.setAttribute("data-title", "Domestic Gross");
+            newCell.setAttribute("data-type", "currency");
+            newCell.appendChild(document.createTextNode(row.colores.venta));
 
-        TotalVenta1 = TotalVenta1 + Number(row.blanco.venta);
-        TotalCompra1 = TotalCompra1 + Number(row.blanco.compra);
-        TotalVenta2 = TotalVenta2 + Number(row.colores.venta);
-        TotalCompra2 = TotalCompra2 + Number(row.colores.compra);
+            newCell = newRow.insertCell();
+            newCell.setAttribute("data-title", "Domestic Gross");
+            newCell.setAttribute("data-type", "currency");
+            newCell.appendChild(document.createTextNode(row.colores.compra));
+
+            TotalVenta1 = TotalVenta1 + Number(row.blanco.venta);
+            TotalCompra1 = TotalCompra1 + Number(row.blanco.compra);
+            TotalVenta2 = TotalVenta2 + Number(row.colores.venta);
+            TotalCompra2 = TotalCompra2 + Number(row.colores.compra);
+        }
     });
     var newRow = table.insertRow();
+    newRow.style.background = "#FBD7C2";
     newCell = newRow.insertCell();
     newCell.setAttribute("data-title", "Domestic Gross");
     newCell.setAttribute("data-type", "currency");
@@ -675,6 +689,75 @@ function BuildTableMes(chartData) {
     newCell.setAttribute("data-title", "Domestic Gross");
     newCell.setAttribute("data-type", "currency");
     newCell.appendChild(document.createTextNode(TotalCompra2));
+
+//Totales table
+
+    document.getElementById("table-totales-mes-body").innerHTML = "";
+    table = document.getElementById('table-totales-mes').getElementsByTagName('tbody')[0];
+
+    var newRow = table.insertRow();
+    
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Worldwide Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode("Pegamento"));
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(pegamento.cantidad));
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(pegamento.venta));
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(pegamento.compra));
+
+    var newRow = table.insertRow();
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Worldwide Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode("Productos arriba"));
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(TotalVenta1 + TotalVenta2));
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(TotalVenta1 + TotalVenta2));
+
+    var newRow = table.insertRow();
+    newRow.style.background = "#FBD7C2";
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Worldwide Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode("TOTAL:"));
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(pegamento.venta + TotalVenta1 + TotalVenta2));
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(pegamento.venta + TotalVenta1 + TotalVenta2));
 }
 ///*************** INTERFACE BUTTONS *** */
 

@@ -2776,10 +2776,10 @@ app.post('/reporte_compra_venta_colores_mes', function(req, res) {
 
     let productos = {
         "Melamina":["laminas","paquete"],
-        "Tapacanto":["rollos","cajas","metros"],
+        "Tapacantos":["rollos","cajas","metros"],
         "Fondo":["laminas","paquete"],
         "Pegamento":["bolsas"],
-        "Tapatornillo":["laminas"]
+        "Tapatornillos":["hojas","cajas"]
     };
 
     DB.collection("historial").find({
@@ -2791,8 +2791,12 @@ app.post('/reporte_compra_venta_colores_mes', function(req, res) {
         Object.keys(productos).forEach(product => {
 
             productos[product].forEach((tipoProducto) => {
-                let DATA = {producto:"",blanco:{tipo:"",cantidad:0, venta:0, compra:0}, colores:{tipo:"",cantidad:0, venta:0, compra:0}};
-                DATA.producto = product;
+                let DATA = {
+                    producto: product,
+                    blanco: {tipo:tipoProducto,cantidad:0, venta:0, compra:0}, 
+                    colores: {tipo:tipoProducto,cantidad:0, venta:0, compra:0}
+                };
+                //DATA.producto = product;
                 resultHistorial.forEach((historia) => {
                     
                     if (historia.item == product && historia.nombreDeUnidad == tipoProducto) {
