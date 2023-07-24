@@ -100,9 +100,9 @@
 									<div class="form-group">
 										<span class="form-label">Min Cant. Tapatornillo</span>
 										<select class="form-control" id="tapatornillos_min">
-											<option value="1" <%= (controMinimo["Tapatornillos"]==1)?'selected':'' %>>1 tapatornillo</option>
-											<% for (var index = 2; index < 25; index++) { %>
-											<option value="<%=index %>" <%= (controMinimo["Tapatornillos"]==index)?'selected':'' %>><%=index %> tapatornillos</option>
+											<option value="1" <%= (controMinimo["Tapatornillos"]==1)?'selected':'' %>>1 hoja</option>
+											<% for (var index = 2; index <= 25; index++) { %>
+											<option value="<%=index %>" <%= (controMinimo["Tapatornillos"]==index)?'selected':'' %>><%=index %> hojas</option>
 											<% } %>
 										</select>
 										<span class="select-arrow"></span>
