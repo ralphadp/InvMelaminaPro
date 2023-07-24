@@ -23,7 +23,7 @@ function Color() {
 	this.getRowBuild = function(next_index) {
 		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
 					<td contenteditable='true' class='stopSpaces' id='c_nombre_${next_index}' ></td>
-					<td contenteditable='true' class='stopSpaces' id='c_codigo_${next_index}' ></td>
+					<td><input type="color" id="c_codigo_${next_index}" value="#ffffff" /></td>
 					<td><input id='c_melamina_${next_index}' type='checkbox'/></td>
 					<td><input id='c_tapacantos_${next_index}' type='checkbox'/></td>
 					<td><input id='c_fondo_${next_index}' type='checkbox'/></td>
@@ -36,7 +36,7 @@ function Color() {
 
 	this.assignar = function(row_id) {
 		this.att.nombre =     document.getElementById("c_nombre_" + row_id).innerText.trim();
-		this.att.codigo =     document.getElementById("c_codigo_" + row_id).innerText.trim();
+		this.att.codigo =     document.getElementById("c_codigo_" + row_id).value;
 		this.att.melamina =   $("#c_melamina_" + row_id).is(":checked");
 		this.att.tapacantos = $("#c_tapacantos_" + row_id).is(":checked");
 		this.att.fondo =      $("#c_fondo_" + row_id).is(":checked");

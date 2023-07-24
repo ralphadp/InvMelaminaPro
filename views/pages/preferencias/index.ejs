@@ -249,7 +249,7 @@
            		var ID = color[index]._id.toString() %>
 			<tr id="row_<%= ID %>">  
                 <td contenteditable="true" class="stopSpaces Nombre" id="c_nombre_<%= ID %>"><%= color[index].nombre %></td>
-                <td contenteditable="true" class="stopSpaces" id="c_codigo_<%= ID %>"><%= color[index].codigo %></td>
+                <td><input type="color" id="c_codigo_<%= ID %>" value="<%= (color[index].codigo.length==0)?'#ffffff':color[index].codigo %>" /></td>
                 <td><input type="checkbox" id="c_melamina_<%= ID %>" <%=(color[index].melamina == true)?'checked':'' %> /></td>
                 <td><input type="checkbox" id="c_tapacantos_<%= ID %>" <%=(color[index].tapacantos == true)?'checked':'' %> /></td>
                 <td><input type="checkbox" id="c_fondo_<%= ID %>" <%=(color[index].fondo == true)?'checked':'' %> /></td>
