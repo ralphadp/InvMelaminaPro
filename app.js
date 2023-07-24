@@ -943,6 +943,9 @@ app.get('/inventario', function(req, res) {
                 // orfan 68f75d027e9060139a86229de5cb98e7
                 let item = producto_item[nombre];
                 let indexHash = MD5(item._id.toString() + producto.color + producto.medidas + producto.marca).toString();
+                if (nombre == "Pegamento") {
+                    indexHash = MD5(item._id.toString() + producto.marca).toString();
+                }
                 if (!this[indexHash]) {
                     console.log("["+indexHash+"] NO existe... ", nombre, item._id.toString(), producto.color , producto.medidas , producto.marca);
                 } else {
@@ -1931,7 +1934,7 @@ app.put('/actualizar_pegamento/:id',(req, res) => {
         console.log("param: "+req.params.id);
 
         let hashOld = req.body.hash_inventario;
-        let hashNew = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+        let hashNew = MD5(producto._id.toString() + req.body.marca).toString();
         req.body.hash_inventario = hashNew;
 
         let CollectionProducto = client.db().collection("collectionpegamento");

@@ -77,7 +77,7 @@
                 %>
                 <tr class="row100 body <%- alerta%>">
                     <td class="cell100 column6 <%- alerta%> Tipo"><%= producto.nombre %> (min: <%= control[producto.nombre].minimo%>)</td>
-                    <td class="cell100 column6 <%- alerta%> Color"><%= producto.item.color.length ? colores[producto.item.color].nombre : '' %></td>
+                    <td class="cell100 column6 <%- alerta%> Color"><%= producto.item.color ? colores[producto.item.color].nombre : '' %></td>
                     <td class="cell100 column6 <%- alerta%> Medida"><%= producto.item.medidas ? medidas[producto.item.medidas].nombre : '' %></td>
                     <td class="cell100 column6 <%- alerta%> Marca"><%= marcas[producto.item.marca].nombre %></td>
                     <td class="cell100 column6 <%- alerta%> Existencia"><%= producto.existencia %> <%= producto.unidad %></td>
