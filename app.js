@@ -770,7 +770,7 @@ app.get('/reporte', function(req, res) {
 });
 
 // tapacantos_standar page
-app.get('/contenidos', function(req, res) {
+app.get('/catalogos', function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
