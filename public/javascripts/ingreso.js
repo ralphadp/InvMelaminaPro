@@ -56,6 +56,17 @@ let GuardarIngreso = function() {
     addIngreso();
 }
 
+function setPrice(monto) {
+    document.getElementById("precio").value = monto;
+    this.event.stopPropagation();
+}
+
+function cerrarGloboMensaje() {
+    var PRECIO_MENSAJE = "precio-globo-mensajes";
+    document.getElementById(PRECIO_MENSAJE).style.position = "fixed";
+    document.getElementById(PRECIO_MENSAJE).innerHTML = "";
+}
+
 function obtenerPrecioStandard() {
     let queryPrecio = {
         provedor: $('[name="provedor"]').find(":selected").val(),
@@ -75,13 +86,27 @@ function obtenerPrecioStandard() {
     })
     .then(response => response.json())
     .then(response => {
+        var PRECIO_MENSAJE = "precio-globo-mensajes";
         if (response.ok) {
-            document.getElementById('precio').value = response.precio;
-            document.getElementById("precio-mensaje").style.color = "#90ee90";
-            document.getElementById("precio-mensaje").textContent = response.message;
+            document.getElementById(PRECIO_MENSAJE).textContent = "";
+            response.precio.forEach((price) => {
+                if (price.error) {
+                    mensaje = "<p style='color:red;'>" + price.error + "</p>";
+                } else {
+                    mensaje = "<button type='button' class='button-globo' onclick='setPrice(" + price.precio + ")'>"
+                        + "<strong>Provedor:</strong>" + price.provedor + '\n' 
+                        + "<strong>Calculo:</strong>" + price.explicacion + '\n'
+                        + "<strong>Precio:</strong>" + price.precio + '\n';
+                        + "</button>";
+                }
+                document.getElementById(PRECIO_MENSAJE).style.position = "absolute";
+                document.getElementById(PRECIO_MENSAJE).innerHTML += mensaje;
+                document.getElementById("precio").value = price.precio;
+            });
         } else {
-            document.getElementById("precio-mensaje").style.color = "red";
-            document.getElementById("precio-mensaje").textContent = response.message;
+            document.getElementById(PRECIO_MENSAJE).style.position = "absolute";
+            document.getElementById(PRECIO_MENSAJE).style.color = "red";
+            document.getElementById(PRECIO_MENSAJE).textContent = response.message;
         }
     })
     .catch(error => {

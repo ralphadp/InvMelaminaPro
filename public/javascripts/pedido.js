@@ -456,6 +456,20 @@ function toprint() {
     return false;
 }
 
+function setPrice(monto) {
+    let ids = new getIDS();
+    ids.verify();
+    document.getElementById(ids.PRECIO_ID).value = monto;
+    this.event.stopPropagation();
+}
+
+function cerrarGloboMensaje() {
+    let ids = new getIDS();
+    ids.verify();
+    document.getElementById(ids.PRECIO_MENSAJE).style.position = "fixed";
+    document.getElementById(ids.PRECIO_MENSAJE).innerHTML = "";
+}
+
 function obtenerPrecioStandard() {
     let ids = new getIDS();
     ids.verify();
@@ -478,10 +492,23 @@ function obtenerPrecioStandard() {
     .then(response => response.json())
     .then(response => {
         if (response.ok) {
-            document.getElementById(ids.PRECIO_ID).value = response.precio;
-            document.getElementById(ids.PRECIO_MENSAJE).style.color = "#90ee90";
-            document.getElementById(ids.PRECIO_MENSAJE).textContent = response.message;
+            document.getElementById(ids.PRECIO_MENSAJE).textContent = "";
+            response.precio.forEach((price) => {
+                if (price.error) {
+                    mensaje = "<p style='color:red;'>" + price.error + "</p>";
+                } else {
+                    mensaje = "<button type='button' class='button-globo' onclick='setPrice(" + price.precio + ")'>"
+                        + "<strong>Provedor:</strong>" + price.provedor + '\n' 
+                        + "<strong>Calculo:</strong>" + price.explicacion + '\n'
+                        + "<strong>Precio:</strong>" + price.precio + '\n';
+                        + "</button>";
+                }
+                document.getElementById(ids.PRECIO_MENSAJE).style.position = "absolute";
+                document.getElementById(ids.PRECIO_MENSAJE).innerHTML += mensaje;
+                document.getElementById(ids.PRECIO_ID).value = price.precio;
+            });
         } else {
+            document.getElementById(ids.PRECIO_MENSAJE).style.position = "absolute";
             document.getElementById(ids.PRECIO_MENSAJE).style.color = "red";
             document.getElementById(ids.PRECIO_MENSAJE).textContent = response.message;
         }
@@ -555,7 +582,7 @@ let getIDS = function() {
     this.DIVMEDIDA   = "divmedida";
     this.DIVCOLOR    = "divcolor";
     this.CARRITO     = "carrito_interno";
-    this.PRECIO_MENSAJE = "precio-mensaje";
+    this.PRECIO_MENSAJE = "precio-globo-mensajes";
     this.PRODUCT_MENSAJE = "product_message";
     this.CLIENTE_TIPO = "interno";
 
@@ -574,7 +601,7 @@ let getIDS = function() {
             this.DIVMEDIDA = "divmedida_ex";
             this.DIVCOLOR = "divcolor_ex";
             this.CARRITO  = "carrito_externo";
-            this.PRECIO_MENSAJE = "precio-mensaje_ex";
+            this.PRECIO_MENSAJE = "precio-globo-mensajes_ex";
             this.PRODUCT_MENSAJE = "product_message_ex";
             this.CLIENTE_TIPO = "externo";
             return 2;
@@ -592,7 +619,7 @@ let getIDS = function() {
             this.DIVMEDIDA = "divmedida_re";
             this.DIVCOLOR = "divcolor_re";
             this.CARRITO  = "carrito_regular";
-            this.PRECIO_MENSAJE = "precio-mensaje_re";
+            this.PRECIO_MENSAJE = "precio-globo-mensajes_re";
             this.PRODUCT_MENSAJE = "product_message_re";
             this.CLIENTE_TIPO = "regular";
             return 3;

@@ -29,6 +29,63 @@
 		#compras_menu {
 			background-color: bisque;
 		}
+
+        .vineta{
+			position:relative;
+			width: 100%;
+			max-width: 600px;
+			height: calc(100vh - 30px);
+			max-height: 600px;
+			/*Opcionalmente con box-shadow, creamos varias sombras, para simular un marco*/
+			box-shadow: 
+				0 0 0 1px black,
+				0 0 0 6px white,
+				0 0 0 7px black;
+		}
+
+		.globo{
+			/*position: absolute;*/
+			text-transform: uppercase;
+			font-size: 12px;
+			border-radius: var(--borde);
+			padding: var(--borde);
+			--borde: 1em;
+			font-family: sans-serif;
+			z-index: 1; 
+			background-color: white;
+			filter: drop-shadow(0px 0px 1px black) ;
+		}
+
+		.globo::before{
+			content: '';
+			position: absolute; 
+			z-index: -1;
+			width: var(--colita);
+			height: var(--colita);
+		}
+
+		.globo.derecha-arriba::before{
+			--colita: 20px;
+			top: 10px;
+			right: calc( var(--colita) / -1.5);
+			transform: skewY(30deg) rotateZ(-120deg);
+			border-radius: 0 0 0 10em;
+			box-shadow: 
+				inset calc(var(--colita)/2) calc(var(--colita)/3) 0 0 white;
+		}
+		@keyframes cambio-color{
+			45%,55% { 
+				background-color: rgba(255,255,255,0); 
+				color: white;
+			}
+		}
+		#precio-globo-mensajes {
+			position: fixed;
+		}
+		.button-globo {
+			color:green;
+			text-align:left;
+		}
 	</style>
 </head>
 <body>
@@ -149,6 +206,7 @@
                                             <select name="unidad" id="unidad" class="form-control">
                                                 <option value="" selected="">(Elija la unidad)</option>
                                             </select>
+                                            <p class="globo ii derecha-arriba" style="white-space: pre-line" id="precio-globo-mensajes" onclick="cerrarGloboMensaje()"></p> 
                                             <span class="select-btn">
                                                 <i class="zmdi zmdi-chevron-down"></i>
                                             </span>
@@ -156,7 +214,6 @@
                                         <div class="form-holder form-holder-2">
                                             <label for="precio" class="special-label-1">Precio(Bs)<a class="precio" onclick="obtenerPrecioStandard()">Cargar Standard</a></label>
                                             <input name="precio" id="precio" class="form-control" value="0.0">
-                                            <span class="select-btn"><span id="precio-mensaje"></span></span>
                                         </div>
                                     </div>
                                 </div>

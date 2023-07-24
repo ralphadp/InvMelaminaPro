@@ -547,174 +547,207 @@ app.post('/obtener_precio', (req, res) => {
     client.connect();
 
     let tipoItem = req.body.item.toLowerCase();
-    var Collection = client.db().collection("collection" + tipoItem);
+    var CollectionItem = client.db().collection("collection" + tipoItem);
+    var CollectionProvedor = client.db().collection("collectionprovedor");
     var jsonQuery;
 
     console.log(req.body);
-    console.log('provedor de compra:',req.body.provedor);
+    console.log('Provedor de compra:',req.body.provedor);
+
     if (typeof(req.body.provedor) == "undefined") {
-        jsonQuery = {
-            "color": req.body.color,
-            "medidas": req.body.medida,
-            "marca": req.body.marca
+        if (tipoItem === "pegamento") {
+            jsonQuery = {
+                "marca": req.body.marca
+            }
+        } else {
+            jsonQuery = {
+                "color": req.body.color,
+                "medidas": req.body.medida,
+                "marca": req.body.marca
+            }
         }
     } else {
-        jsonQuery = {
-            "provedor": req.body.provedor,
-            "color": req.body.color,
-            "medidas": req.body.medida,
-            "marca": req.body.marca
+        if (tipoItem === "Pegamento") {
+            jsonQuery = {
+                "provedor": req.body.provedor,
+                "marca": req.body.marca
+            }
+        } else {
+            jsonQuery = {
+                "provedor": req.body.provedor,
+                "color": req.body.color,
+                "medidas": req.body.medida,
+                "marca": req.body.marca
+            }
         }
     }
-    console.log("parametros de consulta:", jsonQuery);
+    console.log("Parametros de consulta:", jsonQuery);
 
-    Collection.findOne(jsonQuery).then((result) => {
-        let precio = .0;
-        let precio_metros = .0;
-        let precio_caja = 0;
+    CollectionProvedor.find().toArray().then((provedor) => {
+        var provedorMap = {};
+        provedor.forEach(item => {
+            provedorMap[item._id.toString()] = item.nombre;
+        });
+        console.log(provedorMap);
+    CollectionItem.find(jsonQuery).toArray().then((resultItem) => {
 
-        console.log('producto encontrado:', result);
-        if (typeof result == 'undefined' || result == null) {
+        if (resultItem.length === 0) {
             res.status(404).json({ok: false, precio: 0.0, message: "Este producto no esta en catalogo"});
             res.end();
-            throw "Error: No se encontro precio para este producto";
-        }
-        if (req.body.tipo_entrada == "ingreso") {
-            precio = result.precio_compra;
-            precio_metros = result.precio_compra_metros;
-            precio_caja = result.precio_compra_caja?result.precio_compra_caja:0;
-        } else if (req.body.tipo_entrada == "pedido") {
-            precio = result.precio_venta;
-            precio_metros = result.precio_venta_metros;
-            precio_caja = result.precio_venta_caja?result.precio_venta_caja:0;
+            throw "Error: El producto no se encuentra en catalogos";
         }
 
-        let EXPLICACION = "";
-        var producto;
-        if (tipoItem == "tapacantos") {
-            producto = {rollos:0, cajas:0, metros:0};
-            if (req.body.unidad == "metros") {
-                producto.rollos = Math.trunc(req.body.cantidad / result.metrosxrollo);
+        console.log('Producto encontrado:', resultItem);
 
-                producto.cajas = Math.trunc(producto.rollos / result.rollosxcaja);
+        var precios = [];
+        var e_message;
+        var flag = true;
 
-                EXPLICACION = `${req.body.cantidad} x ${precio_metros}(pm) Bs`;
-                precio = req.body.cantidad * precio_metros;
-            } else if (req.body.unidad == "rollos") {
-                producto.cajas = Math.trunc(req.body.cantidad / result.rollosxcaja);
+        resultItem.forEach((result, index) => {
 
-                producto.rollos = req.body.cantidad - result.rollosxcaja;
-                while (producto.rollos > result.rollosxcaja) {
-                    producto.rollos = producto.rollos - result.rollosxcaja;
+            let precio = .0;
+            let precio_metros = .0;
+            let precio_caja = 0;
+            let EXPLICACION = "";
+            var producto;
+
+            try {
+
+                if (req.body.tipo_entrada == "ingreso") {
+                    precio = result.precio_compra;
+                    precio_metros = result.precio_compra_metros;
+                    precio_caja = result.precio_compra_caja?result.precio_compra_caja:0;
+                } else if (req.body.tipo_entrada == "pedido") {
+                    precio = result.precio_venta;
+                    precio_metros = result.precio_venta_metros;
+                    precio_caja = result.precio_venta_caja?result.precio_venta_caja:0;
                 }
 
-                producto.metros =  0;
+                if (tipoItem == "tapacantos") {
+                    producto = {rollos:0, cajas:0, metros:0};
+                    if (req.body.unidad == "metros") {
+                        producto.rollos = Math.trunc(req.body.cantidad / result.metrosxrollo);
 
-                EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
-                precio = req.body.cantidad * precio;
-            } else if (req.body.unidad == "cajas") {
-                producto.cajas = req.body.cantidad;
-                producto.rollos = 0;
-                producto.metros =  0;
-                if (precio_caja) {
-                    EXPLICACION = `${req.body.cantidad} x ${precio_caja} Bs`;
-                    precio = req.body.cantidad * precio_caja;
+                        producto.cajas = Math.trunc(producto.rollos / result.rollosxcaja);
+
+                        EXPLICACION = `${req.body.cantidad} x ${precio_metros}(pm) Bs`;
+                        precio = req.body.cantidad * precio_metros;
+                    } else if (req.body.unidad == "rollos") {
+                        producto.cajas = Math.trunc(req.body.cantidad / result.rollosxcaja);
+
+                        producto.rollos = req.body.cantidad - result.rollosxcaja;
+                        while (producto.rollos > result.rollosxcaja) {
+                            producto.rollos = producto.rollos - result.rollosxcaja;
+                        }
+
+                        producto.metros =  0;
+
+                        EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
+                        precio = req.body.cantidad * precio;
+                    } else if (req.body.unidad == "cajas") {
+                        producto.cajas = req.body.cantidad;
+                        producto.rollos = 0;
+                        producto.metros =  0;
+                        if (precio_caja) {
+                            EXPLICACION = `${req.body.cantidad} x ${precio_caja} Bs`;
+                            precio = req.body.cantidad * precio_caja;
+                        } else {
+                            EXPLICACION = `${req.body.cantidad} x ${result.rollosxcaja}(rxc) x ${precio} Bs`;
+                            precio = (req.body.cantidad * result.rollosxcaja) * precio;
+                        }
+                    } else {
+                        if (req.body.unidad.length <= 0) {
+                            e_message = "No se envio la Unidad del pedido.";
+                        } else {
+                            e_message = "Unidad desconocida [" + req.body.unidad + "]";
+                        }
+                    }
+                } else if (tipoItem == "melamina" || tipoItem == "fondo") {
+                    producto = {paquetes:0, laminas:0};
+                    if (req.body.unidad == "laminas") {
+                        producto.paquetes = Math.trunc(req.body.cantidad / result.laminaxpaquete);
+
+                        producto.laminas = req.body.cantidad - result.laminaxpaquete;
+                        while (producto.laminas > result.laminaxpaquete) {
+                            producto.laminas = producto.laminas - result.laminaxpaquete;
+                        }
+
+                        EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
+                        precio = req.body.cantidad * precio;
+                    } else if (req.body.unidad == "paquetes") {
+                        producto.laminas = 0;
+                        producto.paquetes = req.body.cantidad;
+
+                        EXPLICACION = `${req.body.cantidad} x ${result.laminaxpaquete}(lxp) x ${precio} Bs`;
+                        precio = (req.body.cantidad * result.laminaxpaquete) * precio;
+                    } else {
+                        if (req.body.unidad.length <= 0) {
+                            e_message = "No se envio la Unidad del pedido.";
+                        } else {
+                            e_message = "Unidad desconocida [" + req.body.unidad + "]";
+                        }
+                    }
+                } else if (tipoItem == "tapatornillos") {
+                    producto = {hojas:0, cajas:0};
+                    if (req.body.unidad == "hojas") {
+                        producto.cajas = Math.trunc(req.body.cantidad / result.hojaxcaja);
+                        producto.hojas = req.body.cantidad;
+
+                        EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
+                        precio = req.body.cantidad * precio;
+                    } else if (req.body.unidad == "cajas") {
+                        producto.hojas = req.body.cantidad * result.hojaxcaja;
+                        producto.cajas = req.body.cantidad;
+
+                        EXPLICACION = `${req.body.cantidad} x ${result.hojaxcaja}(hxc) x ${precio} Bs`;
+                        precio = (req.body.cantidad * result.hojaxcaja) * precio;
+                    } else {
+                        if (req.body.unidad.length <= 0) {
+                            e_message = "No se envio la Unidad del pedido.";
+                        } else {
+                            e_message = "Unidad desconocida [" + req.body.unidad + "]";
+                        }
+                    }
+                } else if (tipoItem == "pegamento") {
+
+                    if (req.body.unidad.length <= 0) {
+                        e_message = "No se envio la Unidad del pedido.";
+                    } else if (req.body.unidad !== "bolsas") {
+                        e_message = "Unidad desconocida [" + req.body.unidad + "]";
+                    }
+
+                    producto = {bolsa:0};
+                    producto.bolsa = req.body.cantidad;
+
+                    EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
+                    precio = req.body.cantidad * precio;
                 } else {
-                    EXPLICACION = `${req.body.cantidad} x ${result.rollosxcaja}(rxc) x ${precio} Bs`;
-                    precio = (req.body.cantidad * result.rollosxcaja) * precio;
+                    e_message = "[" + tipoItem + "] es un producto no conocido.";
                 }
-            } else {
-                let e_message;
-                if (req.body.unidad.length <= 0) {
-                    e_message = "No se envio la Unidad del pedido.";
-                } else {
-                    e_message = "Unidad desconocida [" + req.body.unidad + "]";
+
+                precios[index] = {
+                    provedor: provedorMap[result.provedor],
+                    precio: precio,
+                    detalles: producto,
+                    explicacion: EXPLICACION,
+                    error: e_message
                 }
-                res.status(404).json({ok: true, precio: precio, message: e_message});
-                res.end();
-                throw e_message;
+            } catch(e) {
+                if (!(e instanceof Error)) {
+                    e = new Error(e);
+                }
+                e_message = e.message;
+                flag = false;
             }
-        } else if (tipoItem == "melamina" || tipoItem == "fondo") {
-            producto = {paquetes:0, laminas:0};
-            if (req.body.unidad == "laminas") {
-                producto.paquetes = Math.trunc(req.body.cantidad / result.laminaxpaquete);
+        })
 
-                producto.laminas = req.body.cantidad - result.laminaxpaquete;
-                while (producto.laminas > result.laminaxpaquete) {
-                    producto.laminas = producto.laminas - result.laminaxpaquete;
-                }
-
-                EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
-                precio = req.body.cantidad * precio;
-            } else if (req.body.unidad == "paquetes") {
-                producto.laminas = 0;
-                producto.paquetes = req.body.cantidad;
-
-                EXPLICACION = `${req.body.cantidad} x ${result.laminaxpaquete}(lxp) x ${precio} Bs`;
-                precio = (req.body.cantidad * result.laminaxpaquete) * precio;
-            } else {
-                let e_message;
-                if (req.body.unidad.length <= 0) {
-                    e_message = "No se envio la Unidad del pedido.";
-                } else {
-                    e_message = "Unidad desconocida [" + req.body.unidad + "]";
-                }
-                res.status(404).json({ok: true, precio: precio, message: e_message});
-                res.end();
-                throw e_message;
-            }
-        } else if (tipoItem == "tapatornillos") {
-            producto = {hojas:0, cajas:0};
-            if (req.body.unidad == "hojas") {
-                producto.cajas = Math.trunc(req.body.cantidad / result.hojaxcaja);
-                producto.hojas = req.body.cantidad;
-
-                EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
-                precio = req.body.cantidad * precio;
-            } else if (req.body.unidad == "cajas") {
-                producto.hojas = req.body.cantidad * result.hojaxcaja;
-                producto.cajas = req.body.cantidad;
-
-                EXPLICACION = `${req.body.cantidad} x ${result.hojaxcaja}(hxc) x ${precio} Bs`;
-                precio = (req.body.cantidad * result.hojaxcaja) * precio;
-            } else {
-                let e_message;
-                if (req.body.unidad.length <= 0) {
-                    e_message = "No se envio la Unidad del pedido.";
-                } else {
-                    e_message = "Unidad desconocida [" + req.body.unidad + "]";
-                }
-                res.status(404).json({ok: true, precio: precio, message: e_message});
-                res.end();
-                throw e_message;
-            }
-        }
-        else if (tipoItem == "pegamento") {
-
-            let e_message;
-            if (req.body.unidad.length <= 0) {
-                e_message = "No se envio la Unidad del pedido.";
-                res.status(404).json({ok: true, precio: precio, message: e_message});
-                res.end();
-                throw e_message;
-            }
-
-            producto = {bolsa:0};
-            producto.bolsa = req.body.cantidad;
-
-            EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
-            precio = req.body.cantidad * precio;
-        } else {
-            res.status(200).json({ok: true, precio: precio, message: "["+tipoItem + "] es un producto no conocido."});
-            res.end();
-            throw tipoItem + " es un producto desconocido";
-        }
-
-        res.status(200).json({ok: true, precio: precio, detalle: producto, message: EXPLICACION});
+        res.status(200).json({ok: flag, precio: precios, message: e_message});
         res.end();
     })
     .catch(error => console.error(error))
     .finally(data => client.close());
+    })
+    .catch(error => console.error(error));
 });
 
 // reporte page
