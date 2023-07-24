@@ -167,12 +167,15 @@ let fillPropiedad = function(selectedItem, nombrePropiedad, item_propiedad) {
     }
 }
 
-let selectProvedor = function() {
+let cleanProductMessage = function () {
     let PRODUCT_MESSAGE = document.getElementById("product_message");
     PRODUCT_MESSAGE.style.background = "transparent";
     PRODUCT_MESSAGE.style.color = "#55e8d5";
     PRODUCT_MESSAGE.innerHTML = "_________________________________";
+}
 
+let selectProvedor = function() {
+    cleanProductMessage();
     KEY.clean();
 
     let selectedItem = document.getElementById("provedor").value;
@@ -197,8 +200,11 @@ let selectProvedor = function() {
 }
 
 let selectItem = function(selected) {
+    cleanProductMessage();
+    KEY.cleanFew();
 
     let selectedItem = selected.options[selected.selectedIndex].text.toLowerCase();
+    KEY.setTipo(selectedItem);
 
     if (selectedItem == "pegamento") {
         cleanColor();
@@ -239,12 +245,18 @@ function addIngreso() {
 };
 
 function _KEY() {
+    this.tipo_producto = '';
     this.item   ='';
     this.provedor ='';
     this.color  ='';
     this.medida ='';
     this.marca  ='';
     this.AllFilled = () => {
+        if (this.tipo_producto === "pegamento") {
+            return this.item.length > 0
+            && this.provedor.length > 0
+            && this.marca.length > 0;  
+        }
         return this.item.length > 0 
         && this.provedor.length > 0 
         && this.color.length > 0 
@@ -258,6 +270,15 @@ function _KEY() {
         this.medida ='';
         this.marca  ='';
     };
+    this.cleanFew = () => {
+        this.item   ='';
+        this.color  ='';
+        this.medida ='';
+        this.marca  ='';
+    };
+    this.setTipo = (tipo) => {
+        this.tipo_producto = tipo;
+    }
 };
 var KEY = new _KEY();
 var PRODUCTO;
