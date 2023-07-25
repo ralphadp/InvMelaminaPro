@@ -115,8 +115,10 @@ app.get('/pedidos', function(req, res) {
                 })
             DB.collection("collectiontapatornillos").find().toArray().then(resultsTapatornillos => {
                 resultsTapatornillos.forEach((tapatornillos) => {
-                    let hash = MD5(items["Tapatornillos"]._id.toString() + tapatornillos.color + tapatornillos.medidas + tapatornillos.marca).toString();
+                    let hash = MD5(items["Tapatornillos"]._id.toString() + tapatornillos.color + tapatornillos.marca).toString();
+                    console.log(hash);
                     if (rInventario[hash]) {
+                        console.log('Ok ', tapatornillos);
                         rInventario[hash].contenido = tapatornillos;
                     }
                 })
@@ -232,7 +234,7 @@ app.get('/ingresos', function(req, res) {
         })
     DB.collection("collectiontapatornillos").find().toArray().then(resultsTapatornillos => {
         resultsTapatornillos.forEach((tapatornillos) => {
-            let hash = MD5(items["Tapatornillos"]._id.toString() + tapatornillos.provedor + tapatornillos.color + tapatornillos.medidas + tapatornillos.marca).toString();
+            let hash = MD5(items["Tapatornillos"]._id.toString() + tapatornillos.provedor + tapatornillos.color + tapatornillos.marca).toString();
            // if (rInventario[hash]) {
                 rInventario[hash] = tapatornillos;
            // }
@@ -319,12 +321,26 @@ app.post('/addicionar_ingreso', (req, res) => {
     let CollectionItem = client.db().collection("collection" + tipoItem);
     var CollectionInventario = client.db().collection("inventario");
 
-    let filtro = {
-        "provedor": req.body.cliente,
-        "color":    color,
-        "medidas":  medida,
-        "marca":    req.body.marca
-    };
+    let filtro = null;
+    if (tipoItem == "pegamento") {
+        filtro = {
+            "provedor": req.body.cliente,
+            "marca":    req.body.marca
+        };
+    } else if (tipoItem == "tapatornillos") {
+        filtro = {
+            "provedor": req.body.cliente,
+            "color":    color,
+            "marca":    req.body.marca
+        };
+    } else {
+        filtro = {
+            "provedor": req.body.cliente,
+            "color":    color,
+            "medidas":  medida,
+            "marca":    req.body.marca
+        };
+    }
     console.log(filtro);
 
     let hash = getInventarioMD5(req.body);
@@ -415,12 +431,24 @@ app.post('/addicionar_pedido',(req, res) => {
     let CollectionItem = client.db().collection("collection" + tipoItem);
     var CollectionInventario = client.db().collection("inventario");
 
-    var filter = {
-        "color":    color,
-        "medidas":  medida,
-        "marca":    req.body.marca
+    var filter = null;
+    if (tipoItem == "pegamento") {
+        filter = {
+            "marca":    req.body.marca
+        };
+    } else if (tipoItem == "tapatornillos") {
+        filter = {
+            "color":    color,
+            "marca":    req.body.marca
+        };
+    } else {
+        filter = {
+            "color":    color,
+            "medidas":  medida,
+            "marca":    req.body.marca
+        };
     }
-    console.log(filter);
+    console.log("Query:", filter);
 
     let hash = getInventarioMD5(req.body);
     console.log(hash);
@@ -446,7 +474,7 @@ app.post('/addicionar_pedido',(req, res) => {
                     var NUM_HOJAS = Number(item[0].hojaxcaja);
                     cantidad = (Number(req.body.cantidad) * NUM_HOJAS);
                     req.body.hojasxcaja = NUM_HOJAS;
-                } else{
+                } else {
                     var NUM_ROLLOS = Number(item[0].rollosxcaja);
                     cantidad = (Number(req.body.cantidad) * NUM_ROLLOS);
                     req.body.rollosxcaja = NUM_ROLLOS;
@@ -559,6 +587,11 @@ app.post('/obtener_precio', (req, res) => {
             jsonQuery = {
                 "marca": req.body.marca
             }
+        } else if (tipoItem === "tapatornillos") {
+            jsonQuery = {
+                "color": req.body.color,
+                "marca": req.body.marca
+            }
         } else {
             jsonQuery = {
                 "color": req.body.color,
@@ -570,6 +603,12 @@ app.post('/obtener_precio', (req, res) => {
         if (tipoItem === "Pegamento") {
             jsonQuery = {
                 "provedor": req.body.provedor,
+                "marca": req.body.marca
+            }
+        } else if (tipoItem === "tapatornillos") {
+            jsonQuery = {
+                "provedor": req.body.provedor,
+                "color": req.body.color,
                 "marca": req.body.marca
             }
         } else {
@@ -733,10 +772,10 @@ app.post('/obtener_precio', (req, res) => {
                     error: e_message
                 }
             } catch(e) {
-                if (!(e instanceof Error)) {
-                    e = new Error(e);
+                if (!(error instanceof Error)) {
+                    error = new Error(error);
                 }
-                e_message = e.message;
+                e_message = error.message;
                 flag = false;
             }
         })
@@ -945,6 +984,8 @@ app.get('/inventario', function(req, res) {
                 let indexHash = MD5(item._id.toString() + producto.color + producto.medidas + producto.marca).toString();
                 if (nombre == "Pegamento") {
                     indexHash = MD5(item._id.toString() + producto.marca).toString();
+                } else if (nombre == "Tapatornillos") {
+                    indexHash = MD5(item._id.toString() + producto.color + producto.marca).toString();
                 }
                 if (!this[indexHash]) {
                     console.log("["+indexHash+"] NO existe... ", nombre, item._id.toString(), producto.color , producto.medidas , producto.marca);
@@ -2301,7 +2342,7 @@ app.post('/nuevo_tapatornillos',(req, res) => {
     CollectionItem.findOne({nombre:"Tapatornillos"}).then(producto => {
         console.log(producto);
         let CollectionTapatornillos = client.db().collection("collectiontapatornillos");
-        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+        let hash = MD5(producto._id.toString() + req.body.color + req.body.marca).toString();
 
         req.body.hash_inventario = hash;
         CollectionTapatornillos.insertOne(req.body).then(results => {
@@ -2309,7 +2350,7 @@ app.post('/nuevo_tapatornillos',(req, res) => {
             console.log(results);
 
             let CollectionInventario = client.db().collection("inventario");
-            console.log(producto._id.toString(), req.body.color, req.body.medidas, req.body.marca);
+            console.log(producto._id.toString(), req.body.color, req.body.marca);
 
             CollectionInventario.findOne({codigo: hash}).then(results => {
 
@@ -2362,7 +2403,7 @@ app.put('/actualizar_tapatornillos/:id',(req, res) => {
         console.log("param: "+req.params.id);
 
         let hashOld = req.body.hash_inventario;
-        let hashNew = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
+        let hashNew = MD5(producto._id.toString() + req.body.color + req.body.marca).toString();
         req.body.hash_inventario = hashNew;
 
         let CollectionProducto = client.db().collection("collectiontapatornillos");
@@ -2461,7 +2502,7 @@ app.delete('/delete_tapatornillos/:id', (req, res) => {
 
         CollectionProducto.findOne({"_id": cid }).then(tapatornillos => {
 
-            let hash = MD5(producto._id.toString() + tapatornillos.color + tapatornillos.medidas + tapatornillos.marca).toString();
+            let hash = MD5(producto._id.toString() + tapatornillos.color + tapatornillos.marca).toString();
 
             if (tapatornillos.hash_inventario != hash) {
                 console.log("Discrepancias en hash, inventarioID: ",tapatornillos.hash_inventario, " hash generado:" ,hash);

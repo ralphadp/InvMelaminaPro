@@ -187,12 +187,12 @@
                 <thead>
                     <tr class="row100 head">
                         <th class=""><button class="sort" data-sort="Provedor">Provedor</button></th>
-                        <th class=""><button class="sort" data-sort="Medidas">Medidas</button></th>
                         <th class=""><button class="sort" data-sort="Color">Color</button></th>
                         <th class=""><button class="sort" data-sort="Marca">Marca</button></th>
                         <th class=""><button class="sort" data-sort="PrecioCompra">Precio de Compra</button></th>
                         <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta</button></th>
-                        <th class=""><button class="sort" data-sort="MetrosXRollo">Tornillo x Hoja</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioCompra">Precio de Compra X Caja</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta X Caja</button></th>
                         <th class=""><button class="sort" data-sort="RollosXCaja">Hoja x Caja</button></th>
                     </tr>
                 </thead>
@@ -203,12 +203,12 @@
                         %>
                         <tr class="row-data">
                             <td class="Provedor" id="<%=tapatornillo.provedor_id %>"><%= tapatornillo.provedor %></td>
-                            <td class="Medidas" id="<%=tapatornillo.medidas_id %>"><%= tapatornillo.medidas %></td>
                             <td class="Color" id="<%=tapatornillo.color_id %>"><%= tapatornillo.color%></td>
                             <td class="Marca" id="<%=tapatornillo.marca_id %>"><%= tapatornillo.marca %></td>
                             <td class="PrecioCompra"><%= tapatornillo.precio_compra %> Bs(Hoja) </td>
                             <td class="PrecioVenta"><%= tapatornillo.precio_venta %> Bs(Hoja)</td>
-                            <td class="MetrosXRollo"><%= tapatornillo.tornilloxhoja %></td>
+                            <td class="PrecioCompra"><%= tapatornillo.precio_compra_caja %> Bs(Caja) </td>
+                            <td class="PrecioVenta"><%= tapatornillo.precio_venta_caja %> Bs(Caja)</td>
                             <td class="RollosXCaja"><%= tapatornillo.hojaxcaja %></td>
                         </tr>
                     <% } %>
@@ -264,7 +264,7 @@
             valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','LaminaXPaquete' ]
         };
         var options_tapatornillos = {
-            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','tornilloxhoja','hojaxcaja' ]
+            valueNames: [ 'Provedor', 'Color','Marca','PrecioCompra','PrecioVenta','PrecioCompraXCaja','PrecioVentaXCaja','hojaxcaja' ]
         };
         var options_cliente = {
             valueNames: [ 'CI', 'Nombre', 'NIT', 'Telefono', 'Direccion', 'Email', 'Tipo', 'Empresa' ]

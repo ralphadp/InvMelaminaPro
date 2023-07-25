@@ -699,12 +699,12 @@
 			<tr>
 			  <th> Color </th>  
 			  <th> Provedor </th>  
-			  <th> Medidas </th>
 			  <th> Marca </th>
 			  <th> Precio Compra (hoja)</th>
 			  <th> Precio Venta (hoja)</th>
-			  <th> Tornillo x Hoja </th>
-			  <th> Hoja x Caja </th>
+			  <th> Precio Compra (caja)</th>
+			  <th> Precio Venta (caja)</th>
+			  <th> hojas x Caja </th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < tapatornillos.length; index++) {
@@ -728,15 +728,6 @@
 						<% }} %>
 					</select>
 				  </td>
-				  <td class="item_td" id="f_medidas_<%= ID %>">
-					<select id="medidas_tapatornillos_<%= ID %>">
-						<option value="" style="background:yellow">(seleccione una medida)</option>
-						<% for (var i=0; i < medidas.length; i++) {
-							if (medidas[i].tapatornillos)  { %>
-							<option value="<%= medidas[i]._id.toString() %>" <%=(medidas[i]._id.toString()==tapatornillos[index].medidas) ? 'selected' : '' %>><%= medidas[i].nombre %></option>
-						<% }} %>
-					</select>
-				  </td>
 				  <td class="item_td" id="f_marca_<%= ID %>">
 					<select id="marca_tapatornillos_<%= ID %>">
 						<option value="" style="background:yellow">(seleccione una marca)</option>
@@ -748,7 +739,8 @@
 				  </td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_compra_<%= ID %>"><%= tapatornillos[index].precio_compra %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_<%= ID %>"><%= tapatornillos[index].precio_venta %></td>
-				  <td class="item_td numericAllow" contenteditable="true" id="t_tornilloxhoja_<%= ID %>"><%= tapatornillos[index].tornilloxhoja %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_compra_caja_<%= ID %>"><%= tapatornillos[index].precio_compra_caja %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_caja_<%= ID %>"><%= tapatornillos[index].precio_venta_caja %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_hojaxcaja_<%= ID %>"><%= tapatornillos[index].hojaxcaja %></td>
 				  <td style="display:none" id="t_hash_<%= ID %>"><%= tapatornillos[index].hash_inventario %></td>
 				  <td>

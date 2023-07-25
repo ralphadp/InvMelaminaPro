@@ -144,6 +144,12 @@ let cleanHistorial = function() {
     };
 }
 
+let getCurrentProdduct = () => {
+    let ids = new getIDS();
+    let tipo_cliente = ids.verify();
+    return $('#'+ids.ITEM_ID).find(":selected").text();
+}
+
 let setHistorial = function() {
     let ids = new getIDS();
     let tipo_cliente = ids.verify();
@@ -182,12 +188,13 @@ let setHistorial = function() {
         historialUnit.pu       = PRODUCTO.contenido.precio_venta;
     }
 
+    var _producto = getCurrentProdduct();
     historialUnit.text = {
-        item: $('#'+ids.ITEM_ID).find(":selected").text(),
+        item: _producto,
         cliente: (tipo_cliente==1||tipo_cliente==3)?$('#'+ids.CLIENTE_ID).find(":selected").text():document.getElementById("complete_name").value,
         marca: $('#'+ids.MARCA_ID).find(":selected").text(),
-        color: ($('#'+ids.ITEM_ID).find(":selected").text()=="Pegamento")?'(ninguno)':$('#'+ids.COLOR_ID).find(":selected").text(),
-        medida: ($('#'+ids.ITEM_ID).find(":selected").text()=="Pegamento")?'(ninguno)':$('#'+ids.MEDIDA_ID).find(":selected").text()
+        color: (_producto=="Pegamento")?'(ninguno)':$('#'+ids.COLOR_ID).find(":selected").text(),
+        medida: (_producto=="Pegamento"||_producto=="Tapatornillos")?'(ninguno)':$('#'+ids.MEDIDA_ID).find(":selected").text()
     };
         
 
@@ -225,12 +232,16 @@ let GuardarPedidos = function() {
 }
 
 let addicionarPedidoAlCarrito = function() {
-    if (PRODUCTO && PRODUCTO.existencia <= 0) {
-        return;
+    try{
+        if (PRODUCTO && PRODUCTO.existencia <= 0) {
+            return;
+        }
+        cleanHistorial();
+        setHistorial();
+        addCarrito();
+    } catch (error) {
+        alert(error);
     }
-    cleanHistorial();
-    setHistorial();
-    addCarrito();
 }
 
 let removerUltimoPedidoDelCarrito = function() {
@@ -633,13 +644,19 @@ let selectItem = function(selected) {
     ids.verify();
 
     _CLIENTE[ids.CLIENTE_TIPO].clean();
-    let selectedItem = selected.options[selected.selectedIndex].text.toLowerCase()
+    let selectedItem = selected.options[selected.selectedIndex].text.toLowerCase();
+    _CLIENTE[ids.CLIENTE_TIPO].setTipo(selectedItem);
+
     PRODUCTO = fetchProducto(_CLIENTE[ids.CLIENTE_TIPO]);
     document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "_____________________";
 
     if (selectedItem == "pegamento") {
         cleanColor(ids);
         cleanMedida(ids);
+        fillPropiedad(selectedItem, ids.MARCA_ID, item_marca);
+    } else if (selectedItem == "tapatornillos") {
+        cleanMedida(ids);
+        fillPropiedad(selectedItem, ids.COLOR_ID, item_color);
         fillPropiedad(selectedItem, ids.MARCA_ID, item_marca);
     } else {
         document.getElementById(ids.DIVMEDIDA).style.display = "block";
@@ -687,11 +704,20 @@ document.getElementById("form-total-t-1").addEventListener("click", go1);
 document.getElementById("form-total-t-2").addEventListener("click", go2);
 
 function _KEY() {
+    this.tipo_producto = '';
     this.item   ='';
     this.color  ='';
     this.medida ='';
     this.marca  ='';
     this.AllFilled = () => {
+        if (this.tipo_producto === "pegamento") {
+            return this.item.length > 0
+            && this.marca.length > 0;
+        } else if (this.tipo_producto === "tapatornillos") {
+            return this.item.length > 0
+            && this.color.length > 0
+            && this.marca.length > 0;
+        }
         return this.item.length > 0 
         && this.color.length > 0 
         && this.medida.length > 0 
@@ -703,6 +729,9 @@ function _KEY() {
         this.medida ='';
         this.marca  ='';
     };
+    this.setTipo = (tipo) => {
+        this.tipo_producto = tipo;
+    }
 };
 var _CLIENTE = {
     interno: new _KEY(),

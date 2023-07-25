@@ -1365,11 +1365,11 @@ function Tapatornillos() {
 	this.att = {
 	    color:"",
 		provedor:"",
-		medidas:"",
 		marca:"",
 		precio_compra:0,
 		precio_venta:0,
-		tornilloxhoja:0,
+		precio_compra_caja:0,
+		precio_venta_caja:0,
 		hojaxcaja:0
 	};
 
@@ -1378,12 +1378,6 @@ function Tapatornillos() {
 		for (var i=0; i < listas.color.length; i++) {
 			if (listas.color[i].tapatornillos) {
 				colorOptions += `<option value="${listas.color[i]._id.toString()}">${listas.color[i].nombre}</option>`;
-			}
-		}
-		var medidasOptions;
-		for (var i=0; i < listas.medidas.length; i++) {
-			if (listas.medidas[i].tapatornillos) {
-				medidasOptions += `<option value="${listas.medidas[i]._id.toString()}">${listas.medidas[i].nombre}</option>`;
 			}
 		}
 		var provedorOptions;
@@ -1412,12 +1406,6 @@ function Tapatornillos() {
 							${provedorOptions}
 						</select>
 					</td>
-					<td class='item_td' id='t_medidas_${next_index}'>
-					    <select id="medidas_tapatornillos_${next_index}">
-							<option value="" style="background:yellow" selected>(seleccione una medida)</option>
-							${medidasOptions}
-						</select>
-					</td>
 					<td class='item_td' id='t_marca_${next_index}'>
 					    <select id="marca_tapatornillos_${next_index}">
 							<option value="" style="background:yellow" selected>(seleccione una marca)</option>
@@ -1426,7 +1414,8 @@ function Tapatornillos() {
 					</td>
 					<td class='item_td numericAllow' id='t_precio_compra_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='t_precio_venta_${next_index}' contenteditable='true'></td>
-					<td class='item_td numericAllow' id='t_tornilloxhoja_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='t_precio_compra_caja_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='t_precio_venta_caja_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='t_hojaxcaja_${next_index}' contenteditable='true'></td>
 					<td style="display:none" id="t_hash_${next_index}"></td>
 					<td><button class='pref' type='button' title='Guardar' id='gf_${next_index}' onclick='guardarNuevo(this.id,"tapatornillos_add")'><i class="fa fa-save"></i></button>
@@ -1438,11 +1427,11 @@ function Tapatornillos() {
 	this.assignar = function(row_id) {
 		this.att.color = getSelectedOption("color_tapatornillos_" + row_id);
 		this.att.provedor = getSelectedOption("provedor_tapatornillos_" + row_id);
-		this.att.medidas = getSelectedOption("medidas_tapatornillos_" + row_id);
 		this.att.marca = getSelectedOption("marca_tapatornillos_" + row_id);
 		this.att.precio_compra = document.getElementById("t_precio_compra_" + row_id).innerText;
 		this.att.precio_venta = document.getElementById("t_precio_venta_" + row_id).innerText;
-		this.att.tornilloxhoja = document.getElementById("t_tornilloxhoja_" + row_id).innerText;
+		this.att.precio_compra_caja = document.getElementById("t_precio_compra_caja_" + row_id).innerText;
+		this.att.precio_venta_caja = document.getElementById("t_precio_venta_caja_" + row_id).innerText;
 		this.att.hojaxcaja = document.getElementById("t_hojaxcaja_" + row_id).innerText;
 		this.att.hash_inventario = document.getElementById("t_hash_" + row_id).innerText;
 	}

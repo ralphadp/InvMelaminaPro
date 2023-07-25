@@ -210,6 +210,10 @@ let selectItem = function(selected) {
         cleanColor();
         cleanMedida();
         fillPropiedad(selectedItem, "marca", item_marca);
+    } else if (selectedItem == "tapatornillos") {
+        cleanMedida();
+        fillPropiedad(selectedItem, "color", item_color);
+        fillPropiedad(selectedItem, "marca", item_marca);
     } else {
         document.getElementById('divmedida').style.display = "block";
         document.getElementById('divcolor').style.display = "block";
@@ -255,7 +259,12 @@ function _KEY() {
         if (this.tipo_producto === "pegamento") {
             return this.item.length > 0
             && this.provedor.length > 0
-            && this.marca.length > 0;  
+            && this.marca.length > 0;
+        }else if (this.tipo_producto === "tapatornillos") {
+            return this.item.length > 0
+            && this.color.length > 0
+            && this.provedor.length > 0
+            && this.marca.length > 0;
         }
         return this.item.length > 0 
         && this.provedor.length > 0 
