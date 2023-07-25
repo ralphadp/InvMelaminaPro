@@ -524,6 +524,7 @@
 			  <th> Precio Compra (caja)</th>
 			  <th> Precio Venta (caja)</th>
 			  <th> Precio Venta (metros) </th>
+			  <th> Precio Venta (metros) al canteo</th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < tapacantos.length; index++) {
@@ -572,7 +573,8 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_compra_caja_<%= ID %>"><%= tapacantos[index].precio_compra_caja %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_caja_<%= ID %>"><%= tapacantos[index].precio_venta_caja %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_metros_<%= ID %>"><%= tapacantos[index].precio_venta_metros %></td>
-				  <td style="display:none" id="f_hash_<%= ID %>"><%= tapacantos[index].hash_inventario %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_metros_canteo_<%= ID %>"><%= tapacantos[index].precio_venta_metros_canteo %></td>
+				  <td style="display:none" id="t_hash_<%= ID %>"><%= tapacantos[index].hash_inventario %></td>
 				  <td>
 					  <button class="pref" type="button" title="Guardar" id="gt_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
 					  <button class="pref" type="button" title="Borrar" id="bt_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>

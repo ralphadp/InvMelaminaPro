@@ -66,9 +66,10 @@
                         <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta</button></th>
                         <th class=""><button class="sort" data-sort="MetrosXRollo">Metros x Rollo</button></th>
                         <th class=""><button class="sort" data-sort="RollosXCaja">Rollos x Caja</button></th>
-                        <th class=""><button class="sort" data-sort="PrecioCompraXMetros">Precio de Compra x Caja</button></th>
-                        <th class=""><button class="sort" data-sort="PrecioCompraXMetros">Precio de Venta x Caja</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioCompraXCaja">Precio de Compra x Caja</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioVentaXCaja">Precio de Venta x Caja</button></th>
                         <th class=""><button class="sort" data-sort="PrecioVentaXMetros">Precio de Venta x Metros</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioVentaXMetrosCanteo">Precio de Venta x Metros Al Canteo</button></th>
                     </tr>
                 </thead>
                 <tbody class="list">
@@ -87,6 +88,7 @@
                             <td class="PrecioCompraXCaja"><%= tapacanto.precio_compra_caja?tapacanto.precio_compra_caja:'' %> Bs</td>
                             <td class="PrecioVentaXCaja"><%= tapacanto.precio_venta_caja?tapacanto.precio_venta_caja:'' %> Bs</td>
                             <td class="PrecioVentaXMetros"><%= tapacanto.precio_venta_metros %> Bs</td>
+                            <td class="PrecioVentaXMetrosCanteo"><%= tapacanto.precio_venta_metros_canteo %> Bs</td>
                         </tr>
                     <% } %>
                 </tbody>
@@ -191,9 +193,9 @@
                         <th class=""><button class="sort" data-sort="Marca">Marca</button></th>
                         <th class=""><button class="sort" data-sort="PrecioCompra">Precio de Compra</button></th>
                         <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta</button></th>
-                        <th class=""><button class="sort" data-sort="PrecioCompra">Precio de Compra X Caja</button></th>
-                        <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta X Caja</button></th>
-                        <th class=""><button class="sort" data-sort="RollosXCaja">Hoja x Caja</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioCompraCaja">Precio de Compra X Caja</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioVentaCaja">Precio de Venta X Caja</button></th>
+                        <th class=""><button class="sort" data-sort="HojasXCaja">Hoja x Caja</button></th>
                     </tr>
                 </thead>
                 <tbody class="list">
@@ -207,9 +209,9 @@
                             <td class="Marca" id="<%=tapatornillo.marca_id %>"><%= tapatornillo.marca %></td>
                             <td class="PrecioCompra"><%= tapatornillo.precio_compra %> Bs(Hoja) </td>
                             <td class="PrecioVenta"><%= tapatornillo.precio_venta %> Bs(Hoja)</td>
-                            <td class="PrecioCompra"><%= tapatornillo.precio_compra_caja %> Bs(Caja) </td>
-                            <td class="PrecioVenta"><%= tapatornillo.precio_venta_caja %> Bs(Caja)</td>
-                            <td class="RollosXCaja"><%= tapatornillo.hojaxcaja %></td>
+                            <td class="PrecioCompraCaja"><%= tapatornillo.precio_compra_caja %> Bs(Caja) </td>
+                            <td class="PrecioVentaCaja"><%= tapatornillo.precio_venta_caja %> Bs(Caja)</td>
+                            <td class="HojasXCaja"><%= tapatornillo.hojaxcaja %></td>
                         </tr>
                     <% } %>
                 </tbody>
@@ -264,7 +266,7 @@
             valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','LaminaXPaquete' ]
         };
         var options_tapatornillos = {
-            valueNames: [ 'Provedor', 'Color','Marca','PrecioCompra','PrecioVenta','PrecioCompraXCaja','PrecioVentaXCaja','hojaxcaja' ]
+            valueNames: [ 'Provedor', 'Color','Marca','PrecioCompra','PrecioVenta','PrecioCompraCaja','PrecioVentaCaja','HojasXCaja' ]
         };
         var options_cliente = {
             valueNames: [ 'CI', 'Nombre', 'NIT', 'Telefono', 'Direccion', 'Email', 'Tipo', 'Empresa' ]

@@ -35,8 +35,15 @@ let historialUnit = {
 let responseAlertCounter = 0;
 let MAX_REQUESTS;
 
-let DATA_INDEX_NAME = ["fecha","item","color","medida","marca","nombreDeUnidad","cantidad","precioVenta"];
+let DATA_INDEX_NAME = ["fecha","item","color","medida","marca","nombreDeUnidad","canteo","cantidad","precioVenta"];
 
+function convertHexToString(input) {
+
+    // decode it using this trick
+    output = decodeURIComponent(input);
+
+    return output;
+}
 
 function addCarrito() {
     let ids = new getIDS();
@@ -64,7 +71,9 @@ function addCarrito() {
         newCell.style.padding = "1px!important";
         if (DATA_INDEX_NAME[index] == "color" || DATA_INDEX_NAME[index] == "medida" || DATA_INDEX_NAME[index] == "marca" || DATA_INDEX_NAME[index] == "item") {
             newCell.appendChild(document.createTextNode(historialUnit.text[DATA_INDEX_NAME[index]]));
-        } else {
+        } else if (DATA_INDEX_NAME[index] == "canteo") {
+            newCell.appendChild(document.createTextNode(historialUnit[DATA_INDEX_NAME[index]]?"\u2713":""));
+        } else{
             newCell.appendChild(document.createTextNode(historialUnit[DATA_INDEX_NAME[index]]));
         }
     }
@@ -144,7 +153,11 @@ let cleanHistorial = function() {
     };
 }
 
-let getCurrentProdduct = () => {
+let isMetrosAlCanteo = (valor) => {
+    return (valor == "metros al canteo");
+}
+
+let getCurrentProduct = () => {
     let ids = new getIDS();
     let tipo_cliente = ids.verify();
     return $('#'+ids.ITEM_ID).find(":selected").text();
@@ -160,6 +173,7 @@ let setHistorial = function() {
     historialUnit.item           = $('#'+ids.ITEM_ID).find(":selected").val();
     localStorage.setItem("NUM_PEDIDO", historialUnit.numIngreso);
 
+    historialUnit.canteo   = false;
     let item = historialUnit.item;
     historialUnit.cliente        = (tipo_cliente==1||tipo_cliente==3)?$('#'+ids.CLIENTE_ID).find(":selected").val():document.getElementById("complete_name").value;
     if (tipo_cliente == 2) {
@@ -178,6 +192,10 @@ let setHistorial = function() {
     historialUnit.marca          = $('#'+ids.MARCA_ID).find(":selected").val();
     if (historialUnit.nombreDeUnidad == "metros") {
         historialUnit.pu       = PRODUCTO.contenido.precio_venta_metros;
+    } else if (isMetrosAlCanteo(historialUnit.nombreDeUnidad)) {
+        historialUnit.pu       = PRODUCTO.contenido.precio_venta_metros_canteo?PRODUCTO.contenido.precio_venta_metros_canteo:'ne';
+        historialUnit.canteo   = true;
+        historialUnit.nombreDeUnidad = "metros";
     } else if (historialUnit.nombreDeUnidad == "caja") {
         if (item == "tapatornillos") {
             historialUnit.pu   = PRODUCTO.contenido.precio_venta * PRODUCTO.contenido.hojaxcaja;
@@ -188,7 +206,7 @@ let setHistorial = function() {
         historialUnit.pu       = PRODUCTO.contenido.precio_venta;
     }
 
-    var _producto = getCurrentProdduct();
+    var _producto = getCurrentProduct();
     historialUnit.text = {
         item: _producto,
         cliente: (tipo_cliente==1||tipo_cliente==3)?$('#'+ids.CLIENTE_ID).find(":selected").text():document.getElementById("complete_name").value,
@@ -485,13 +503,16 @@ function obtenerPrecioStandard() {
     let ids = new getIDS();
     ids.verify();
 
+    let claanUnidad = $('#' + ids.UNIDAD_ID).find(":selected").val();
+
     let queryPrecio = {
         item:     $('#' + ids.ITEM_ID).find(":selected").text(),//to look at collection 
         color:    $('#' + ids.COLOR_ID).find(":selected").val(),
         medida:   $('#' + ids.MEDIDA_ID).find(":selected").val(),
         marca:    $('#' + ids.MARCA_ID).find(":selected").val(),
         cantidad: $('#' + ids.CANTIDAD_ID).val(),
-        unidad:   $('#' + ids.UNIDAD_ID).find(":selected").val(),
+        unidad:   isMetrosAlCanteo(claanUnidad)?'metros':claanUnidad,
+        canteo:   isMetrosAlCanteo(claanUnidad)?true:false,
         tipo_entrada: "pedido"
     };
 
@@ -697,7 +718,6 @@ function go2() {
     document.getElementById("option_1").style.background = "white";
     document.getElementById("option_2").style.background = "white";
 }
-
 
 document.getElementById("form-total-t-0").addEventListener("click", go0);
 document.getElementById("form-total-t-1").addEventListener("click", go1);

@@ -2,7 +2,7 @@
 <html>
 <head>
 	<%- include('../partials/icono'); %>
-	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Pedidos</title>
 	<%- include('../partials/head-compras-ventas'); %>
 
@@ -349,7 +349,6 @@
 											<label for="cantidad" class="special-label-1">Cantidad</label>
 											<input type="number" id="cantidad" name="cantidad" min="1" max="40" class="form-control" value="1">
 											<span class="select-btn">
-												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
 										</div>
 										<div class="form-holder form-holder-2">
@@ -394,6 +393,7 @@
 														<th class="carrito-header">Medida</th>
 														<th class="carrito-header">Marca</th>
 														<th class="carrito-header">Unidad</th>
+														<th class="carrito-header">Canteo</th>
 														<th class="carrito-header">Cantidad</th>
 														<th class="carrito-header">Precio (Bs)</th>
 														<th class="carrito-header"></th>
@@ -513,7 +513,6 @@
 											<label for="cantidad_ex" class="special-label-1">Cantidad</label>
 											<input type="number" id="cantidad_ex" name="cantidad_ex" min="1" max="40" class="form-control" value="1">
 											<span class="select-btn">
-												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
 										</div>
 										<div class="form-holder form-holder-2">
@@ -560,6 +559,7 @@
 														<th class="carrito-header">Medida</th>
 														<th class="carrito-header">Marca</th>
 														<th class="carrito-header">Unidad</th>
+														<th class="carrito-header">Canteo</th>
 														<th class="carrito-header">Cantidad</th>
 														<th class="carrito-header">Precio (Bs)</th>
 														<th class="carrito-header"></th>
@@ -660,7 +660,6 @@
 											<label for="cantidad_re" class="special-label-1">Cantidad</label>
 											<input type="number" id="cantidad_re" name="cantidad_re" min="1" max="40" class="form-control" value="1">
 											<span class="select-btn">
-												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
 										</div>
 										<div class="form-holder form-holder-2">
@@ -707,6 +706,7 @@
 														<th class="carrito-header">Medida</th>
 														<th class="carrito-header">Marca</th>
 														<th class="carrito-header">Unidad</th>
+														<th class="carrito-header">Canteo</th>
 														<th class="carrito-header">Cantidad</th>
 														<th class="carrito-header">Precio (Bs)</th>
 														<th class="carrito-header"></th>
@@ -742,9 +742,10 @@
 								<th>Color</th>
 								<th>Medida</th>
 								<th>Marca</th>
+								<th>Canteo</th>
 								<th>Unidad</th>
 								<th>Cantidad</th>
-								<th>Venta</th>
+								<th>Venta(Bs)</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -762,6 +763,7 @@
                             <td><%= historial[i].color %></td>
                             <td><%= historial[i].medida %></td>
 							<td><%= historial[i].marca %></td>
+							<td><%= historial[i].canteo?'\u2713':'' %></td>
 							<td><%= historial[i].nombreDeUnidad %></td>
                             <td><%= historial[i].cantidad %></td>
 							<td><%= historial[i].precioVenta %> Bs</td>
@@ -769,7 +771,7 @@
                     <% } %>
 					<% if (ventaTotal > 0) { %>
 						<tr>
-							<td colspan="10"></td>
+							<td colspan="11"></td>
 							<td class="row-small"><%=ventaTotal %> Bs</td>
 						</tr>
 					<% } %>
@@ -783,7 +785,7 @@
 	<script src="javascripts/jquery-3.3.1.min.js"></script>
 	<script src="javascripts/jquery.steps.js"></script>
 	<script src="javascripts/jquery-ui.min.js"></script>
-	<script src="javascripts/pedido.js"></script>
+	<script src="javascripts/pedido.js" charset="utf-8"></script>
 	<footer>
         <%- include('../partials/footer'); %>
     </footer>

@@ -103,7 +103,7 @@
 									<td class="cell100 column6 Color"><%= historial[index].color %></td>
 									<td class="cell100 column6 Medida"><%= historial[index].medida %></td>
 									<td class="cell100 column6 Marca"><%= historial[index].marca %></td>
-									<td class="cell100 column6 Unidad"><%= historial[index].nombreDeUnidad %></td>
+									<td class="cell100 column6 Unidad"><%= historial[index].nombreDeUnidad %><%= historial[index].canteo?' con canteo':'' %></td>
 									<td class="cell100 column6 Cantidad"><%= historial[index].cantidad %></td>
 									<td class="cell100 column6 Precio"><%= (historial[index].tipo_entrada == 'ingreso')?historial[index].precioCompra:historial[index].precioVenta %></td>
 								</tr>

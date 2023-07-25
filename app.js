@@ -527,6 +527,10 @@ app.post('/addicionar_pedido',(req, res) => {
                   req.body.color = req.body.text.color;
                   delete req.body.text;
 
+                  if (req.body.canteo) {
+                    req.body.servicio = "Canteo";
+                  }
+
                   CollectionHistorial.insertOne(req.body).then(results => {
                         let AVISO = "";
                         if (cantidad == 0) {
@@ -659,6 +663,9 @@ app.post('/obtener_precio', (req, res) => {
                 } else if (req.body.tipo_entrada == "pedido") {
                     precio = result.precio_venta;
                     precio_metros = result.precio_venta_metros;
+                    if (req.body.canteo && Object.hasOwn(result, 'precio_venta_metros_canteo')) {
+                        precio_metros = result.precio_venta_metros_canteo;
+                    }
                     precio_caja = result.precio_venta_caja?result.precio_venta_caja:0;
                 }
 
