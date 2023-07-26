@@ -957,6 +957,53 @@ app.get('/historial', function(req, res) {
     .catch(error => console.error(error))
 });
 
+app.get('/views', function(req, res) {
+    const client = new MongoClient(uri);
+    client.connect();
+    var DB = client.db();
+  
+    var items = {};
+    DB.collection("color").find().toArray().then(resultsColor => {
+        resultsColor.forEach((color) => {
+            items[color._id.toString()] = color.nombre;
+        });
+        DB.collection("medidas").find().toArray().then(resultMedida => {
+            resultMedida.forEach((medida) => {
+                items[medida._id.toString()] = medida.nombre;
+            });
+            DB.collection("marcas").find().toArray().then(resultMarcas => {
+                resultMarcas.forEach((marca) => {
+                    items[marca._id.toString()] = marca.nombre;
+                });
+                DB.collection("collectionmelamina").find().toArray().then(resultsMelamina => {
+                    DB.collection("collectiontapacantos").find().toArray().then(resultsTapacantos => {
+                        DB.collection("collectionfondo").find().toArray().then(resultsFondos => {
+                            DB.collection("collectiontapatornillos").find().toArray().then(resultsTapatornillos => {
+                                res.render('pages/views', {
+                                    items: items,
+                                    melamina: resultsMelamina,
+                                    tapacantos: resultsTapacantos,
+                                    fondos: resultsFondos,
+                                    tapatornillos: resultsTapatornillos,
+                                });
+                            })
+                            .catch(error => console.error(error))
+                            .finally(data => client.close())
+                        })
+                        .catch(error => console.error(error))
+                    })
+                    .catch(error => console.error(error))
+                })
+                .catch(error => console.error(error))
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+
+});
+
 // historia page
 app.get('/inventario', function(req, res) {
     const client = new MongoClient(uri);
@@ -2887,13 +2934,38 @@ app.post('/reporte_compra_venta_colores_mes', function(req, res) {
                    
 });
 
+app.get('/login', function (req, res) {
+    res.render('pages/login', {
+        cliente: "",
+    });
+ });
 
-// index page
-app.get('/inventario', function(req, res) {
-  res.render('pages/inventario');
+function checkAuth(req, res, next) {
+    if (!req.session.user_id) {
+        res.send('You are not authorized to view this page');
+    } else {
+        next();
+    }
+}
+
+app.post('/login', function (req, res) {
+   var post = req.body;
+   if (post.user === 'guillermo@gmail.com' && post.password === 'guillermo') {
+       req.session.user_id = johns_user_id_here;
+       res.redirect('/inventario');
+   } else {
+        res.redirect('/login');
+   }
 });
 
-// catch 404 and forward to error handler
+app.get('/logout', function (req, res) {
+    if (req.session) {
+        delete req.session.user_id;
+    }
+   res.redirect('/login');
+});      
+
+  // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
