@@ -335,7 +335,11 @@ function updateNumToLiteral(numString) {
 
     for (b = finlOutPut.length - 1; b >= 0; b--) {
         if (finlOutPut[b] != "dontAddBigSufix") {
-            finlOutPut[b] = finlOutPut[b] + bigNumArry[bigScalCntr] + ' , ';
+            if (finlOutPut[b].trim() == 'Uno') {
+                finlOutPut[b] = bigNumArry[bigScalCntr] + ' ';
+            } else {
+                finlOutPut[b] = finlOutPut[b] + bigNumArry[bigScalCntr] + ' ';
+            }
             bigScalCntr++;
         }
         else {
@@ -608,8 +612,8 @@ async function Print(formTarget) {
     
     await new Promise(r => setTimeout(r, 1500));
 
-    //newWindow.print();
-   // newWindow.close();
+    newWindow.print();
+    newWindow.close();
 }
 
 function toprint() {
