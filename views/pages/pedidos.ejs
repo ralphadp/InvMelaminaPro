@@ -157,6 +157,12 @@
 				color: azure;
 				background-color: #55e8d5;
 			}
+			.recibo-body {
+				font-size: 12px;
+			}
+			.titulos {
+				font-weight: bolder;
+			}
 		</style>
 		<!--<fieldset>-->
 			<table id="pedido-header">
@@ -231,6 +237,62 @@
 					<td style="width: 100px;"></td>
 					<td style="width: 100px;"></td>
 					<td style="font-size: 10px; width: 100px;">CI:__________________</td>
+					<td style="width: 100px;"></td>
+				</td>
+			</table>
+			<br>
+			<hr/>
+			<br>
+			<br>
+			<table id="pedido-header">
+				<tr>
+					<td><img src="../images/melaninapro_image.png" alt="melaminapro" /></td>
+					<td style="width: 150px;"></td>
+					<td style="font-size: 18px;color:darkred; font-weight: bolder;">RECIBO</td>
+					<td style="width: 150px;"></td>
+					<td style="border: black 1px;">
+						<table style="font-size:13px;">
+							<tr><td colspan="2" style="text-align: center;">MONTO TOTAL</td></tr>
+							<tr>
+								<td style="padding:4px 10px;border: 1px solid;">Bs.</td>
+								<td style="padding:4px 20px;border: 1px solid;" id="recibo-total"></td>
+							</tr>
+							<tr><td colspan="2" style="text-align: center;" id="recibo-numero-venta"></td></tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<br><br>
+			<table id="recibo-body">
+				<tr>
+					<td style="width: 70px;"></td>
+					<td>
+						<span style="display: block;"><label class="titulos">RECIBI DEL SEÑOR(a): </label><label id="recibo-cliente"></label></span>
+						<span style="display: block;"><label class="titulos">LA SUMA DE: </label><label id="recibo-monto"></label> 00/100 Boivianos</span>
+						<span style="display: block;"><label class="titulos">POR CONCEPTO DE: </label><label id="recibo-detalle"></label> (Adjunto NOTA DE ENTREGA)</span>
+						<p style="font-size:10px; padding:30px;">Cochabamba, julio de 2023</p>
+					</td>
+					<td style="width: 70px;"></td>
+				</tr>
+			</table>
+			<br>
+			<p style="font-size: 12px;">En conformidad firman al pie de la hoja</p>
+			<br><br>
+			<table id="pedido-firmas">
+				<tr>
+					<td style="width: 100px;"></td>
+					<td style="font-size: 12px;border-top: 1px solid;">Recibi conforme</td>
+					<td style="width: 100px;"></td>
+					<td style="width: 100px;"></td>
+					<td style="font-size: 12px;border-top: 1px solid;">Entregue conforme</td>
+					<td style="width: 100px;"></td>
+				</td>
+				<tr>
+					<td style="width: 100px;"></td>
+					<td style="font-size: 10px; width: 100px;">Sr. Guillermo Quispe</td>
+					<td style="width: 100px;"></td>
+					<td style="width: 100px;"></td>
+					<td style="font-size: 10px; width: 100px;" id="recibo-cliente-firma"></td>
 					<td style="width: 100px;"></td>
 				</td>
 			</table>

@@ -295,6 +295,117 @@ function DatosCliente(select) {
     }
 }
 
+function updateNumToLiteral(numString) {
+    var bigNumArry = new Array('', ' Mil', ' Millon', ' Billon', ' Trillon', ' Cuatrillon', ' Quintillon');
+    var output = '';
+    var finlOutPut = new Array();
+
+    var numString = Number(numString).toString();
+
+    if (numString == '0') {
+        return 'Cero';
+    }
+
+    var i = numString.length;
+    i = i - 1;
+
+    //cut the number to grups of three digits and add them to the Arry
+    while (numString.length > 3) {
+        var triDig = new Array(3);
+        triDig[2] = numString.charAt(numString.length - 1);
+        triDig[1] = numString.charAt(numString.length - 2);
+        triDig[0] = numString.charAt(numString.length - 3);
+
+        var varToAdd = triDig[0] + triDig[1] + triDig[2];
+        finlOutPut.push(varToAdd);
+        i--;
+        numString = numString.substring(0, numString.length - 3);
+    }
+    finlOutPut.push(numString);
+    finlOutPut.reverse();
+
+    //conver each grup of three digits to english word
+    //if all digits are zero the triConvert
+    //function return the string "dontAddBigSufix"
+    for (j = 0; j < finlOutPut.length; j++) {
+        finlOutPut[j] = centenalConvert(parseInt(finlOutPut[j]));
+    }
+
+    var bigScalCntr = 0; //this int mark the million billion trillion... Arry
+
+    for (b = finlOutPut.length - 1; b >= 0; b--) {
+        if (finlOutPut[b] != "dontAddBigSufix") {
+            finlOutPut[b] = finlOutPut[b] + bigNumArry[bigScalCntr] + ' , ';
+            bigScalCntr++;
+        }
+        else {
+            //replace the string at finlOP[b] from "dontAddBigSufix" to empty String.
+            finlOutPut[b] = ' ';
+            bigScalCntr++; //advance the counter  
+        }
+    }
+
+        //convert The output Arry to , more printable string 
+        for(n = 0; n<finlOutPut.length; n++){
+            output +=finlOutPut[n];
+        }
+
+    return output;
+}
+
+function centenalConvert(num) {
+    var ones = new Array('', ' Uno', ' Dos', ' Tres', ' Cuatro', ' Cinco', ' Seis', ' Siete', ' Ocho', ' Nueve', ' Diez', ' Once', ' Doce', ' Trece', ' Catorce', ' Quince', ' Diesiseis', ' Diesisiete', ' Diesiocho', ' Diesinueve');
+    var tens = new Array('', '', ' Veinte', ' Treinta', ' Cuarenta', ' Cincuenta', ' Sesenta', ' Setenta', ' Ochenta', ' Noventa');
+
+    var hundred = ' cientos';
+    var output = '';
+    var numString = num.toString();
+
+    if (num == 0) {
+        return 'dontAddBigSufix';
+    }
+
+    //1 to 19
+    if (num < 20) {
+        output = ones[num];
+        return output;
+    }
+
+    //100 and more
+    if (numString.length == 3) {
+        if (numString.charAt(0) == '1') {
+            if (Number(numString) == 100) {
+                output = ' Cien';    
+            } else {
+                output = ' Ciento';
+            }
+        } else {
+            output = ones[parseInt(numString.charAt(0))] + hundred;
+        }
+        var checkdecimal = parseInt(numString.charAt(1) + numString.charAt(2));
+        if (checkdecimal >= 10 && checkdecimal < 20) {
+            output += ones[checkdecimal];
+        } else {
+            output += tens[parseInt(numString.charAt(1))];
+            if (parseInt(numString.charAt(2)) > 0) {
+                output += ' y ';
+                output += ones[parseInt(numString.charAt(2))];
+            }
+        }
+
+        return output;
+    }
+
+    //20 to 99
+    output += tens[parseInt(numString.charAt(0))];
+    if (parseInt(numString.charAt(2)) > 0) {
+        output += ' y ';
+        output += ones[parseInt(numString.charAt(1))];
+    }
+
+    return output;
+}
+
 function PrePrint() {
     let ids = new getIDS();
     let tipo_cliente = ids.verify();
@@ -339,6 +450,23 @@ function PrePrint() {
     $('#timestamp-print').text(NotaVenta.Fecha);
 }
 
+function getAllItemsToString(list) {
+    var cadena = "";
+    var length = Object.keys(list).length;
+
+    Object.keys(list).forEach((item, index)=> {
+        if (index + 2 == length) {
+            cadena += item + ' y ';
+        } else if (index + 1 == length) {
+            cadena += item;
+        } else {
+            cadena += item + ', ';
+        }
+    });
+
+    return cadena;
+}
+
 function PrePrintCarrito() {
     let ids = new getIDS();
     let tipo_cliente = ids.verify();
@@ -366,9 +494,11 @@ function PrePrintCarrito() {
     $('#email-print').text(NotaVenta.email);
     $('#ci-print').text(NotaVenta.ci);
     $('#numero-venta').text("Nº 0000" + $('#pedido').text());
+    $('#recibo-numero-venta').text("Nº 0000" + $('#pedido').text());
 
     var TotalPrecio = 0;
     var pedidoNum = 1;
+    var list_items = [];
     //get table from NOTE invoice
     var pedido_nota = document.getElementById('pedido-body').getElementsByTagName('tbody')[0];
     //get table from Carito
@@ -386,6 +516,7 @@ function PrePrintCarrito() {
         newCell = newRow.insertCell();
         newCell.style.width = "100px";
         newCell.appendChild(document.createTextNode(carrito.text.item));
+        list_items[carrito.text.item]++;
         newCell = newRow.insertCell();
         newCell.style.width = "100px";
         newCell.appendChild(document.createTextNode(carrito.text.medida));
@@ -451,6 +582,12 @@ function PrePrintCarrito() {
     newCell.className = "num";
     newCell.style.border ="1px solid";
     newCell.appendChild(document.createTextNode(TotalPrecio));
+
+    $('#recibo-total').text(TotalPrecio);
+    $('#recibo-cliente').text(NotaVenta.NombreCliente);
+    $('#recibo-monto').text(updateNumToLiteral(TotalPrecio));
+    $('#recibo-detalle').text(getAllItemsToString(list_items));
+    $('#recibo-cliente-firma').text(NotaVenta.NombreCliente);
 }
 
 function cleanNotaTable() {
@@ -471,8 +608,8 @@ async function Print(formTarget) {
     
     await new Promise(r => setTimeout(r, 1500));
 
-    newWindow.print();
-    newWindow.close();
+    //newWindow.print();
+   // newWindow.close();
 }
 
 function toprint() {
