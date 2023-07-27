@@ -67,25 +67,38 @@
 	<div class="limiter">
 		<div class="container-table100">
 			<div class="wrap-table100" id="historial">
-				<span><%-historial.length %> transacciones</span>
-				<input class="search" placeholder="Filtro" />
-				<select id="select-mes" placeholder="Filtro por mes" onchange="selectMes(this)">
-					<option value="">(Elija un mes)</option>
-					<option value="01">Enero</option>
-					<option value="02">Febrero</option>
-					<option value="03">Marzo</option>
-					<option value="04">Abril</option>
-					<option value="05">Mayo</option>
-					<option value="06">Junio</option>
-					<option value="07">Julio</option>
-					<option value="08">Agosto</option>
-					<option value="09">Septiembre</option>
-					<option value="10">Octubre</option>
-					<option value="11">Noviembre</option>
-					<option value="12">Diciembre</option>
-				</select>
-				<button type="button" id="imprimir-historial" onclick="imprimirHistorial()">Imprimir</button>
-
+				<div class="inner">
+					<div class="form-row">
+						<div class="form-holder form-holder-2">
+							<span><%-historial.length %> transacciones realizadas.</span>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-holder form-holder-2" style="width: 25%;">
+							<input style="width: 80%;" class="search form-control" placeholder="Filtro" />
+						</div>
+						<div class="form-holder form-holder-2" style="width: 25%;">
+							<select style="width: 70%;" class="form-control" id="select-mes" placeholder="Filtro por mes" onchange="selectMes(this)">
+								<option value="">(Elija un mes)</option>
+								<option value="01">Enero</option>
+								<option value="02">Febrero</option>
+								<option value="03">Marzo</option>
+								<option value="04">Abril</option>
+								<option value="05">Mayo</option>
+								<option value="06">Junio</option>
+								<option value="07">Julio</option>
+								<option value="08">Agosto</option>
+								<option value="09">Septiembre</option>
+								<option value="10">Octubre</option>
+								<option value="11">Noviembre</option>
+								<option value="12">Diciembre</option>
+							</select>
+						</div>
+						<div class="form-holder form-holder-2" style="width: 50%;">
+							<button style="width: 30%;float:right;" class="form-control" type="button" id="imprimir-historial" onclick="imprimirHistorial()">Imprimir</button>
+						</div>
+					</div>
+				</div>
 				<div class="table-responsive" id="historial-frame">
 					<table class="table table-hover" style="font-size: 12px;color:white;">
 						<thead style="background-color: #43ccba;" id="head-sort">
