@@ -28,6 +28,36 @@
 			padding: 9px;
 			border-radius: 6px;
 		}
+		.body {
+			background-color: #222;
+		}
+		.th_history {
+			padding: 0px!important;
+			text-align: center;
+		}
+		.sort {
+    		padding: 8px 4px!important;
+		}
+		.td_history {
+			text-align: center;
+			color: rgb(162, 161, 161);
+		}
+		.table-hover tbody tr:hover td{
+			color: black;
+			background-color: bisque;
+		}	
+		.limiter {
+			padding-top: 100px!important;
+		}
+		body {
+			background-color: rgb(162, 161, 161)!important;
+		}
+		@media only screen and (max-width: 991px) {
+			.limiter {
+				padding-top: 450px!important;
+			}
+		}
+		
 	</style>
 </head>
 <body>
@@ -55,104 +85,75 @@
 					<option value="12">Diciembre</option>
 				</select>
 				<button type="button" id="imprimir-historial" onclick="imprimirHistorial()">Imprimir</button>
-				<div class="table100 ver3 m-b-110" id="historial-frame">
-					<div class="table100-head">
-						<table id="head-sort">
-							<thead>
-							<tr class="row100 head">
-								<th class="cell100 column6"><button class="sort" data-sort="Cliente">Cliente</button></th>
-								<th class="cell100 column6"><button class="sort" data-sort="Item">Item</button></th>
-								<th class="cell100 column6"><button class="sort" data-sort="Tipo">Tipo</button></th>
-								<th class="cell100 column6"><button class="sort" data-sort="Timestamp">Timestamp</button></th>
-								<th class="cell100 column6"><button class="sort" data-sort="Color">Color</button></th>
-								<th class="cell100 column6"><button class="sort" data-sort="Medida">Medida</button></th>
-								<th class="cell100 column6"><button class="sort" data-sort="Marca">Marca</button></th>
-								<th class="cell100 column6"><button class="sort" data-sort="Unidad">Unidad</button></th>
-								<th class="cell100 column6"><button class="sort" data-sort="Cantidad">Cantidad</button></th>
-								<th class="cell100 column6"><button class="sort" data-sort="Precio">Precio</button></th>
+
+				<div class="table-responsive" id="historial-frame">
+					<table class="table table-hover" style="font-size: 12px;color:white;">
+						<thead style="background-color: #43ccba;" id="head-sort">
+							<tr>
+								<th class="th_history"><button class="sort" data-sort="Cliente">Cliente</button></th>
+								<th class="th_history"><button class="sort" data-sort="Item">Item</button></th>
+								<th class="th_history"><button class="sort" data-sort="Tipo">Tipo</button></th>
+								<th class="th_history"><button class="sort" data-sort="Timestamp">Timestamp</button></th>
+								<th class="th_history"><button class="sort" data-sort="Color">Color</button></th>
+								<th class="th_history"><button class="sort" data-sort="Medida">Medida</button></th>
+								<th class="th_history"><button class="sort" data-sort="Marca">Marca</button></th>
+								<th class="th_history"><button class="sort" data-sort="Unidad">Unidad</button></th>
+								<th class="th_history"><button class="sort" data-sort="Cantidad">Cantidad</button></th>
+								<th class="th_history"><button class="sort" data-sort="Precio">Precio</button></th>
 							</tr>
-							</thead>
-						</table>
-					</div>
-					<div class="table100-body js-pscroll ps ps--active-y">
-						<table id="historial-table">
-							<thead id="historial-header-printer">
-								<tr class="row100 head">
-									<th class="cell100 column6">Cliente</th>
-									<th class="cell100 column6">Item</th>
-									<th class="cell100 column6">Tipo</th>
-									<th class="cell100 column6">Timestamp</th>
-									<th class="cell100 column6">Color</th>
-									<th class="cell100 column6">Medida</th>
-									<th class="cell100 column6">Marca</th>
-									<th class="cell100 column6">Unidad</th>
-									<th class="cell100 column6">Cantidad</th>
-									<th class="cell100 column6">Precio</th>
-								</tr>
-							</thead>
-							<tbody class="list">
+						</thead>
+						<thead id="historial-header-printer">
+							<tr class="row100 head">
+								<th class="th_history">Cliente</th>
+								<th class="th_history">Item</th>
+								<th class="th_history">Tipo</th>
+								<th class="th_history">Timestamp</th>
+								<th class="th_history">Color</th>
+								<th class="th_history">Medida</th>
+								<th class="th_history">Marca</th>
+								<th class="th_history">Unidad</th>
+								<th class="th_history">Cantidad</th>
+								<th class="th_history">Precio</th>
+							</tr>
+						</thead>
+						<tbody class="list">
 							<% for (let index = historial.length-1; index >= 0; index--) {
-									var [fecha,hora] = (historial[index].fecha).split(" ");
-									var [dia,mes,annio] = fecha.split("/");
-								%>
-								<tr class="row100 body <%= 'Hist' + mes %>">
-									<td class="cell100 column6 Cliente"><%= historial[index].cliente %></td>
-									<td class="cell100 column6 Item"><%= historial[index].item %></td>
-									<td class="cell100 column6 Tipo"><%= (historial[index].tipo_entrada == 'ingreso')?'Compra':'Venta' %></td>
-									<td class="cell100 column6 Timestamp"><%= historial[index].fecha %></td>
-									<td class="cell100 column6 Color"><%= historial[index].color %></td>
-									<td class="cell100 column6 Medida"><%= historial[index].medida %></td>
-									<td class="cell100 column6 Marca"><%= historial[index].marca %></td>
-									<td class="cell100 column6 Unidad"><%= historial[index].nombreDeUnidad %><%= historial[index].canteo?' con canteo':'' %></td>
-									<td class="cell100 column6 Cantidad"><%= historial[index].cantidad %></td>
-									<td class="cell100 column6 Precio"><%= (historial[index].tipo_entrada == 'ingreso')?historial[index].precioCompra:historial[index].precioVenta %></td>
-								</tr>
+								var [fecha,hora] = (historial[index].fecha).split(" ");
+								var [dia,mes,annio] = fecha.split("/");
+							%>
+							<tr class="row100 body <%= 'Hist' + mes %>">
+								<td class="td_history Cliente"><%= historial[index].cliente %></td>
+								<td class="td_history Item"><%= historial[index].item %></td>
+								<td class="td_history Tipo"><%= (historial[index].tipo_entrada == 'ingreso')?'Compra':'Venta' %></td>
+								<td class="td_history Timestamp"><%= historial[index].fecha %></td>
+								<td class="td_history Color"><%= historial[index].color %></td>
+								<td class="td_history Medida"><%= historial[index].medida %></td>
+								<td class="td_history Marca"><%= historial[index].marca %></td>
+								<td class="td_history Unidad"><%= historial[index].nombreDeUnidad %><%= historial[index].canteo?' con canteo':'' %></td>
+								<td class="td_history Cantidad"><%= historial[index].cantidad %></td>
+								<td class="td_history Precio"><%= (historial[index].tipo_entrada == 'ingreso')?historial[index].precioCompra:historial[index].precioVenta %></td>
+							</tr>
 							<% } %>
-							</tbody>
-						</table>
-						<div class="ps__rail-x" style="left: 0px; bottom: 0px;">
-							<div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;">
-							</div>
-						</div>
-						<div class="ps__rail-y" style="top: 0px; height: 585px; right: 0px;">
-							<div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 291px;">
-							</div>
-						</div>
-					</div>
+						</tbody>
+					</table>
 				</div>
+<hr>
 			</div>
 		</div>
 	</div>
 
-	<script src="javascripts/jquery-3.3.1.min.js"></script>
-
-	<script src="javascripts/popper.js"></script>
-	<script src="javascripts/bootstrap.min.js"></script>
-
-	<script src="javascripts/select2.min.js"></script>
-
-	<script src="javascripts/perfect-scrollbar.min.js"></script>
-	<script>
-			$('.js-pscroll').each(function(){
-				var ps = new PerfectScrollbar(this);
-
-				$(window).on('resize', function(){
-					ps.update();
-				})
-			});
-		</script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-
-		gtag('config', 'UA-23581568-13');
-	</script>
-
-	<script src="javascripts/main_historial.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
 
 	<script>
+		var blacking = function(item) {
+			item.style.color = "black";
+			item.style.textAlign = "center";
+			item.style.borderTop = "1px solid";
+		};
+		var greying = function(item) {
+			item.style.color = "#A2A1A1";
+		};
+
 		var options = {
 			valueNames: [ 'Cliente', 'Item', 'Tipo', 'Timestamp', 'Color', 'Medida', 'Marca', 'Unidad', 'Cantidad', 'Precio' ],
 		};
@@ -162,6 +163,10 @@
 		function imprimirHistorial() {
 			document.getElementById("head-sort").style.display="none";
 			document.getElementById("historial-header-printer").style.display="table-header-group";
+			let head = document.getElementsByClassName("th_history");
+			let rows = document.getElementsByClassName("td_history");
+			[].forEach.call(head, blacking);
+			[].forEach.call(rows, blacking);
 
 			var printData = document.getElementById("historial-frame");
 			newWindow = window.open("");
@@ -170,7 +175,9 @@
 			newWindow.close();
 
 			document.getElementById("historial-header-printer").style.display="none";
-			document.getElementById("head-sort").style.display="block";
+			document.getElementById("head-sort").style.display="table-header-group";
+			[].forEach.call(head, greying);
+			[].forEach.call(rows, greying);
 		}
 
 		function selectMes(selectBox) {
@@ -187,13 +194,10 @@
 			});
 		}
 
-		$(function() {
-			console.log("go historial");
-		});
-
 	</script>
 	<footer>
 		<%- include('../partials/footer'); %>
 	</footer>
+	<script src="javascripts/jquery-3.3.1.min.js"></script>
 </body>
 </html>
