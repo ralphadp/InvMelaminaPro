@@ -6,6 +6,7 @@ var logger = require('morgan');
 const ObjectID = require('mongodb').ObjectId;
 const MongoClient = require('mongodb').MongoClient;
 var MD5 = require("crypto-js/md5");
+var session = require('express-session');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -21,9 +22,10 @@ console.log("Connected to " + uri );
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(session({ resave: true, secret: '123456', saveUninitialized: true}));
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -61,7 +63,7 @@ function getInventarioMD5(producto) {
 }
 
 // pedidos page
-app.get('/pedidos', function(req, res) {
+app.get('/pedidos', checkAuth, function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
@@ -187,7 +189,7 @@ app.get('/pedidos', function(req, res) {
 });
 
 // ingresos page
-app.get('/ingresos', function(req, res) {
+app.get('/ingresos', checkAuth, function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
@@ -797,7 +799,7 @@ app.post('/obtener_precio', (req, res) => {
 });
 
 // reporte page
-app.get('/reporte', function(req, res) {
+app.get('/reporte', checkAuth, function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     let DB = client.db();
@@ -816,7 +818,7 @@ app.get('/reporte', function(req, res) {
 });
 
 // tapacantos_standar page
-app.get('/catalogos', function(req, res) {
+app.get('/catalogos', checkAuth, function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
@@ -934,7 +936,7 @@ app.get('/catalogos', function(req, res) {
 });
 
 // historia page
-app.get('/historial', function(req, res) {
+app.get('/historial', checkAuth, function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
@@ -1005,7 +1007,7 @@ app.get('/views', function(req, res) {
 });
 
 // historia page
-app.get('/inventario', function(req, res) {
+app.get('/inventario', checkAuth, function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
@@ -1115,7 +1117,7 @@ app.get('/inventario', function(req, res) {
 });
 
 // preferencias page
-app.get('/preferencias', function(req, res) {
+app.get('/preferencias', checkAuth, function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     
@@ -2942,20 +2944,41 @@ app.get('/login', function (req, res) {
 
 function checkAuth(req, res, next) {
     if (!req.session.user_id) {
-        res.send('You are not authorized to view this page');
+        console.log('You are not authorized to view this page');
+        process.env.last_url = req.url;
+        res.redirect('/login');
     } else {
+        console.log('logged');
         next();
     }
 }
 
 app.post('/login', function (req, res) {
-   var post = req.body;
-   if (post.user === 'guillermo@gmail.com' && post.password === 'guillermo') {
-       req.session.user_id = johns_user_id_here;
-       res.redirect('/inventario');
-   } else {
-        res.redirect('/login');
-   }
+    const client = new MongoClient(uri);
+    client.connect();
+    var DB = client.db();
+    var post = req.body;
+
+    DB.collection("user").find().toArray().then((users) => {
+        users.forEach((user) => {
+            if (post.user === user.name && post.password === user.password) {
+                req.session.user_id = user._id.toString();
+                console.log(req.session.user_id);
+                if (process.env.last_url && process.env.last_url.length > 1) {
+                    res.redirect(process.env.last_url);
+                } else {
+                    res.redirect('/inventario');
+                }
+            }
+        });
+        if (!req.session.user_id) {
+            console.log("Wrong password or username");
+            //res.status(200).json({ok: false, message: "Wrong password or username", action: "none"});
+            res.redirect('/login');
+        }
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
 });
 
 app.get('/logout', function (req, res) {
@@ -2963,7 +2986,7 @@ app.get('/logout', function (req, res) {
         delete req.session.user_id;
     }
    res.redirect('/login');
-});      
+});
 
   // catch 404 and forward to error handler
 app.use(function(req, res, next) {
