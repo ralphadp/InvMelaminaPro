@@ -792,54 +792,54 @@
 					</div>
 		        </form>
 				<div style="padding-right: 30px;padding-left: 30px;">
-				<div class="table-responsive">
-					<table class="table table-hover" style="font-size: 12px;color:white;">
-						<thead style="background-color: #32998b;">
+					<div class="table-responsive">
+						<table class="table table-hover" style="font-size: 12px;color:white;">
+							<thead style="background-color: #32998b;">
+								<tr>
+									<th>#</th>
+									<th>Fecha</th>
+									<th>Hora</th>
+									<th>Cliente</th>
+									<th>Item</th>
+									<th>Color</th>
+									<th>Medida</th>
+									<th>Marca</th>
+									<th>Canteo</th>
+									<th>Unidad</th>
+									<th>Cantidad</th>
+									<th>Venta(Bs)</th>
+								</tr>
+							</thead>
+							<tbody>
+							<% var ventaTotal = 0;
+							for (let i = historial.length-1; i >= 0; i--) {
+								var [fecha, hora] = historial[i].fecha.split(" ");
+								ventaTotal = ventaTotal + Number(historial[i].precioVenta);
+							%>
 							<tr>
-								<th>#</th>	
-								<th>Fecha</th>
-								<th>Hora</th>
-								<th>Cliente</th>
-								<th>Item</th>
-								<th>Color</th>
-								<th>Medida</th>
-								<th>Marca</th>
-								<th>Canteo</th>
-								<th>Unidad</th>
-								<th>Cantidad</th>
-								<th>Venta(Bs)</th>
+								<td><%= historial.length - i %></td>
+								<td><%= fecha %></td>
+								<td><%= hora %></td>
+								<td><%= historial[i].cliente %></td>
+								<td><%= historial[i].item %></td>
+								<td><%= historial[i].color %></td>
+								<td><%= historial[i].medida %></td>
+								<td><%= historial[i].marca %></td>
+								<td><%= historial[i].canteo?'\u2713':'' %></td>
+								<td><%= historial[i].nombreDeUnidad %></td>
+								<td><%= historial[i].cantidad %></td>
+								<td><%= historial[i].precioVenta %> Bs</td>
 							</tr>
-						</thead>
-						<tbody>
-						<% var ventaTotal = 0;
-						for (let i = historial.length-1; i >= 0; i--) {
-                        	var [fecha, hora] = historial[i].fecha.split(" ");
-							ventaTotal = ventaTotal + Number(historial[i].precioVenta);
-                        %>
-                        <tr>
-							<td><%= historial.length - i %></td>
-                            <td><%= fecha %></td>
-                            <td><%= hora %></td>
-                            <td><%= historial[i].cliente %></td>
-                            <td><%= historial[i].item %></td>
-                            <td><%= historial[i].color %></td>
-                            <td><%= historial[i].medida %></td>
-							<td><%= historial[i].marca %></td>
-							<td><%= historial[i].canteo?'\u2713':'' %></td>
-							<td><%= historial[i].nombreDeUnidad %></td>
-                            <td><%= historial[i].cantidad %></td>
-							<td><%= historial[i].precioVenta %> Bs</td>
-						</tr>
-                    <% } %>
-					<% if (ventaTotal > 0) { %>
-						<tr>
-							<td colspan="11"></td>
-							<td class="row-small"><%=ventaTotal %> Bs</td>
-						</tr>
-					<% } %>
-						</tbody>
-					</table>
-				</div>
+						<% } %>
+						<% if (ventaTotal > 0) { %>
+							<tr>
+								<td colspan="11"></td>
+								<td class="row-small"><%=ventaTotal %> Bs</td>
+							</tr>
+						<% } %>
+							</tbody>
+						</table>
+					</div>
 			    </div>
 			</div>
 		</div>

@@ -5,10 +5,11 @@
 	<meta charset="utf-8">
 	<title>Ingresos</title>
 	<%- include('../partials/head-compras-ventas'); %>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="stylesheets/stylein.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
-	
+
     <script>
         var provedor_items = <%- JSON.stringify(provedor); %>;
         var item_color = <%- JSON.stringify(color); %>;
@@ -227,52 +228,54 @@
                         </div>
                     </div>
 		        </form>
-                <ul style="list-style-type: none;">
-                    <li>
-                        <span class="row-small-header-2">Fecha</span>
-                        <span class="row-small-header-2">Hora</span>
-                        <span class="row-small-header">Provedor</span>
-                        <span class="row-small-header">Item</span>
-                        <span class="row-header">Color</span>
-                        <span class="row-header">Medida</span>
-                        <span class="row-small-header">Marca</span>
-                        <span class="row-small-header">Unidad</span>
-                        <span class="row-small-header">Cantidad</span>
-                        <span class="row-small-header-2">Gastado</span>
-                    </li>
-                    <% var gastoTotal = 0;
-                        for(let i = historial.length-1; i >= 0; i--) {
-                            var [fecha, hora] = historial[i].fecha.split(" ");
-                            gastoTotal = gastoTotal + Number(historial[i].precioCompra);
-                        %>
-                        <li>
-                            <span class="row-small-2"><%= fecha %></span>
-                            <span class="row-small-2"><%= hora %></span>
-                            <span class="row-small"><%= historial[i].cliente %></span>
-                            <span class="row-small"><%= historial[i].item %></span>
-                            <span class="row"><%= historial[i].color %></span>
-                            <span class="row"><%= historial[i].medida %></span>
-                            <span class="row-small"><%= historial[i].marca %></span>
-                            <span class="row-small"><%= historial[i].nombreDeUnidad %></span>
-                            <span class="row-small"><%= historial[i].cantidad %></span>
-                            <span class="row-small-2"><%= historial[i].precioCompra %> Bs</span>
-                        </li>
-                    <% } %>
-                    <% if (gastoTotal > 0) { %>
-                    <li>
-                        <span class="row-small-invisible-2"></span>
-                        <span class="row-small-invisible-2"></span>
-                        <span class="row-small-invisible"></span>
-                        <span class="row-small-invisible"></span>
-                        <span class="row-invisible"></span>
-                        <span class="row-invisible"></span>
-                        <span class="row-small-invisible"></span>
-                        <span class="row-small-invisible"></span>
-                        <span class="row-small-invisible"></span>
-                        <span class="row-small-2"><%=gastoTotal %> Bs</span>
-                    </li>
-                    <% } %>
-                </ul>
+                <div style="padding-right: 30px;padding-left: 30px;">
+					<div class="table-responsive">
+						<table class="table table-hover" style="font-size: 12px;color:white;">
+							<thead style="background-color: #32998b;">
+								<tr>
+									<th>#</th>	
+									<th>Fecha</th>
+									<th>Hora</th>
+									<th>Provedor</th>
+									<th>Item</th>
+									<th>Color</th>
+									<th>Medida</th>
+									<th>Marca</th>
+									<th>Unidad</th>
+									<th>Cantidad</th>
+									<th>Compra(Bs)</th>
+								</tr>
+							</thead>
+							<tbody>
+                            <% var gastoTotal = 0;
+                                for (let i = historial.length-1; i >= 0; i--) {
+                                    var [fecha, hora] = historial[i].fecha.split(" ");
+                                    gastoTotal = gastoTotal + Number(historial[i].precioCompra);
+                                %>
+							<tr>
+								<td><%= historial.length - i %></td>
+								<td><%= fecha %></td>
+								<td><%= hora %></td>
+								<td><%= historial[i].cliente %></td>
+								<td><%= historial[i].item %></td>
+								<td><%= historial[i].color %></td>
+								<td><%= historial[i].medida %></td>
+								<td><%= historial[i].marca %></td>
+								<td><%= historial[i].nombreDeUnidad %></td>
+								<td><%= historial[i].cantidad %></td>
+								<td><%= historial[i].precioCompra %> Bs</td>
+							</tr>
+						<% } %>
+						<% if (gastoTotal > 0) { %>
+							<tr>
+								<td colspan="10"></td>
+								<td class="row-small"><%=gastoTotal %> Bs</td>
+							</tr>
+						<% } %>
+							</tbody>
+						</table>
+					</div>
+                </div>
 			</div>
 		</div>
 	</div>

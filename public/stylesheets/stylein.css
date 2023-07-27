@@ -697,3 +697,14 @@ span.row-small-2 {
     color: red;
     font-size: 12px;
 }
+.navbar {
+    margin-bottom: 0px!important;
+}
+
+.form-control {
+    height: 64px!important;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: #43ccba;
+}

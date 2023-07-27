@@ -139,7 +139,7 @@ let fillUnidad = function(id_unidad, selecteditem) {
     var item_unidades = item_unidad[0][selecteditem];
     for (var i = 0; i < item_unidades.length; i++) {
         var optionName = item_unidades[i];
-        if (optionName=="metros") {
+        if (optionName == "metros" || optionName == "metros al canteo") {
             continue;
         }
         addOption(tipoUnidad, optionName, optionName);    
@@ -303,17 +303,17 @@ $(".verify").on("change", function() {
         if (PRODUCTO.existencia == 0) {
             PRODUCT_MESSAGE.style.background = "red";
             PRODUCT_MESSAGE.style.color = "#55e8d5";
-            PRODUCT_MESSAGE.innerHTML = "El Producto del inventario esta vacio, " + PRODUCTO.existencia+ " items.";
+            PRODUCT_MESSAGE.innerHTML = "El Producto no tiene items, " + PRODUCTO.existencia+ " items.";
         } else {
             PRODUCT_MESSAGE.style.background = "transparent";
             PRODUCT_MESSAGE.style.color = "#55e8d5";
-            PRODUCT_MESSAGE.innerHTML = "Este Producto del inventario existe.";
+            PRODUCT_MESSAGE.innerHTML = "Este Producto existe en el Catalogo.";
         }
     } else {
         if (KEY.AllFilled()) {
             PRODUCT_MESSAGE.style.background = "transparent";
             PRODUCT_MESSAGE.style.color = "red";
-            PRODUCT_MESSAGE.innerHTML = "El presente producto no existe en el catalogo";
+            PRODUCT_MESSAGE.innerHTML = "El presente producto no existe en el Catalogo";
         }
     }
 });
