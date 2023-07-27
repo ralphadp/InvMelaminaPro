@@ -20,7 +20,7 @@
 			background-color: bisque;
 		}
 		#booking {
-			height: 80vh!important;
+			height: 100vh!important;
 		}
 	</style>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -798,6 +798,7 @@
 					console.log("Selected class " + obj);
 					objCatalog = new window[obj]();
 					document.getElementById(name).style.display = "block";
+					window.scrollTo(0, 600);
 				} else {
 					document.getElementById(name).style.display = "none";
 				}
