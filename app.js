@@ -665,7 +665,7 @@ app.post('/obtener_precio', (req, res) => {
                 } else if (req.body.tipo_entrada == "pedido") {
                     precio = result.precio_venta;
                     precio_metros = result.precio_venta_metros;
-                    if (req.body.canteo && Object.hasOwn(result, 'precio_venta_metros_canteo')) {
+                    if (req.body.canteo && Object.hasOwnProperty(result, 'precio_venta_metros_canteo')) {
                         precio_metros = result.precio_venta_metros_canteo;
                     }
                     precio_caja = result.precio_venta_caja?result.precio_venta_caja:0;
