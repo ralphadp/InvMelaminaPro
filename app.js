@@ -633,7 +633,7 @@ app.post('/obtener_precio', (req, res) => {
         provedor.forEach(item => {
             provedorMap[item._id.toString()] = item.nombre;
         });
-        console.log(provedorMap);
+        console.log("provedores:", provedorMap);
     CollectionItem.find(jsonQuery).toArray().then((resultItem) => {
 
         if (resultItem.length === 0) {
@@ -779,8 +779,9 @@ app.post('/obtener_precio', (req, res) => {
                     detalles: producto,
                     explicacion: EXPLICACION,
                     error: e_message
-                }
-            } catch(e) {
+                };
+                console.log(index + ") price : ",precios[index]);
+            } catch(error) {
                 if (!(error instanceof Error)) {
                     error = new Error(error);
                 }
