@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<title>Reportes</title>
 	<%- include('../partials/head-compras-ventas'); %>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="stylesheets/bootstrap.min.css">
 	<link rel="stylesheet" href="stylesheets/stylein.css">
 	<link rel="stylesheet" href="stylesheets/report_table.css">
 	
@@ -66,10 +66,9 @@
 			font-size: 12px;
 		}
 		.leftbar {
-			padding: 160px 20px;
+			padding-top: 190px ;
 			text-align: center;
 			border: 1px solid #2f7d8f;
-			width: 140px;
 			background-color: #2f7d8f;
 			color: white;
 		}
@@ -78,6 +77,7 @@
 			border-color: white;
 			font-size: 15px;
 			color:gray;
+			width: 100%;
 		}
 		.mes-button {
 			border-color: white;
@@ -88,9 +88,6 @@
 			background-color: bisque!important;
 			cursor: pointer;
 		}
-		.content-report {
-			padding-left: 100px!important;
-		}
 	</style>
 </head>
 <body>
@@ -99,7 +96,7 @@
     </header>
 	<div class="container-fluid">
 		<div class="row row-no-gutters">
-			<div class="col-sm-3 leftbar">
+			<div class="col-sm-2 leftbar">
 				<button id="frame-pedidos-cliente-b" class="leftbuttons" type="button" onclick="generarPedidosCliente()">Volumen de Pedidos-Cliente</button>
 				<button id="frame-pedidos-b" class="leftbuttons" type="button" onclick="generarProductos()">Volumen de Productos</button>
 				<button id="frame-precios-cliente-b" class="leftbuttons" type="button" onclick="generarPreciosCliente()">Volumen de Ventas(Bs) x Cliente</button>
