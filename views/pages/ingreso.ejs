@@ -87,13 +87,18 @@
 			color:green;
 			text-align:left;
 		}
+        @media only screen and (max-width: 991px) {
+			#conta {
+				padding-top: 450px!important;
+			}
+		}
 	</style>
 </head>
 <body>
     <header>
         <%- include('../partials/header'); %>
     </header>
-	<div class="page-content">
+	<div id="conta" class="page-content">
 		<div class="melaminapro-heading">Formulario de Ingreso de materiales</div>
 		<div class="melaminapro-v6-content">
 			<div class="melaminapro-form">

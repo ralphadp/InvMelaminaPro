@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="stylesheets/bootstrap.min.css">
 	<link rel="stylesheet" href="stylesheets/stylein.css">
 	<link rel="stylesheet" href="stylesheets/report_table.css">
-	
+
 	<script src="https://d3js.org/d3.v3.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.3/d3-tip.min.js"></script>
 
@@ -88,13 +88,18 @@
 			background-color: bisque!important;
 			cursor: pointer;
 		}
+		@media only screen and (max-width: 991px) {
+			#conta {
+				padding-top: 450px!important;
+			}
+		}
 	</style>
 </head>
 <body>
 	<header>
         <%- include('../partials/header'); %>
     </header>
-	<div class="container-fluid">
+	<div id="conta" class="container-fluid">
 		<div class="row row-no-gutters">
 			<div class="col-sm-2 leftbar">
 				<button id="frame-pedidos-cliente-b" class="leftbuttons" type="button" onclick="generarPedidosCliente()">Volumen de Pedidos-Cliente</button>
@@ -386,7 +391,7 @@
 	<script src="javascripts/jquery.steps.js"></script>
 	<script src="javascripts/jquery-ui.min.js"></script>
 	<script src="javascripts/red.js"></script>
-	
+
 	<footer>
         <%- include('../partials/footer'); %>
     </footer>
