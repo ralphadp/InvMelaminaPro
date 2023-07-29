@@ -751,7 +751,7 @@ function BuildTableMes(chartData) {
             newCell = newRow.insertCell();
             newCell.setAttribute("data-title", "Worldwide Gross");
             newCell.setAttribute("data-type", "currency");
-            newCell.appendChild(document.createTextNode("Colores"));
+            newCell.appendChild(document.createTextNode("Maderado"));
 
             newCell = newRow.insertCell();
             newCell.setAttribute("data-title", "Domestic Gross");

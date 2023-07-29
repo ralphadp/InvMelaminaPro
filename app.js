@@ -2891,8 +2891,8 @@ app.post('/reporte_compra_venta_colores_mes', function(req, res) {
             productos[product].forEach((tipoProducto) => {
                 let DATA = {
                     producto: product,
-                    blanco: {tipo:tipoProducto,cantidad:0, venta:0, compra:0}, 
-                    colores: {tipo:tipoProducto,cantidad:0, venta:0, compra:0}
+                    blanco: {tipo:tipoProducto, cantidad:0, venta:0, compra:0}, 
+                    colores: {tipo:tipoProducto, cantidad:0, venta:0, compra:0}
                 };
                 //DATA.producto = product;
                 resultHistorial.forEach((historia) => {
