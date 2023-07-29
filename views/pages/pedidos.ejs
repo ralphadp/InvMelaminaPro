@@ -275,12 +275,11 @@
 						<span style="display: block;"><label class="titulos">RECIBI DEL SEÑOR(a): </label><label id="recibo-cliente"></label></span>
 						<span style="display: block;"><label class="titulos">LA SUMA DE: </label><label id="recibo-monto"></label> 00/100 Boivianos</span>
 						<span style="display: block;"><label class="titulos">POR CONCEPTO DE: </label><label id="recibo-detalle"></label> (Adjunto NOTA DE ENTREGA)</span>
-						<p style="font-size:10px; padding:30px;">Cochabamba, julio de 2023</p>
+						<p style="font-size:11px; padding:30px;" id="recibo-fecha"></p>
 					</td>
 					<td style="width: 70px;"></td>
 				</tr>
 			</table>
-			<br>
 			<p style="font-size: 12px;">En conformidad firman al pie de la hoja</p>
 			<br><br>
 			<table id="pedido-firmas">
@@ -786,7 +785,8 @@
 									</div>
 								</div>
 							</section>
-							<div class="buttonG" onclick="toprint()">Print</div>
+							<div class="buttonG" onclick="toprint()">Inprimir Entrega</div>
+							<div class="buttonG" onclick="toPrintHistory()">Inprimir Historial</div>
 						</div>
 						<div class="actions clearfix">
 							<ul role="menu" aria-label="Pagination">
@@ -798,8 +798,8 @@
 		        </form>
 				<div style="padding-right: 30px;padding-left: 30px;">
 					<div class="table-responsive">
-						<table class="table table-hover" style="font-size: 12px;color:white;">
-							<thead style="background-color: #32998b;">
+						<table class="table table-hover" style="font-size: 12px;color:white;" id="historial_pedidos">
+							<thead id="history-head" style="background-color: #32998b;">
 								<tr>
 									<th>#</th>
 									<th>Fecha</th>
@@ -815,7 +815,7 @@
 									<th>Venta(Bs)</th>
 								</tr>
 							</thead>
-							<tbody>
+							<tbody id="history-body">
 							<% var ventaTotal = 0;
 							for (let i = historial.length-1; i >= 0; i--) {
 								var [fecha, hora] = historial[i].fecha.split(" ");

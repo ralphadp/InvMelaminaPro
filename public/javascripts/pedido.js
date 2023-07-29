@@ -45,6 +45,18 @@ function convertHexToString(input) {
     return output;
 }
 
+function fechaLiteral() {
+    var meses = ['Enero', 'Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    var date = new Date();
+    var dia = date.getDay();
+
+    if (dia < 10) {
+        dia = '0' + dia.toString();
+    }
+
+    return `Cochabamba, ${dia} de ${meses[date.getMonth()]} del ${date.getFullYear()}`; 
+}
+
 function addCarrito() {
     let ids = new getIDS();
     let tipo_cliente = ids.verify();
@@ -591,6 +603,7 @@ function PrePrintCarrito() {
     $('#recibo-cliente').text(NotaVenta.NombreCliente);
     $('#recibo-monto').text(updateNumToLiteral(TotalPrecio));
     $('#recibo-detalle').text(getAllItemsToString(list_items));
+    $('#recibo-fecha').text(fechaLiteral());
     $('#recibo-cliente-firma').text(NotaVenta.NombreCliente);
 }
 
@@ -602,14 +615,11 @@ function cleanNotaTable() {
 }
 
 async function Print(formTarget) {
-    cleanNotaTable();
-
-    PrePrintCarrito();
-
     var printData = document.getElementById(formTarget);
-    newWindow = window.open("PEDIDO","melaminapro","melamina");
+
+    newWindow = window.open("PEDIDO", "melaminapro", "melamina");
     newWindow.document.write(printData.outerHTML);
-    
+
     await new Promise(r => setTimeout(r, 1500));
 
     newWindow.print();
@@ -620,11 +630,30 @@ function toprint() {
     var response = confirm("Desea Imprimir?");
 
     if (response) {
+        cleanNotaTable();
+        PrePrintCarrito();
         Print("InternoForm");
     }
 
     return false;
 }
+
+function toPrintHistory() {
+    var response = confirm("Desea Imprimir Historial?");
+
+    if (response) {
+        document.getElementById("history-head").style.color = "black";
+        document.getElementById("history-head").style.backgroundColor = "white";
+        document.getElementById("history-body").style.color = "black";
+        Print("historial_pedidos");
+        document.getElementById("history-head").style.color = "white";
+        document.getElementById("history-head").style.backgroundColor = "#32998b";
+        document.getElementById("history-body").style.color = "white";
+    }
+
+    return false;
+}
+
 
 function setPrice(monto) {
     let ids = new getIDS();

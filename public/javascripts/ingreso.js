@@ -318,6 +318,34 @@ $(".verify").on("change", function() {
     }
 });
 
+async function Print(formTarget) {
+    var printData = document.getElementById(formTarget);
+
+    newWindow = window.open("INGRESO", "melaminapro", "melamina");
+    newWindow.document.write(printData.outerHTML);
+
+    await new Promise(r => setTimeout(r, 1500));
+
+    newWindow.print();
+    newWindow.close();
+}
+
+function toPrintHistory() {
+    var response = confirm("Desea Imprimir Historial?");
+
+    if (response) {
+        document.getElementById("history-head").style.color = "black";
+        document.getElementById("history-head").style.backgroundColor = "white";
+        document.getElementById("history-body").style.color = "black";
+        Print("historial_ingresos");
+        document.getElementById("history-head").style.color = "white";
+        document.getElementById("history-head").style.backgroundColor = "#32998b";
+        document.getElementById("history-body").style.color = "white";
+    }
+
+    return false;
+}
+
 $(function() {
     function getTimestamp() {
         var d = new Date();

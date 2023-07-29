@@ -550,7 +550,7 @@ select option {
 }
 
 .buttonG {
-    padding: 0;
+    padding: 20px;
     border: none;
     display: inline-flex;
     height: 45px;
