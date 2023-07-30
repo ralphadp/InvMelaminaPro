@@ -187,6 +187,7 @@ body {
     margin: 0 -15px;
     position: relative;
     margin-bottom: 25px;
+    flex-wrap: nowrap;
 }
 .inner .form-row .form-row-inner {
     position: relative;
@@ -553,7 +554,7 @@ select option {
     padding: 20px;
     border: none;
     display: inline-flex;
-    height: 45px;
+    height: 55px;
     width: 100px;
     justify-content: center;
     -o-justify-content: center;
@@ -707,4 +708,8 @@ span.row-small-2 {
 
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
     background-color: #43ccba;
+}
+
+li.first, li.last, li.current {
+    width: 40%!important;
 }

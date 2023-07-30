@@ -1,83 +1,71 @@
 <style>
-.top-msg {
-  width: 100%;
-  position: fixed;
-  background-color: rgb(96 42 42 / 60%);
-  color: rgba(250,251,255,0.95);
-  font-family: "Lato", sans-serif;
-  font-size: 18px;
-}
-.top-msg-close {
-  float: left;
-  box-sizing: border-box;
-  padding-top: 17px;
-  padding-right: 30px;
-  width: 45px;
-}
+    .top-msg {
+      width: 100%;
+      position: fixed;
+      background-color: rgb(96 42 42 / 60%);
+      color: rgba(250,251,255,0.95);
+      font-family: "Lato", sans-serif;
+      font-size: 18px;
+    }
+    .top-msg-close {
+      float: left;
+      box-sizing: border-box;
+      padding-top: 17px;
+      padding-right: 30px;
+      width: 45px;
+    }
 
-.top-msg-inner a {
-  text-decoration: none;
-  color: RGBA(0, 0, 0, 0.6);
-  font-weight: bold;
-}
+    .top-msg-inner a {
+      text-decoration: none;
+      color: RGBA(0, 0, 0, 0.6);
+      font-weight: bold;
+    }
 
-.top-msg-inner a:hover {
-  color: RGBA(0, 0, 0, 0.5);
-}
+    .top-msg-inner a:hover {
+      color: RGBA(0, 0, 0, 0.5);
+    }
 
-.top-msg-inner {
-  float: left;
-  box-sizing: border-box;
-  padding: 0 10px;
-  width: calc(100% - 110px);
-}
-.top-msg-ico {
-  float: left;
-  width: 65px;
-  height: 57px;
-  background-color: rgb(203 11 11 / 70%);
-  text-align: center;
-  font-size: 45px;
-}
+    .top-msg-inner {
+      float: left;
+      box-sizing: border-box;
+      padding: 0 10px;
+      width: calc(100% - 110px);
+    }
+    .top-msg-ico {
+      float: left;
+      width: 65px;
+      height: 57px;
+      background-color: rgb(203 11 11 / 70%);
+      text-align: center;
+      font-size: 45px;
+    }
 </style>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a id="catalogos_cliente_menu" class="nav-link" href="/views">Catalogo para cliente</a>
-      </li>
-      <li class="nav-item">
-        <a id="inventario_menu" class="nav-link" href="/inventario">Inventario</a>
-      </li>
-      <li class="nav-item">
-        <a id="ventas_menu" class="nav-link" href="/pedidos">Pedidos(Ventas)</a>
-      </li>
-      <li class="nav-item">
-        <a id="compras_menu" class="nav-link" href="/ingresos">Ingresos(Compras)</a>
-      </li>
-      <li class="nav-item">
-        <a id="contenidos_menu" class="nav-link" href="/catalogos">Catalogos</a>
-      </li>
-      <li class="nav-item">
-        <a id="reportes_menu" class="nav-link" href="/reporte">Reportes</a>
-      </li>
-      <li class="nav-item">
-        <a id="historial_menu" class="nav-link" href="/historial">Historial</a>
-      </li>
-      <li class="nav-item">
-        <a id="preferencias_menu" class="nav-link" href="/preferencias">Preferencias</a>
-      </li>
-      <li class="nav-item">
-        <a id="about_menu" class="nav-link" style="cursor: pointer;" onclick="$('#about').show()">About</a>
-      </li>
-      <li class="nav-item">
-        <a id="logout_menu" class="nav-link" style="cursor: pointer;" href="/logout">Logout</a>
-      </li>
-    </ul>
-    <a href="/catalogos">
-      <img width="30px;" src="images/logo.jpg" alt="Melamina pro"></img>
-    </a>
+  <a href="/catalogos">
+    <img width="30px;" src="images/logo.jpg" alt="Melamina pro"></img>
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link active" href="/views">Productos<span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="/inventario">Inventario</a>
+      <a class="nav-item nav-link" href="/pedidos">Pedidos(Ventas)</a>
+      <a class="nav-item nav-link" href="/ingresos">Ingresos(Compras)</a>
+      <a class="nav-item nav-link" href="/catalogos">Catalogos</a>
+      <a class="nav-item nav-link" href="/reporte">Reportes</a>
+      <a class="nav-item nav-link" href="/historial">Historial</a>
+      <a class="nav-item nav-link" href="/preferencias">Preferencias</a>
+      <a class="nav-item nav-link" style="cursor:pointer;" onclick="$('#about').show()">About</a>
+      <a class="nav-item nav-link" href="/logout">Logout</a>
+    </div>
+  </div>
 </nav>
+
 <div id="message"></div>
+
 <% 
     let alert = 0;
     let controlValues = {};
@@ -122,7 +110,8 @@
   </div>
   <div class="top-msg-close" style="cursor: pointer;" onclick="$('#alert-message').hide()">&#10005;</div>    
 </div>
-<% } %>
+<% } //end alert %>
+
 <div id="about" style="background: #FFFFFF;position:fixed;margin-left:50%;margin-top:50%;width:400px;height:400px;margin-left:-200px;margin-top:-200px;display:none;top: 50%;left: 50%;border-radius: 10px;">
     <div style="cursor: pointer;float: right;padding: 20px;font-size: 12px;" onclick="$('#about').hide()">&#10005;</div>
     <div style="padding: 50px">
