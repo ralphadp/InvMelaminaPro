@@ -463,6 +463,7 @@
 			  <th> Precio Compra (lamina) </th>
 			  <th> Precio Venta (lamina) </th>
 			  <th> Lamina x Paquete </th>
+			  <th> A Pedido </th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < melamina.length; index++) {
@@ -507,6 +508,7 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="a_precio_compra_<%= ID %>"><%= melamina[index].precio_compra %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="a_precio_venta_<%= ID %>"><%= melamina[index].precio_venta %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="a_laminaxpaquete_<%= ID %>"><%= melamina[index].laminaxpaquete %></td>
+				  <td><input type="checkbox" id="a_apedido_<%= ID %>" <%=(melamina[index].apedido == true)?'checked':'' %> /></td>
 				  <td style="display:none" id="a_hash_<%= ID %>"><%= melamina[index].hash_inventario %></td>
 				  <td>
 					  <button class="pref" type="button" title="Guardar" id="gm_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
@@ -534,6 +536,7 @@
 			  <th> Precio Venta (caja)</th>
 			  <th> Precio Venta (metros) </th>
 			  <th> Precio Venta (metros) al canteo</th>
+			  <th> A pedido </th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < tapacantos.length; index++) {
@@ -583,6 +586,7 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_caja_<%= ID %>"><%= tapacantos[index].precio_venta_caja %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_metros_<%= ID %>"><%= tapacantos[index].precio_venta_metros %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_metros_canteo_<%= ID %>"><%= tapacantos[index].precio_venta_metros_canteo %></td>
+				  <td><input type="checkbox" id="t_apedido_<%= ID %>" <%=(tapacantos[index].apedido == true)?'checked':'' %> /></td>
 				  <td style="display:none" id="t_hash_<%= ID %>"><%= tapacantos[index].hash_inventario %></td>
 				  <td>
 					  <button class="pref" type="button" title="Guardar" id="gt_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
@@ -649,6 +653,7 @@
 			  <th> Precio Compra (laminas)</th>
 			  <th> Precio Venta (laminas)</th>
 			  <th> Lamina x Paquete </th>
+			  <th> A pedido </th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < fondo.length; index++) {
@@ -693,6 +698,7 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="f_precio_compra_<%= ID %>"><%= fondo[index].precio_compra %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="f_precio_venta_<%= ID %>"><%= fondo[index].precio_venta %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="f_laminaxpaquete_<%= ID %>"><%= fondo[index].laminaxpaquete %></td>
+				  <td><input type="checkbox" id="f_apedido_<%= ID %>" <%=(fondo[index].apedido == true)?'checked':'' %> /></td>
 				  <td style="display:none" id="f_hash_<%= ID %>"><%= fondo[index].hash_inventario %></td>
 				  <td>
 					  <button class="pref" type="button" title="Guardar" id="gf_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
@@ -715,7 +721,8 @@
 			  <th> Precio Venta (hoja)</th>
 			  <th> Precio Compra (caja)</th>
 			  <th> Precio Venta (caja)</th>
-			  <th> hojas x Caja </th>
+			  <th> Hojas x Caja </th>
+			  <th> A pedido </th>
 			  <th></th>
 			</tr>
 			 <% for (let index = 0; index < tapatornillos.length; index++) {
@@ -753,6 +760,7 @@
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_compra_caja_<%= ID %>"><%= tapatornillos[index].precio_compra_caja %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_precio_venta_caja_<%= ID %>"><%= tapatornillos[index].precio_venta_caja %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="t_hojaxcaja_<%= ID %>"><%= tapatornillos[index].hojaxcaja %></td>
+				  <td><input type="checkbox" id="t_apedido_<%= ID %>" <%=(tapatornillos[index].apedido == true)?'checked':'' %> /></td>
 				  <td style="display:none" id="t_hash_<%= ID %>"><%= tapatornillos[index].hash_inventario %></td>
 				  <td>
 					  <button class="pref" type="button" title="Guardar" id="gf_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>

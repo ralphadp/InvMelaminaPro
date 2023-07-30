@@ -76,6 +76,7 @@
                         <th class=""><button class="sort" data-sort="PrecioVentaXCaja">Precio de Venta x Caja</button></th>
                         <th class=""><button class="sort" data-sort="PrecioVentaXMetros">Precio de Venta x Metros</button></th>
                         <th class=""><button class="sort" data-sort="PrecioVentaXMetrosCanteo">Precio de Venta x Metros Al Canteo</button></th>
+                        <th class=""><button class="sort" data-sort="Apedido">A pedido</button></th>
                     </tr>
                 </thead>
                 <tbody class="list">
@@ -95,6 +96,7 @@
                             <td class="PrecioVentaXCaja"><%= tapacanto.precio_venta_caja?tapacanto.precio_venta_caja:'' %> Bs</td>
                             <td class="PrecioVentaXMetros"><%= tapacanto.precio_venta_metros %> Bs</td>
                             <td class="PrecioVentaXMetrosCanteo"><%= tapacanto.precio_venta_metros_canteo %> Bs</td>
+                            <td class="Apedido"><%= tapacanto.apedido?'\u2713':'' %></td>
                         </tr>
                     <% } %>
                 </tbody>
@@ -114,6 +116,7 @@
                         <th class=""><button class="sort" data-sort="PrecioCompra">Precio de Compra</button></th>
                         <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta</button></th>
                         <th class=""><button class="sort" data-sort="LaminaXPaquete">Lamina x Paquete</button></th>
+                        <th class=""><button class="sort" data-sort="Apedido">A pedido</button></th>
                     </tr>
                 </thead>
                 <tbody class="list">
@@ -126,6 +129,7 @@
                             <td class="PrecioCompra"><%= melamina[index].precio_compra %> Bs(lamina) </td>
                             <td class="PrecioVenta"><%= melamina[index].precio_venta %> Bs(lamina)</td>
                             <td class="LaminaXPaquete"><%= melamina[index].laminaxpaquete %></td>
+                            <td class="Apedido"><%= melamina[index].apedido?'\u2713':'' %></td>
                         </tr>
                     <% } %>
                 </tbody>
@@ -170,6 +174,7 @@
                         <th class=""><button class="sort" data-sort="PrecioCompra">Precio de Compra</button></th>
                         <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta</button></th>
                         <th class=""><button class="sort" data-sort="LaminaXPaquete">Lamina x Paquete</button></th>
+                        <th class=""><button class="sort" data-sort="Apedido">A pedido</button></th>
                     </tr>
                 </thead>
                 <tbody class="list">
@@ -182,6 +187,7 @@
                             <td class="PrecioCompra"><%= fondo[index].precio_compra %> Bs(lamina) </td>
                             <td class="PrecioVenta"><%= fondo[index].precio_venta %> Bs(lamina)</td>
                             <td class="LaminaXPaquete"><%= fondo[index].laminaxpaquete %></td>
+                            <td class="Apedido"><%= fondo[index].apedido?'\u2713':'' %></td>
                         </tr>
                     <% } %>
                 </tbody>
@@ -202,6 +208,7 @@
                         <th class=""><button class="sort" data-sort="PrecioCompraCaja">Precio de Compra X Caja</button></th>
                         <th class=""><button class="sort" data-sort="PrecioVentaCaja">Precio de Venta X Caja</button></th>
                         <th class=""><button class="sort" data-sort="HojasXCaja">Hoja x Caja</button></th>
+                        <th class=""><button class="sort" data-sort="Apedido">A pedido</button></th>
                     </tr>
                 </thead>
                 <tbody class="list">
@@ -218,6 +225,7 @@
                             <td class="PrecioCompraCaja"><%= tapatornillo.precio_compra_caja %> Bs(Caja) </td>
                             <td class="PrecioVentaCaja"><%= tapatornillo.precio_venta_caja %> Bs(Caja)</td>
                             <td class="HojasXCaja"><%= tapatornillo.hojaxcaja %></td>
+                            <td class="Apedido"><%= tapatornillo.apedido?'\u2713':'' %></td>
                         </tr>
                     <% } %>
                 </tbody>
@@ -260,19 +268,19 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
     <script>
         var options_tapacantos = {
-            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','MetrosXRollo','RollosXCaja','PrecioCompraXCaja','PrecioVentaXCaja','PrecioVentaXMetros' ]
+            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','MetrosXRollo','RollosXCaja','PrecioCompraXCaja','PrecioVentaXCaja','PrecioVentaXMetros','Apedido' ]
         };
         var options_melamina = {
-            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','LaminaXPaquete' ]
+            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','LaminaXPaquete','Apedido' ]
         };
         var options_pegamento = {
             valueNames: [ 'Provedor', 'Marca','PrecioCompra','PrecioVenta' ]
         };
         var options_fondo = {
-            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','LaminaXPaquete' ]
+            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','LaminaXPaquete','Apedido' ]
         };
         var options_tapatornillos = {
-            valueNames: [ 'Provedor', 'Color','Marca','PrecioCompra','PrecioVenta','PrecioCompraCaja','PrecioVentaCaja','HojasXCaja' ]
+            valueNames: [ 'Provedor', 'Color','Marca','PrecioCompra','PrecioVenta','PrecioCompraCaja','PrecioVentaCaja','HojasXCaja','Apedido' ]
         };
         var options_cliente = {
             valueNames: [ 'CI', 'Nombre', 'NIT', 'Telefono', 'Direccion', 'Email', 'Tipo', 'Empresa' ]
