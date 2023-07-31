@@ -462,6 +462,7 @@
 			  <th> Marca </th>
 			  <th> Precio Compra (lamina) </th>
 			  <th> Precio Venta (lamina) </th>
+			  <th> Precio Venta Interno (lamina) </th>
 			  <th> Lamina x Paquete </th>
 			  <th> A Pedido </th>
 			  <th></th>
@@ -507,6 +508,7 @@
 				  </td>
 				  <td class="item_td numericAllow" contenteditable="true" id="a_precio_compra_<%= ID %>"><%= melamina[index].precio_compra %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="a_precio_venta_<%= ID %>"><%= melamina[index].precio_venta %></td>
+				  <td class="item_td numericAllow" contenteditable="true" id="a_precio_venta_interno_<%= ID %>"><%= melamina[index].precio_venta_interno %></td>
 				  <td class="item_td numericAllow" contenteditable="true" id="a_laminaxpaquete_<%= ID %>"><%= melamina[index].laminaxpaquete %></td>
 				  <td><input type="checkbox" id="a_apedido_<%= ID %>" <%=(melamina[index].apedido == true)?'checked':'' %> /></td>
 				  <td style="display:none" id="a_hash_<%= ID %>"><%= melamina[index].hash_inventario %></td>

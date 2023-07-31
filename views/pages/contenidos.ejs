@@ -115,6 +115,7 @@
                         <th class=""><button class="sort" data-sort="Marca">Marca</button></th>
                         <th class=""><button class="sort" data-sort="PrecioCompra">Precio de Compra</button></th>
                         <th class=""><button class="sort" data-sort="PrecioVenta">Precio de Venta</button></th>
+                        <th class=""><button class="sort" data-sort="PrecioVentaInterno">Precio de Venta Interno</button></th>
                         <th class=""><button class="sort" data-sort="LaminaXPaquete">Lamina x Paquete</button></th>
                         <th class=""><button class="sort" data-sort="Apedido">A pedido</button></th>
                     </tr>
@@ -128,6 +129,7 @@
                             <td class="Marca" id="<%=melamina[index].marca_id %>"><%= melamina[index].marca %></td>
                             <td class="PrecioCompra"><%= melamina[index].precio_compra %> Bs(lamina) </td>
                             <td class="PrecioVenta"><%= melamina[index].precio_venta %> Bs(lamina)</td>
+                            <td class="PrecioVentaInterno"><%= melamina[index].precio_venta_interno %> Bs(lamina)</td>
                             <td class="LaminaXPaquete"><%= melamina[index].laminaxpaquete %></td>
                             <td class="Apedido"><%= melamina[index].apedido?'\u2713':'' %></td>
                         </tr>
@@ -271,7 +273,7 @@
             valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','MetrosXRollo','RollosXCaja','PrecioCompraXCaja','PrecioVentaXCaja','PrecioVentaXMetros','Apedido' ]
         };
         var options_melamina = {
-            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','LaminaXPaquete','Apedido' ]
+            valueNames: [ 'Provedor', 'Medidas','Color','Marca','PrecioCompra','PrecioVenta','PrecioVentaInterno','LaminaXPaquete','Apedido' ]
         };
         var options_pegamento = {
             valueNames: [ 'Provedor', 'Marca','PrecioCompra','PrecioVenta' ]

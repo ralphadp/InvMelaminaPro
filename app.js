@@ -664,6 +664,9 @@ app.post('/obtener_precio', (req, res) => {
                     precio_caja = result.precio_compra_caja?result.precio_compra_caja:0;
                 } else if (req.body.tipo_entrada == "pedido") {
                     precio = result.precio_venta;
+                    if (req.body.tipo_cliente == 'interno' && tipoItem == "melamina") {
+                        precio = result.precio_venta_interno;
+                    }
                     precio_metros = result.precio_venta_metros;
                     if (req.body.canteo && result.hasOwnProperty('precio_venta_metros_canteo')) {
                         precio_metros = result.precio_venta_metros_canteo;

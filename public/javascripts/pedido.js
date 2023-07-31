@@ -671,7 +671,7 @@ function cerrarGloboMensaje() {
 
 function obtenerPrecioStandard() {
     let ids = new getIDS();
-    ids.verify();
+    let tipo = ids.verify();
 
     let claanUnidad = $('#' + ids.UNIDAD_ID).find(":selected").val();
 
@@ -683,6 +683,7 @@ function obtenerPrecioStandard() {
         cantidad: $('#' + ids.CANTIDAD_ID).val(),
         unidad:   isMetrosAlCanteo(claanUnidad)?'metros':claanUnidad,
         canteo:   isMetrosAlCanteo(claanUnidad)?true:false,
+        tipo_cliente: (tipo == 1)?'interno':'externo',
         tipo_entrada: "pedido"
     };
 

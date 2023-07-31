@@ -723,6 +723,7 @@ function Melamina() {
 		marca:"",
 		precio_compra:0,
 		precio_venta:0,
+		precio_venta_interno:0,
 		laminaxpaquete:0,
 		apedido:false,
 	};
@@ -780,6 +781,7 @@ function Melamina() {
 					</td>
 					<td class='item_td numericAllow' id='a_precio_compra_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='a_precio_venta_${next_index}' contenteditable='true'></td>
+					<td class='item_td numericAllow' id='a_precio_venta_interno_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='a_laminaxpaquete_${next_index}' contenteditable='true'></td>
 					<td><input type="checkbox" id="a_apedido_${next_index}" /></td>
 					<td style="display:none" id="a_hash_${next_index}"></td>
@@ -796,6 +798,7 @@ function Melamina() {
 		this.att.marca = getSelectedOption("marca_melamina_" + row_id);
 		this.att.precio_compra = document.getElementById("a_precio_compra_" + row_id).innerText;
 		this.att.precio_venta = document.getElementById("a_precio_venta_" + row_id).innerText;
+		this.att.precio_venta_interno = document.getElementById("a_precio_venta_interno_" + row_id).innerText;
 		this.att.laminaxpaquete = document.getElementById("a_laminaxpaquete_" + row_id).innerText;
 		this.att.hash_inventario = document.getElementById("a_hash_" + row_id).innerText;
 		this.att.apedido = $("#a_apedido_" + row_id).is(":checked");

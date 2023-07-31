@@ -353,7 +353,7 @@
 										<div class="form-holder form-holder-2">
 											<label for="room" class="special-label-1">Operario</label>
 											<select name="cliente" id="cliente" class="form-control" onChange="DatosCliente(this);">
-												<option value="" selected>(operario)</option>
+												<option value="" selected>(Operario)</option>
                                                 <% for(let index = 0; index < cliente.length; index++) {
 													if (cliente[index].tipo == "interno") { %>
                                                     <option value="<%= cliente[index]._id.toString() %>"><%= cliente[index].nombre %></option>
@@ -650,7 +650,7 @@
 										<div class="form-holder form-holder-2">
 											<label for="cliente_re" class="special-label-1">Cliente</label>
 											<select name="cliente_re" id="cliente_re" class="form-control" onChange="DatosCliente(this);">
-												<option value="" selected="">(ninguno)</option>
+												<option value="" selected="">(Elija al Cliente)</option>
 												<% for(let index = 0; index < cliente.length; index++) {
 													if (cliente[index].tipo == "externo") { %>
                                                     <option value="<%= cliente[index]._id.toString() %>"><%= cliente[index].nombre %></option>
