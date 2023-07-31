@@ -13,8 +13,10 @@
 	<link rel="stylesheet" href="stylesheets/stylein.css">
 	<link rel="stylesheet" href="stylesheets/report_table.css">
 
-	<script src="https://d3js.org/d3.v3.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.3/d3-tip.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+	<!--<script src="https://d3js.org/d3.v3.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.3/d3-tip.min.js"></script>-->
 
 	<!--Move to main css, later-->
 	<style>
@@ -125,7 +127,6 @@
 								</h2>
 								<section>
 									<div class="inner">
-										<div style="background-color: azure; padding-left: 5px;" id="cliente_bars">
 										<button type="button" id="b0_clickEnero" onclick="getPedidosClienteDelMes(0)" class="mes-button">Enero</button>
 										<button type="button" id="b0_clickFebrero" onclick="getPedidosClienteDelMes(1)" class="mes-button">Febrero</button>
 										<button type="button" id="b0_clickMarzo" onclick="getPedidosClienteDelMes(2)" class="mes-button">Marzo</button>
@@ -138,7 +139,8 @@
 										<button type="button" id="b0_clickOctubre" onclick="getPedidosClienteDelMes(9)" class="mes-button">Octubre</button>
 										<button type="button" id="b0_clickNoviembre" onclick="getPedidosClienteDelMes(10)" class="mes-button">Noviembre</button>
 										<button type="button" id="b0_clickDiciembre" onclick="getPedidosClienteDelMes(11)" class="mes-button">Diciembre</button>
-										</div>
+										<canvas style="background-color: azure; padding-left: 5px;" id="cliente_bars">
+										</canvas>
 									</div>
 								</section>
 								<h2>
@@ -147,7 +149,6 @@
 								</h2>
 								<section>
 									<div class="inner">
-										<div class="canvasBox" style="background-color: azure; padding-left: 5px;" id="cliente_pie">
 										<button type="button" id="p0_clickEnero" onclick="getPedidosClienteDelMes(0)" class="mes-button">Enero</button>
 										<button type="button" id="p0_clickFebrero" onclick="getPedidosClienteDelMes(1)" class="mes-button">Febrero</button>
 										<button type="button" id="p0_clickMarzo" onclick="getPedidosClienteDelMes(2)" class="mes-button">Marzo</button>
@@ -160,7 +161,8 @@
 										<button type="button" id="p0_clickOctubre" onclick="getPedidosClienteDelMes(9)" class="mes-button">Octubre</button>
 										<button type="button" id="p0_clickNoviembre" onclick="getPedidosClienteDelMes(10)" class="mes-button">Noviembre</button>
 										<button type="button" id="p0_clickDiciembre" onclick="getPedidosClienteDelMes(11)" class="mes-button">Diciembre</button>
-										</div>
+										<canvas class="canvasBox" style="background-color: azure; padding-left: 5px;" id="cliente_pie">
+										</canvas>
 									</div>
 								</section>
 							</div>
@@ -178,7 +180,6 @@
 								</h2>
 								<section>
 									<div class="inner">
-										<div style="background-color: azure; padding-left: 5px;" id="producto_bars">
 										<button type="button" id="b1_clickEnero" onclick="getPedidosMes(0)" class="mes-button">Enero</button>
 										<button type="button" id="b1_clickFebrero" onclick="getPedidosMes(1)" class="mes-button">Febrero</button>
 										<button type="button" id="b1_clickMarzo" onclick="getPedidosMes(2)" class="mes-button">Marzo</button>
@@ -191,7 +192,8 @@
 										<button type="button" id="b1_clickOctubre" onclick="getPedidosMes(9)" class="mes-button">Octubre</button>
 										<button type="button" id="b1_clickNoviembre" onclick="getPedidosMes(10)" class="mes-button">Noviembre</button>
 										<button type="button" id="b1_clickDiciembre" onclick="getPedidosMes(11)" class="mes-button">Diciembre</button>
-										</div>
+										<canvas style="background-color: azure; padding-left: 5px;" id="producto_bars">
+										</canvas>
 									</div>
 								</section>
 								<h2>
@@ -200,7 +202,6 @@
 								</h2>
 								<section>
 									<div class="inner">
-										<div class="canvasBox" style="background-color: azure; padding-left: 5px;" id="producto_pie">
 										<button type="button" id="p1_clickEnero" onclick="getPedidosMes(0)" class="mes-button">Enero</button>
 										<button type="button" id="p1_clickFebrero" onclick="getPedidosMes(1)" class="mes-button">Febrero</button>
 										<button type="button" id="p1_clickMarzo" onclick="getPedidosMes(2)" class="mes-button">Marzo</button>
@@ -213,7 +214,8 @@
 										<button type="button" id="p1_clickOctubre" onclick="getPedidosMes(9)" class="mes-button">Octubre</button>
 										<button type="button" id="p1_clickNoviembre" onclick="getPedidosMes(10)" class="mes-button">Noviembre</button>
 										<button type="button" id="p1_clickDiciembre" onclick="getPedidosMes(11)" class="mes-button">Diciembre</button>
-										</div>
+										<canvas class="canvasBox" style="background-color: azure; padding-left: 5px;" id="producto_pie">
+										</canvas>
 									</div>
 								</section>
 							</div>
@@ -231,9 +233,9 @@
 								</h2>
 								<section>
 									<div class="inner">
-										<div style="background-color: azure; padding-left: 5px;" id="precio_cliente_bars">
 										<button type="button" id="b2_clickUpdate" onclick="getPrecioCliente()" class="mes-button">Actualizar</button>
-										</div>
+										<canvas style="background-color: azure; padding-left: 5px;" id="precio_cliente_bars">
+										</canvas>
 									</div>
 								</section>
 								<h2>
@@ -242,9 +244,9 @@
 								</h2>
 								<section>
 									<div class="inner">
-										<div class="canvasBox" style="background-color: azure; padding-left: 5px;" id="precio_cliente_pie">
 										<button type="button" id="p2_clickUpdate" onclick="getPrecioCliente()" class="mes-button">Actualizar</button>
-										</div>
+										<canvas class="canvasBox" style="background-color: azure; padding-left: 5px;" id="precio_cliente_pie">
+										</canvas>
 									</div>
 								</section>
 							</div>
@@ -262,9 +264,9 @@
 								</h2>
 								<section>
 									<div class="inner">
-										<div style="background-color: azure; padding-left: 5px;" id="provedor_bars">
 										<button type="button" id="b3_clickUpdate" onclick="getProvedorProducto()" class="mes-button">update</button>
-										</div>
+										<canvas style="background-color: azure; padding-left: 5px;" id="provedor_bars">
+										</canvas>
 									</div>
 								</section>
 								<h2>
@@ -273,9 +275,9 @@
 								</h2>
 								<section>
 									<div class="inner">
-										<div class="canvasBox" style="background-color: azure; padding-left: 5px;" id="provedor_pie">
 										<button type="button" id="p3_clickUpdate" onclick="getProvedorProducto()" class="mes-button">update</button>
-										</div>
+										<canvas class="canvasBox" style="background-color: azure; padding-left: 5px;" id="provedor_pie">
+										</canvas>
 									</div>
 								</section>
 							</div>
@@ -293,12 +295,12 @@
 								</h2>
 								<section>
 									<div class="inner">
-										<div style="background-color: azure; padding-left: 5px;" id="venta_dia_bars">
-											<div>
-												<label for="datepicker_bar">Selecciona Fecha:</label>
-												<input type="text" id="datepicker_bar"/>
-											</div>
+										<div>
+											<label for="datepicker_bar">Selecciona Fecha:</label>
+											<input type="text" id="datepicker_bar"/>
 										</div>
+										<canvas style="background-color: azure; padding-left: 5px;" id="venta_dia_bars">
+										</canvas>
 									</div>
 								</section>
 								<h2>
@@ -307,12 +309,12 @@
 								</h2>
 								<section>
 									<div class="inner">
-										<div class="canvasBox" style="background-color: azure; padding-left: 5px;" id="venta_dia_pie">
-											<div>
-												<label for="datepicker_pie">Selecciona Fecha:</label>
-												<input type="text" id="datepicker_pie"/>
-											</div>
+										<div>
+											<label for="datepicker_pie">Selecciona Fecha:</label>
+											<input type="text" id="datepicker_pie"/>
 										</div>
+										<canvas class="canvasBox" style="background-color: azure; padding-left: 5px;" id="venta_dia_pie">
+										</canvas>
 									</div>
 								</section>
 							</div>

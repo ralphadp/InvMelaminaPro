@@ -14,9 +14,11 @@ function getReportesPedidosClienteMes(mesElegido) {
     .then(response => {
         if (response.ok) {
             console.log(response.message);
-            clearSVG()
-            BarsData(response.chartData,"cliente_bars");
-            PieLegend(response.chartData,"cliente_pie");
+            getGraph('bar', response.chartData, "cliente_bars");
+            getGraph('pie', response.chartData, "cliente_pie");
+            //clearSVG();
+            //BarsData(response.chartData,"cliente_bars");
+            //PieLegend(response.chartData,"cliente_pie");
         } else {
             console.log(response.status, response.statusText);
         }
@@ -39,9 +41,11 @@ function getReportesPedidosMes(mesElegido) {
     .then(response => {
         if (response.ok) {
             console.log(response.message);
-            clearSVG()
-            BarsData(response.chartData, "producto_bars");
-            PieLegend(response.chartData, "producto_pie");
+            //clearSVG()
+            //BarsData(response.chartData, "producto_bars");
+           // PieLegend(response.chartData, "producto_pie");
+            getGraph('bar', response.chartData, "producto_bars");
+            getGraph('pie', response.chartData, "producto_pie");
         } else {
             console.log(response.status, response.statusText);
         }
@@ -60,9 +64,11 @@ function getConsumoCliente() {
     .then(response => {
         if (response.ok) {
             console.log(response.message);
-            clearSVG()
-            BarsData(response.chartData, "precio_cliente_bars");
-            PieLegend(response.chartData, "precio_cliente_pie");
+            //clearSVG()
+           // BarsData(response.chartData, "precio_cliente_bars");
+            //PieLegend(response.chartData, "precio_cliente_pie");
+            getGraph('bar', response.chartData, "precio_cliente_bars");
+            getGraph('pie', response.chartData, "precio_cliente_pie");
         } else {
             console.log(response.status, response.statusText);
         }
@@ -81,9 +87,11 @@ function getProductoXProvedor() {
     .then(response => {
         if (response.ok) {
             console.log(response.message);
-            clearSVG()
-            BarsData(response.chartData, "provedor_bars");
-            PieLegend(response.chartData, "provedor_pie");
+            //clearSVG()
+            //BarsData(response.chartData, "provedor_bars");
+            //PieLegend(response.chartData, "provedor_pie");
+            getGraph('bar', response.chartData, "provedor_bars");
+            getGraph('pie', response.chartData, "provedor_pie");
         } else {
             console.log(response.status, response.statusText);
         }
@@ -106,9 +114,11 @@ function getProductoXDia(dia) {
     .then(response => {
         if (response.ok) {
             console.log(response.message);
-            clearSVG()
-            BarsHorizontal(response.chartData, "venta_dia_bars");
-            PieLegend(response.chartData, "venta_dia_pie");
+            //clearSVG()
+            //BarsHorizontal(response.chartData, "venta_dia_bars");
+            //PieLegend(response.chartData, "venta_dia_pie");
+            getGraph('horizontalBar', response.chartData, "venta_dia_bars");
+            getGraph('pie', response.chartData, "venta_dia_pie");
         } else {
             console.log(response.status, response.statusText);
         }
@@ -238,7 +248,57 @@ function getVentaCompraMes(mes) {
 
 /////////////////// D3  functions ///////////////////
 
-function clearSVG() {
+function getGraph(graphType, chartData, canvas_id) {
+
+    var label = [];
+    var volume = [];
+    chartData.forEach((item, index)=> {
+        label[index] = item.cliente;
+        volume[index] = item.Volume; 
+    });
+
+    var ctx = document.getElementById(canvas_id).getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: graphType, // 'bar', line pie horizontalBar
+        data: {
+        labels: label,
+        datasets: [{
+            label: '# of transactions',
+            data: volume,
+            backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 206, 86)',
+            'rgb(75, 192, 192)',
+            'rgb(153, 102, 255)',
+            'rgb(55, 159, 64)',
+            'rgb(255, 59, 164)',
+            'rgb(55, 109, 164)',
+            ],
+            borderColor: [
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1,
+        }]
+        },
+        options: {
+        scales: {
+            yAxes: [{
+            ticks: {
+                beginAtZero: true
+            }
+            }]
+        }
+        }
+    });
+}
+
+/*function clearSVG() {
     d3.selectAll("svg").remove();
 }
 
@@ -572,7 +632,7 @@ function BarsHorizontal(chartData, canvas_id) {
 
         var xAxis = d3.svg.axis().scale(xScale).orient("bottom")
             .ticks(7)
-            .tickFormat(function(d) {return d /*+ "%"*/});
+            .tickFormat(function(d) {return d + "%"});
 
         var yAxis = d3.svg.axis().scale(yScale).orient("left")
             .outerTickSize(0);
@@ -605,39 +665,39 @@ function BarsHorizontal(chartData, canvas_id) {
     .append("text")
     .attr("class", "textlabel")
     .style("font-family", "Arial")
-    /*.attr("x", function(d){ return xScale(d["Percentage"]) + (xScale.range()/2);  })
+    .attr("x", function(d){ return xScale(d["Percentage"]) + (xScale.range()/2);  })
     .attr("y", function(d){ return yScale(d["LabelD3"]) - 3; })
-    .text(function(d){ return (d["Percentage"] + "%"); }); */
+    .text(function(d){ return (d["Percentage"] + "%"); }); 
 
 
     // X-axis labels
-   /* svg.append("text")
+ svg.append("text")
     .attr("text-anchor", "middle")
     .style("font-size", "13px")
     .style("color", "#333333")
     .attr("transform", "translate("+ (outerWidth/2) + "," +(outerHeight-(padding/4)) + ")")
     .text("% of Households")
-    .style("font-family", "Arial"); */
+    .style("font-family", "Arial"); 
 
     //title for the chart 
 
-    /*svg.append("text")
+    svg.append("text")
     .attr("text-anchor", "middle")
     .style("font-size", "16px")
     .style("color", "#333333")
     .attr("transform", "translate("+ (outerWidth/3.78) + "," +(outerHeight/30) + ")")
     .text("Housing Tenure of DC Residents")
-    .style("font-family", "Arial");*/
+    .style("font-family", "Arial");
 
     //source
 
-    /*svg.append("text")
+    svg.append("text")
     .attr("text-anchor", "middle")
     .style("font-size", "13px")
     .style("color", "#333333")
     .attr("transform", "translate("+ (outerWidth/3.2) + "," +(outerHeight/1) + ")")
     .text("Source: US Census ACS 5-year 2010-2014")
-    .style("font-family", "Arial")*/
+    .style("font-family", "Arial")
 
 
     svg.append("text")
@@ -649,9 +709,8 @@ function BarsHorizontal(chartData, canvas_id) {
     .style("font-family", "Arial")
 
    // bars.exit().remove();
-
-
 }
+*/
 
 function BuildTableDia(chartData) {
     var TotalVenta = 0;
