@@ -51,7 +51,7 @@
                                 <div class=<%= producto.apedido?'pedido_centered':'centered' %> ><%= producto.apedido ? 'A PEDIDO' : (noDisponible ? 'NO DISPONIBLE':''); %></div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between"> <span id="melamina_<%= index%>" class="font-weight-bold Caracteristicas"><%= items[producto.color]%> <%= items[producto.medidas]%> (<%= items[producto.marca]%>)</span> <span class="font-weight-bold-price"><%= producto.precio_venta %>Bs (lamina)</span> </div>
-                                    <p class="card-text mb-1 mt-1">Algunos productos son a pedido, con tardanza de algunos dias.</p>
+                                    <p class="card-text mb-1 mt-1"><%= producto.apedido ? 'A pedido, con tardanza de algunos dias.':'Ventas al por mayor y menor' %></p>
                                     <div class="d-flex align-items-center flex-row"> <img src="https://i.imgur.com/e9VnSng.png" width="20"> <span class="guarantee">Envios a toda Bolivia</span> </div>
                                 </div>
                                 <hr>
@@ -79,7 +79,7 @@
                                 <div class=<%= producto.apedido?'pedido_centered':'centered' %> ><%= producto.apedido ? 'A PEDIDO' : (noDisponible ? 'NO DISPONIBLE':''); %></div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between"> <span id="tapacantos_<%= index%>" class="font-weight-bold Caracteristicas"><%= items[producto.color]%> <%= items[producto.medidas]%></span> <span class="font-weight-bold-price"><%= producto.precio_venta %>Bs (rollo)<br><%= producto.precio_venta_caja %>Bs (caja)<br> <%= producto.precio_venta_metros %>Bs (metros)<br> <%= producto.precio_venta_metros_canteo %>Bs (metros al canteo)</span> </div>
-                                    <p class="card-text mb-1 mt-1">Algunos productos son a pedido, con tardanza de algunos dias.</p>
+                                    <p class="card-text mb-1 mt-1"><%= producto.apedido ? 'A pedido, con tardanza de algunos dias.':'Ventas al por mayor y menor' %></p>
                                     <div class="d-flex align-items-center flex-row"> <img src="https://i.imgur.com/e9VnSng.png" width="20"> <span class="guarantee">Envios a toda Bolivia</span> </div>
                                 </div>
                                 <hr>
@@ -107,7 +107,7 @@
                                 <div class=<%= producto.apedido?'pedido_centered':'centered' %> ><%= producto.apedido ? 'A PEDIDO' : (noDisponible ? 'NO DISPONIBLE':''); %></div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between"> <span id="fondos_<%= index%>" class="font-weight-bold Caracteristicas"><%= items[producto.color]%> <%= items[producto.medidas]%></span> <span class="font-weight-bold-price"><%= producto.precio_venta %> Bs (lamina)</span> </div>
-                                    <p class="card-text mb-1 mt-1">Algunos productos son a pedido, con tardanza de algunos dias.</p>
+                                    <p class="card-text mb-1 mt-1"><%= producto.apedido ? 'A pedido, con tardanza de algunos dias.':'Ventas al por mayor y menor' %></p>
                                     <div class="d-flex align-items-center flex-row"> <img src="https://i.imgur.com/e9VnSng.png" width="20"> <span class="guarantee">Envios a toda Bolivia</span> </div>
                                 </div>
                                 <hr>
@@ -135,7 +135,7 @@
                                 <div class=<%= producto.apedido?'pedido_centered':'centered' %> ><%= producto.apedido ? 'A PEDIDO' : (noDisponible ? 'NO DISPONIBLE':''); %></div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between"> <span id="tapatornillos_<%= index%>" class="font-weight-bold Caracteristicas"><%= items[producto.color]%></span> <span class="font-weight-bold-price"><%= producto.precio_venta %>Bs (hoja)<br><%= producto.precio_venta_caja %>Bs (caja)</span> </div>
-                                    <p class="card-text mb-1 mt-1">Algunos productos son a pedido, con tardanza de algunos dias.</p>
+                                    <p class="card-text mb-1 mt-1"><%= producto.apedido ? 'A pedido, con tardanza de algunos dias.':'Ventas al por mayor y menor' %></p>
                                     <div class="d-flex align-items-center flex-row"> <img src="https://i.imgur.com/e9VnSng.png" width="20"> <span class="guarantee">Envios a toda Bolivia</span> </div>
                                 </div>
                                 <hr>
@@ -163,7 +163,7 @@
                                 <div class=<%= producto.apedido?'pedido_centered':'centered' %> ><%= producto.apedido ? 'A PEDIDO' : (noDisponible ? 'NO DISPONIBLE':''); %></div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between"> <span id="pegamento_<%= index%>" class="font-weight-bold Caracteristicas"><%= items[producto.color]%> (<%= items[producto.marca]%>)</span> <span class="font-weight-bold-price"><%= producto.precio_venta %> Bs (bolsa)</span> </div>
-                                    <p class="card-text mb-1 mt-1">Algunos productos son a pedido, con tardanza de algunos dias.</p>
+                                    <p class="card-text mb-1 mt-1"><%= producto.apedido ? 'A pedido, con tardanza de algunos dias.':'Ventas al por mayor y menor' %></p>
                                     <div class="d-flex align-items-center flex-row"> <img src="https://i.imgur.com/e9VnSng.png" width="20"> <span class="guarantee">Envios a toda Bolivia</span> </div>
                                 </div>
                                 <hr>
