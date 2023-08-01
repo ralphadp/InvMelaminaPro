@@ -963,7 +963,7 @@ app.get('/historial', checkAuth, function(req, res) {
     .catch(error => console.error(error))
 });
 
-app.get('/views', function(req, res) {
+app.get('/productos', function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
@@ -985,16 +985,28 @@ app.get('/views', function(req, res) {
                     DB.collection("collectiontapacantos").find().toArray().then(resultsTapacantos => {
                         DB.collection("collectionfondo").find().toArray().then(resultsFondos => {
                             DB.collection("collectiontapatornillos").find().toArray().then(resultsTapatornillos => {
-                                res.render('pages/views', {
-                                    items: items,
-                                    melamina: resultsMelamina,
-                                    tapacantos: resultsTapacantos,
-                                    fondos: resultsFondos,
-                                    tapatornillos: resultsTapatornillos,
-                                });
+                                DB.collection("collectionpegamento").find().toArray().then(resultsPegamento => {
+                                    DB.collection("inventario").find().toArray().then(resultInventario => {
+                                        var inventario = {};
+                                        resultInventario.forEach(element => {
+                                            inventario[element.codigo] = element;
+                                        });
+                                        res.render('pages/views', {
+                                            items: items,
+                                            melamina: resultsMelamina,
+                                            tapacantos: resultsTapacantos,
+                                            fondos: resultsFondos,
+                                            tapatornillos: resultsTapatornillos,
+                                            pegamento: resultsPegamento,
+                                            inventario: inventario
+                                        });
+                                    })
+                                    .catch(error => console.error(error))
+                                    .finally(data => client.close())
+                                })
+                                .catch(error => console.error(error))
                             })
                             .catch(error => console.error(error))
-                            .finally(data => client.close())
                         })
                         .catch(error => console.error(error))
                     })
