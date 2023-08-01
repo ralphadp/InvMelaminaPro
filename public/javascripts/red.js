@@ -129,6 +129,7 @@ function getProductoXDia(dia) {
 }
 
 function getVentaCompraHoy(dia) {
+    document.getElementById("hoylabel").innerText = dia;
     let data = {
         day: dia
     };
@@ -771,7 +772,8 @@ function BuildTableMes(chartData) {
     chartData.forEach((row) => {
 
         if (row.producto == "Pegamento") {
-            pegamento.cantidad = row.colores.cantidad;
+            pegamento.cantidadVenta = row.colores.cantidadItemsVenta;
+            pegamento.cantidadCompra = row.colores.cantidadItemsCompra;
             pegamento.venta = row.colores.venta;
             pegamento.compra = row.colores.compra;
         
@@ -795,12 +797,17 @@ function BuildTableMes(chartData) {
             newCell = newRow.insertCell();
             newCell.setAttribute("data-title", "Domestic Gross");
             newCell.setAttribute("data-type", "currency");
-            newCell.appendChild(document.createTextNode(row.blanco.cantidad));
+            newCell.appendChild(document.createTextNode(row.blanco.cantidadItemsVenta));
 
             newCell = newRow.insertCell();
             newCell.setAttribute("data-title", "Domestic Gross");
             newCell.setAttribute("data-type", "currency");
             newCell.appendChild(document.createTextNode(row.blanco.venta));
+
+            newCell = newRow.insertCell();
+            newCell.setAttribute("data-title", "Domestic Gross");
+            newCell.setAttribute("data-type", "currency");
+            newCell.appendChild(document.createTextNode(row.blanco.cantidadItemsCompra));
 
             newCell = newRow.insertCell();
             newCell.setAttribute("data-title", "Domestic Gross");
@@ -820,12 +827,17 @@ function BuildTableMes(chartData) {
             newCell = newRow.insertCell();
             newCell.setAttribute("data-title", "Domestic Gross");
             newCell.setAttribute("data-type", "currency");
-            newCell.appendChild(document.createTextNode(row.colores.cantidad));
+            newCell.appendChild(document.createTextNode(row.colores.cantidadItemsVenta));
 
             newCell = newRow.insertCell();
             newCell.setAttribute("data-title", "Domestic Gross");
             newCell.setAttribute("data-type", "currency");
             newCell.appendChild(document.createTextNode(row.colores.venta));
+
+            newCell = newRow.insertCell();
+            newCell.setAttribute("data-title", "Domestic Gross");
+            newCell.setAttribute("data-type", "currency");
+            newCell.appendChild(document.createTextNode(row.colores.cantidadItemsCompra));
 
             newCell = newRow.insertCell();
             newCell.setAttribute("data-title", "Domestic Gross");
@@ -861,6 +873,9 @@ function BuildTableMes(chartData) {
     newCell = newRow.insertCell();
     newCell.setAttribute("data-title", "Domestic Gross");
     newCell.setAttribute("data-type", "currency");
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
     newCell.appendChild(document.createTextNode(TotalCompra1));
     newCell = newRow.insertCell();
     newCell.setAttribute("data-title", "Domestic Gross");
@@ -875,6 +890,9 @@ function BuildTableMes(chartData) {
     newCell.setAttribute("data-title", "Domestic Gross");
     newCell.setAttribute("data-type", "currency");
     newCell.appendChild(document.createTextNode(TotalVenta2));
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
     newCell = newRow.insertCell();
     newCell.setAttribute("data-title", "Domestic Gross");
     newCell.setAttribute("data-type", "currency");
@@ -895,7 +913,12 @@ function BuildTableMes(chartData) {
     newCell = newRow.insertCell();
     newCell.setAttribute("data-title", "Domestic Gross");
     newCell.setAttribute("data-type", "currency");
-    newCell.appendChild(document.createTextNode(pegamento.cantidad));
+    newCell.appendChild(document.createTextNode(pegamento.cantidadVenta));
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
+    newCell.appendChild(document.createTextNode(pegamento.cantidadCompra));
 
     newCell = newRow.insertCell();
     newCell.setAttribute("data-title", "Domestic Gross");
@@ -921,6 +944,10 @@ function BuildTableMes(chartData) {
     newCell = newRow.insertCell();
     newCell.setAttribute("data-title", "Domestic Gross");
     newCell.setAttribute("data-type", "currency");
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
     newCell.appendChild(document.createTextNode(TotalVenta1 + TotalVenta2));
 
     newCell = newRow.insertCell();
@@ -934,6 +961,10 @@ function BuildTableMes(chartData) {
     newCell.setAttribute("data-title", "Worldwide Gross");
     newCell.setAttribute("data-type", "currency");
     newCell.appendChild(document.createTextNode("TOTAL:"));
+
+    newCell = newRow.insertCell();
+    newCell.setAttribute("data-title", "Domestic Gross");
+    newCell.setAttribute("data-type", "currency");
 
     newCell = newRow.insertCell();
     newCell.setAttribute("data-title", "Domestic Gross");

@@ -2842,7 +2842,8 @@ app.post('/reporte_venta_compra_dia', function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
-    console.log("Getting from "+req.body.day);
+
+    console.log("Getting from " + req.body.day);
     DB.collection("item").find().toArray().then(resultItem => {
         var productos = [];
         resultItem.forEach((item, index)=> {
@@ -2884,13 +2885,14 @@ app.post('/reporte_compra_venta_colores_mes', function(req, res) {
     const client = new MongoClient(uri);
     client.connect();
     var DB = client.db();
-    var SelectedMonth = '/' + req.body.mes + '/2023';
+
+    var SelectedMonth = '/' + req.body.mes + '/' + (new Date()).getFullYear();
     console.log("selected mes: ", SelectedMonth);
 
     let productos = {
-        "Melamina":["laminas","paquete"],
+        "Melamina":["laminas","paquetes"],
         "Tapacantos":["rollos","cajas","metros"],
-        "Fondo":["laminas","paquete"],
+        "Fondo":["laminas","paquetes"],
         "Pegamento":["bolsas"],
         "Tapatornillos":["hojas","cajas"]
     };
@@ -2900,38 +2902,38 @@ app.post('/reporte_compra_venta_colores_mes', function(req, res) {
     }).toArray().then(resultHistorial => {
         let reporte = [];
         let index = 0;
-        
+
         Object.keys(productos).forEach(product => {
 
             productos[product].forEach((tipoProducto) => {
                 let DATA = {
                     producto: product,
-                    blanco: {tipo:tipoProducto, cantidad:0, venta:0, compra:0}, 
-                    colores: {tipo:tipoProducto, cantidad:0, venta:0, compra:0}
+                    blanco: {tipo:tipoProducto, cantidadItemsVenta:0, cantidadItemsCompra:0, venta:0, compra:0}, 
+                    colores: {tipo:tipoProducto, cantidadItemsVenta:0, cantidadItemsCompra:0, venta:0, compra:0}
                 };
                 //DATA.producto = product;
                 resultHistorial.forEach((historia) => {
-                    
+
                     if (historia.item == product && historia.nombreDeUnidad == tipoProducto) {
-                        console.log(historia.item, historia.nombreDeUnidad,historia.color);
+                        console.log(historia.item, historia.nombreDeUnidad, historia.color);
                         if (historia.color == "Blanco") {
-                            console.log(historia.tipo_entrada, historia.cantidad);
                             DATA.blanco.tipo = historia.nombreDeUnidad;
-                            DATA.blanco.cantidad += Number(historia.cantidad);
                             if (historia.tipo_entrada == "pedido") {
+                                DATA.blanco.cantidadItemsVenta += Number(historia.cantidad);
                                 DATA.blanco.venta += Number(historia.precioVenta);
                             } else if (historia.tipo_entrada == "ingreso") {
+                                DATA.blanco.cantidadItemsCompra += Number(historia.cantidad);
                                 DATA.blanco.compra += Number(historia.precioCompra);
                             } else {
                                 console.log("Tipo de entrada desconocida: '" + historia.tipo_entrada +"'");
                             }
                         } else {
-                            console.log(historia.tipo_entrada, historia.cantidad);
                             DATA.colores.tipo = historia.nombreDeUnidad;
-                            DATA.colores.cantidad += Number(historia.cantidad);
-                            if (historia.tipo_entrada == "pedido") {
+                            if (historia.tipo_entrada == "pedido") { 
+                                DATA.colores.cantidadItemsVenta += Number(historia.cantidad);
                                 DATA.colores.venta += Number(historia.precioVenta);
                             } else if (historia.tipo_entrada == "ingreso") {
+                                DATA.colores.cantidadItemsCompra += Number(historia.cantidad);
                                 DATA.colores.compra += Number(historia.precioCompra);
                             } else {
                                 console.log("Tipo de entrada desconocida: '" + historia.tipo_entrada +"'");

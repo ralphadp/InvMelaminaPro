@@ -91,6 +91,9 @@
 		.mes-button {
 			border-color: white;
 			border-radius: 5px;
+			font-size: 14px;
+			padding-left: 1px;
+ 			padding-right: 1px;
 		}
 		.leftbuttons:hover, .mes-button:hover {
 			background-image:none !important;
@@ -324,7 +327,7 @@
 
 				
 				<div class="container" id="frame-venta-compra-dia">
-					<h5>Reporte compra venta del Dia</h5>
+					<h5>Reporte compra venta del Dia <label id="hoylabel"></label></h5>
 					<table class="responsive-table" id="table-dia">
 						<thead>
 							<tr>
@@ -360,13 +363,15 @@
 							<th scope="col">Producto</th>
 							<th scope="col">Color</th>
 							<th scope="col">Embalaje</th>
-							<th scope="col">Cantidad</th>
+							<th scope="col">Cantidad venta</th>
 							<th scope="col">Venta (Bs)</th>
+							<th scope="col">Cantidad compra</th>
 							<th scope="col">Compra (Bs)</th>
 							<th scope="col">Color</th>
 							<th scope="col">Embalaje</th>
-							<th scope="col">Cantidad</th>
+							<th scope="col">Cantidad venta</th>
 							<th scope="col">Venta (Bs)</th>
+							<th scope="col">Cantidad compra</th>
 							<th scope="col">Compra (Bs)</th>
 							</tr>
 						</thead>
@@ -379,7 +384,8 @@
 						<thead>
 						<tr>
 							<th scope="col">Producto</th>
-							<th scope="col">Cantidad</th>
+							<th scope="col">Cantidad venta</th>
+							<th scope="col">Cantidad compra</th>
 							<th scope="col">Venta (Bs)</th>
 							<th scope="col">Compra (Bs)</th>
 						</tr>
