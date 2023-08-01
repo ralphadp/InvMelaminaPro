@@ -79,3 +79,13 @@ hr {
     font-size: 25px;
     font-weight: 700;
 }
+
+.detalle-titulo {
+    font-size: 10px;
+    display: block;
+}
+
+.font-weight-bold-price {
+    font-weight: 700!important;
+    font-size: 13px;
+}

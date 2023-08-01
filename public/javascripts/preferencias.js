@@ -726,6 +726,7 @@ function Melamina() {
 		precio_venta_interno:0,
 		laminaxpaquete:0,
 		apedido:false,
+		link_photo:"",
 	};
 
 	this.getRowBuild = function(next_index, listas) {
@@ -784,6 +785,7 @@ function Melamina() {
 					<td class='item_td numericAllow' id='a_precio_venta_interno_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='a_laminaxpaquete_${next_index}' contenteditable='true'></td>
 					<td><input type="checkbox" id="a_apedido_${next_index}" /></td>
+					<td contenteditable='true' class='stopSpaces' id='a_photo_${next_index}'></td>
 					<td style="display:none" id="a_hash_${next_index}"></td>
 					<td><button class='pref' type='button' title='Guardar' id='ga_${next_index}' onclick='guardarNuevo(this.id,"melamina_add")'><i class="fa fa-save"></i></button>
 						<button class='pref' type='button' title='Borrar' id='ba_${next_index}' onclick='borrarNuevo(this.id,"melamina_add")'><i class="fa fa-trash"></i></button>
@@ -802,6 +804,7 @@ function Melamina() {
 		this.att.laminaxpaquete = document.getElementById("a_laminaxpaquete_" + row_id).innerText;
 		this.att.hash_inventario = document.getElementById("a_hash_" + row_id).innerText;
 		this.att.apedido = $("#a_apedido_" + row_id).is(":checked");
+		this.att.link_photo = document.getElementById("a_photo_" + row_id).innerText.trim();
 	}
 
 /*UPDATE*/
@@ -901,7 +904,8 @@ function Tapacantos() {
 		precio_venta_caja:0,
 		precio_venta_metros:0,
 		precio_venta_metros_canteo:0,
-		apedido:false
+		apedido:false,
+		link_photo:"",
 	};
 
 	this.getRowBuild = function(next_index, listas) {
@@ -964,6 +968,7 @@ function Tapacantos() {
 					<td class='item_td numericAllow' id='t_precio_venta_metros_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='t_precio_venta_metros_canteo_${next_index}' contenteditable='true'></td>
 					<td><input type="checkbox" id="t_apedido_${next_index}" /></td>
+					<td contenteditable='true' class='stopSpaces' id='t_photo_${next_index}'></td>
 					<td style="display:none" id="t_hash_${next_index}"></td>
 					<td><button class='pref' type='button' title='Guardar' id='gt_${next_index}' onclick='guardarNuevo(this.id,"tapacantos_add")'><i class="fa fa-save"></i></button>
 						<button class='pref' type='button' title='Borrar' id='bt_${next_index}' onclick='borrarNuevo(this.id,"tapacantos_add")'><i class="fa fa-trash"></i></button>
@@ -986,6 +991,7 @@ function Tapacantos() {
 		this.att.precio_venta_metros_canteo = document.getElementById("t_precio_venta_metros_canteo_" + row_id).innerText;
 		this.att.hash_inventario = document.getElementById("t_hash_" + row_id).innerText;
 		this.att.apedido = $("#t_apedido_" + row_id).is(":checked");
+		this.att.link_photo = document.getElementById("t_photo_" + row_id).innerText.trim();
 	}
 
 /*UPDATE*/
@@ -1077,6 +1083,7 @@ function Pegamento() {
 		marca:"",
 		precio_compra:0,
 		precio_venta:0,
+		link_photo:"",
 	};
 
 	this.getRowBuild = function(next_index, listas) {
@@ -1108,6 +1115,7 @@ function Pegamento() {
 					</td>
 					<td class='numericAllow' id='p_precio_compra_${next_index}' contenteditable='true'></td>
 					<td class='numericAllow' id='p_precio_venta_${next_index}' contenteditable='true'></td>
+					<td contenteditable='true' class='stopSpaces' id='p_photo_${next_index}'></td>
 					<td style="display:none" id="p_hash_${next_index}"></td>
 					<td><button class='pref' type='button' title='Guardar' id='gp_${next_index}' onclick='guardarNuevo(this.id,"pegamento_add")'><i class="fa fa-save"></i></button>
 						<button class='pref' type='button' title='Borrar' id='bp_${next_index}' onclick='borrarNuevo(this.id,"pegamento_add")'><i class="fa fa-trash"></i></button>
@@ -1121,6 +1129,7 @@ function Pegamento() {
 		this.att.precio_compra = document.getElementById("p_precio_compra_" + row_id).innerText;
 		this.att.precio_venta = document.getElementById("p_precio_venta_" + row_id).innerText;
 		this.att.hash_inventario = document.getElementById("p_hash_" + row_id).innerText;
+		this.att.link_photo = document.getElementById("p_photo_" + row_id).innerText.trim();
 	}
 
 /*UPDATE*/
@@ -1215,7 +1224,8 @@ function Fondo() {
 		precio_compra:0,
 		precio_venta:0,
 		laminaxpaquete:0,
-		apedido:false
+		apedido:false,
+		link_photo:"",
 	};
 
 	this.getRowBuild = function(next_index, listas) {
@@ -1273,6 +1283,7 @@ function Fondo() {
 					<td class='item_td numericAllow' id='f_precio_venta_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='f_laminaxpaquete_${next_index}' contenteditable='true'></td>
 					<td><input type="checkbox" id="f_apedido_${next_index}" /></td>
+					<td contenteditable='true' class='stopSpaces' id='f_photo_${next_index}'></td>
 					<td style="display:none" id="f_hash_${next_index}"></td>
 					<td><button class='pref' type='button' title='Guardar' id='gf_${next_index}' onclick='guardarNuevo(this.id,"fondo_add")'><i class="fa fa-save"></i></button>
 						<button class='pref' type='button' title='Borrar' id='bf_${next_index}' onclick='borrarNuevo(this.id,"fondo_add")'><i class="fa fa-trash"></i></button>
@@ -1290,6 +1301,7 @@ function Fondo() {
 		this.att.laminaxpaquete = document.getElementById("f_laminaxpaquete_" + row_id).innerText;
 		this.att.hash_inventario = document.getElementById("f_hash_" + row_id).innerText;
 		this.att.apedido = $("#f_apedido_" + row_id).is(":checked");
+		this.att.link_photo = document.getElementById("f_photo_" + row_id).innerText.trim();
 	}
 
 /*UPDATE*/
@@ -1385,7 +1397,8 @@ function Tapatornillos() {
 		precio_compra_caja:0,
 		precio_venta_caja:0,
 		hojaxcaja:0,
-		apedido:false
+		apedido:false,
+		link_photo:"",
 	};
 
 	this.getRowBuild = function(next_index, listas) {
@@ -1433,6 +1446,7 @@ function Tapatornillos() {
 					<td class='item_td numericAllow' id='t_precio_venta_caja_${next_index}' contenteditable='true'></td>
 					<td class='item_td numericAllow' id='t_hojaxcaja_${next_index}' contenteditable='true'></td>
 					<td><input type="checkbox" id="t_apedido_${next_index}" /></td>
+					<td contenteditable='true' class='stopSpaces' id='t_photo_${next_index}'></td>
 					<td style="display:none" id="t_hash_${next_index}"></td>
 					<td><button class='pref' type='button' title='Guardar' id='gf_${next_index}' onclick='guardarNuevo(this.id,"tapatornillos_add")'><i class="fa fa-save"></i></button>
 						<button class='pref' type='button' title='Borrar' id='bf_${next_index}' onclick='borrarNuevo(this.id,"tapatornillos_add")'><i class="fa fa-trash"></i></button>
@@ -1451,6 +1465,7 @@ function Tapatornillos() {
 		this.att.hojaxcaja = document.getElementById("t_hojaxcaja_" + row_id).innerText;
 		this.att.hash_inventario = document.getElementById("t_hash_" + row_id).innerText;
 		this.att.apedido = $("#t_apedido_" + row_id).is(":checked");
+		this.att.link_photo = document.getElementById("t_photo_" + row_id).innerText.trim();
 	}
 
 /*UPDATE*/
