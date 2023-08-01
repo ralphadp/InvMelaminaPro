@@ -11,59 +11,9 @@
     <link rel="stylesheet" href="stylesheets/catalogo-cliente.css">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
 </head>
 <body>
-    <%  var photos = [
-            "https://i.imgur.com/SOMPPzU.jpg",
-            "https://i.imgur.com/FhRHNGE.jpg",
-            "https://i.imgur.com/eu74Mje.jpg",
-            "https://i.imgur.com/441QtPc.jpg",
-            "https://i.imgur.com/hnX99Cr.jpg",
-            "https://i.imgur.com/SOMPPzU.jpg",
-            "https://i.imgur.com/2ldaKjy.jpg",
-            "https://i.imgur.com/lTgyE2X.jpg",
-            "https://i.imgur.com/NFcMfYE.jpg",
-            "https://i.imgur.com/eu74Mje.jpg",
-            "https://i.imgur.com/L5iInTA.jpg",
-            "https://i.imgur.com/64PRDTx.jpg",
-            "https://i.imgur.com/hnQ492C.jpg",
-            "https://i.imgur.com/10JlX4K.jpg",
-            "https://i.imgur.com/eu74Mje.jpg",
-            "https://i.imgur.com/uh0knIW.jpg",
-            "https://i.imgur.com/rdYgwhr.jpg",
-            "https://i.imgur.com/x6hhqGn.jpg",
-            "https://i.imgur.com/oyDO49r.jpeg",
-            "https://i.imgur.com/rgbvXsb.jpeg",
-            "https://i.imgur.com/qg4RFz7.jpeg",
-            "https://i.imgur.com/3Ry1sZx.jpeg",
-            "https://i.imgur.com/2fdFnzF.jpeg",
-            "https://i.imgur.com/pEHgJGH.jpeg",
-            "https://i.imgur.com/SOMPPzU.jpg",
-            "https://i.imgur.com/FhRHNGE.jpg",
-            "https://i.imgur.com/eu74Mje.jpg",
-            "https://i.imgur.com/441QtPc.jpg",
-            "https://i.imgur.com/hnX99Cr.jpg",
-            "https://i.imgur.com/SOMPPzU.jpg",
-            "https://i.imgur.com/2ldaKjy.jpg",
-            "https://i.imgur.com/lTgyE2X.jpg",
-            "https://i.imgur.com/NFcMfYE.jpg",
-            "https://i.imgur.com/eu74Mje.jpg",
-            "https://i.imgur.com/L5iInTA.jpg",
-            "https://i.imgur.com/64PRDTx.jpg",
-            "https://i.imgur.com/hnQ492C.jpg",
-            "https://i.imgur.com/10JlX4K.jpg",
-            "https://i.imgur.com/eu74Mje.jpg",
-            "https://i.imgur.com/uh0knIW.jpg",
-            "https://i.imgur.com/rdYgwhr.jpg",
-            "https://i.imgur.com/x6hhqGn.jpg",
-            "https://i.imgur.com/oyDO49r.jpeg",
-            "https://i.imgur.com/rgbvXsb.jpeg",
-            "https://i.imgur.com/qg4RFz7.jpeg",
-            "https://i.imgur.com/3Ry1sZx.jpeg",
-            "https://i.imgur.com/2fdFnzF.jpeg",
-            "https://i.imgur.com/pEHgJGH.jpeg",
-        ];
-    %>
     <div class="container-fluid px-0">
         <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-fixed">
             <div class=" d-flex"> 
@@ -86,11 +36,12 @@
         <div class="products">
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <input class="search" placeholder="Filtrar" />
                      <!--melamina-->
                     <div class="d-flex justify-content-between p-3 bg-white mb-3 align-items-center"> <span class="font-weight-bold text-uppercase">Melamina</span>
                         <div> <img src="https://img.icons8.com/windows/100/000000/list.png" width="30" /> <img src="https://img.icons8.com/ios-filled/100/000000/squared-menu.png" width="25" /> </div>
                     </div>
-                    <div class="row g-3">
+                    <div class="row g-3 list">
                         <%  for (let index = melamina.length - 1; index >= 0; index--) {
                                 let producto = melamina[index];
                                 let noDisponible = (inventario[producto.hash_inventario] && inventario[producto.hash_inventario].existencia <= 0);
@@ -99,7 +50,7 @@
                             <div class="card"> <img src="<%= producto.link_photo %>" class="card-img-top">
                                 <div class='centered'><%= noDisponible ? 'NO DISPONIBLE':''; %></div>
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between"> <span class="font-weight-bold"><%= items[producto.color]%> <%= items[producto.medidas]%> (<%= items[producto.marca]%>)</span> <span class="font-weight-bold-price"><%= producto.precio_venta %>Bs (lamina)</span> </div>
+                                    <div class="d-flex justify-content-between"> <span class="font-weight-bold Caracteristicas"><%= items[producto.color]%> <%= items[producto.medidas]%> (<%= items[producto.marca]%>)</span> <span class="font-weight-bold-price"><%= producto.precio_venta %>Bs (lamina)</span> </div>
                                     <p class="card-text mb-1 mt-1">Algunos productos son a pedido, con tardanza de algunos dias.</p>
                                     <div class="d-flex align-items-center flex-row"> <img src="https://i.imgur.com/e9VnSng.png" width="20"> <span class="guarantee">Envios a toda Bolivia</span> </div>
                                 </div>
@@ -113,11 +64,12 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <input class="search" placeholder="Filtrar" />
                     <!--tapacantos-->
                     <div class="d-flex justify-content-between p-3 bg-white mb-3 align-items-center"> <span class="font-weight-bold text-uppercase">Tapacantos</span>
                         <div> <img src="https://img.icons8.com/windows/100/000000/list.png" width="30" /> <img src="https://img.icons8.com/ios-filled/100/000000/squared-menu.png" width="25" /> </div>
                     </div>
-                    <div class="row g-3">
+                    <div class="row g-3 list">
                         <%  for (let index = tapacantos.length - 1; index >= 0; index--) {
                                 let producto = tapacantos[index];
                                 let noDisponible = (inventario[producto.hash_inventario] && inventario[producto.hash_inventario].existencia <= 0);
@@ -126,7 +78,7 @@
                             <div class="card"> <img src="<%= producto.link_photo %>" class="card-img-top">
                                 <div class='centered'><%= noDisponible ? 'NO DISPONIBLE':''; %></div>
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between"> <span class="font-weight-bold"><%= items[producto.color]%> <%= items[producto.medidas]%></span> <span class="font-weight-bold-price"><%= producto.precio_venta %>Bs (rollo)<br><%= producto.precio_venta_caja %>Bs (caja)<br> <%= producto.precio_venta_metros %>Bs (metros)<br> <%= producto.precio_venta_metros_canteo %>Bs (metros al canteo)</span> </div>
+                                    <div class="d-flex justify-content-between"> <span class="font-weight-bold Caracteristicas"><%= items[producto.color]%> <%= items[producto.medidas]%></span> <span class="font-weight-bold-price"><%= producto.precio_venta %>Bs (rollo)<br><%= producto.precio_venta_caja %>Bs (caja)<br> <%= producto.precio_venta_metros %>Bs (metros)<br> <%= producto.precio_venta_metros_canteo %>Bs (metros al canteo)</span> </div>
                                     <p class="card-text mb-1 mt-1">Algunos productos son a pedido, con tardanza de algunos dias.</p>
                                     <div class="d-flex align-items-center flex-row"> <img src="https://i.imgur.com/e9VnSng.png" width="20"> <span class="guarantee">Envios a toda Bolivia</span> </div>
                                 </div>
@@ -140,11 +92,12 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                    <input class="search" placeholder="Filtrar" />
                     <!--fondos-->
                     <div class="d-flex justify-content-between p-3 bg-white mb-3 align-items-center"> <span class="font-weight-bold text-uppercase">Fondos</span>
                         <div> <img src="https://img.icons8.com/windows/100/000000/list.png" width="30" /> <img src="https://img.icons8.com/ios-filled/100/000000/squared-menu.png" width="25" /> </div>
                     </div>
-                    <div class="row g-3">
+                    <div class="row g-3 list">
                         <%  for (let index = fondos.length - 1; index >= 0; index--) {
                                 let producto = fondos[index];
                                 let noDisponible = (inventario[producto.hash_inventario] && inventario[producto.hash_inventario].existencia <= 0);
@@ -153,7 +106,7 @@
                             <div class="card"> <img src="<%= producto.link_photo %>" class="card-img-top">
                                 <div class='centered'><%= noDisponible ? 'NO DISPONIBLE':''; %></div>
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between"> <span class="font-weight-bold"><%= items[producto.color]%> <%= items[producto.medidas]%></span> <span class="font-weight-bold-price"><%= producto.precio_venta %> Bs (lamina)</span> </div>
+                                    <div class="d-flex justify-content-between"> <span class="font-weight-bold Caracteristicas"><%= items[producto.color]%> <%= items[producto.medidas]%></span> <span class="font-weight-bold-price"><%= producto.precio_venta %> Bs (lamina)</span> </div>
                                     <p class="card-text mb-1 mt-1">Algunos productos son a pedido, con tardanza de algunos dias.</p>
                                     <div class="d-flex align-items-center flex-row"> <img src="https://i.imgur.com/e9VnSng.png" width="20"> <span class="guarantee">Envios a toda Bolivia</span> </div>
                                 </div>
@@ -167,11 +120,12 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="last" role="tabpanel" aria-labelledby="last-tab">
+                    <input class="search" placeholder="Filtrar" />
                     <!--tapatornillos-->
                     <div class="d-flex justify-content-between p-3 bg-white mb-3 align-items-center"> <span class="font-weight-bold text-uppercase">Tapatornillos</span>
                         <div> <img src="https://img.icons8.com/windows/100/000000/list.png" width="30" /> <img src="https://img.icons8.com/ios-filled/100/000000/squared-menu.png" width="25" /> </div>
                     </div>
-                    <div class="row g-3">
+                    <div class="row g-3 list">
                         <%  for (let index = tapatornillos.length - 1; index >= 0; index--) {
                                 let producto = tapatornillos[index];
                                 let noDisponible = (inventario[producto.hash_inventario] && inventario[producto.hash_inventario].existencia <= 0);
@@ -180,7 +134,7 @@
                             <div class="card"> <img src="<%= producto.link_photo %>" class="card-img-top">
                                 <div class='centered'><%= noDisponible ? 'NO DISPONIBLE':''; %></div>
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between"> <span class="font-weight-bold"><%= items[producto.color]%></span> <span class="font-weight-bold-price"><%= producto.precio_venta %>Bs (hoja)<br><%= producto.precio_venta_caja %>Bs (caja)</span> </div>
+                                    <div class="d-flex justify-content-between"> <span class="font-weight-bold Caracteristicas"><%= items[producto.color]%></span> <span class="font-weight-bold-price"><%= producto.precio_venta %>Bs (hoja)<br><%= producto.precio_venta_caja %>Bs (caja)</span> </div>
                                     <p class="card-text mb-1 mt-1">Algunos productos son a pedido, con tardanza de algunos dias.</p>
                                     <div class="d-flex align-items-center flex-row"> <img src="https://i.imgur.com/e9VnSng.png" width="20"> <span class="guarantee">Envios a toda Bolivia</span> </div>
                                 </div>
@@ -194,11 +148,12 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="pega" role="tabpanel" aria-labelledby="pega-tab">
+                    <input class="search" placeholder="Filtrar" />
                     <!--pegamento-->
                     <div class="d-flex justify-content-between p-3 bg-white mb-3 align-items-center"> <span class="font-weight-bold text-uppercase">Pegamento</span>
                         <div> <img src="https://img.icons8.com/windows/100/000000/list.png" width="30" /> <img src="https://img.icons8.com/ios-filled/100/000000/squared-menu.png" width="25" /> </div>
                     </div>
-                    <div class="row g-3">
+                    <div class="row g-3 list">
                         <%  for (let index = pegamento.length - 1; index >= 0; index--) {
                                 let producto = pegamento[index];
                                 let noDisponible = (inventario[producto.hash_inventario] && inventario[producto.hash_inventario].existencia <= 0);
@@ -207,7 +162,7 @@
                             <div class="card"> <img src="<%= producto.link_photo %>" class="card-img-top">
                                 <div class='centered'><%= noDisponible ? 'NO DISPONIBLE':''; %></div>
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between"> <span class="font-weight-bold"><%= items[producto.color]%> (<%= items[producto.marca]%>)</span> <span class="font-weight-bold-price"><%= producto.precio_venta %> Bs (bolsa)</span> </div>
+                                    <div class="d-flex justify-content-between"> <span class="font-weight-bold Caracteristicas"><%= items[producto.color]%> (<%= items[producto.marca]%>)</span> <span class="font-weight-bold-price"><%= producto.precio_venta %> Bs (bolsa)</span> </div>
                                     <p class="card-text mb-1 mt-1">Algunos productos son a pedido, con tardanza de algunos dias.</p>
                                     <div class="d-flex align-items-center flex-row"> <img src="https://i.imgur.com/e9VnSng.png" width="20"> <span class="guarantee">Envios a toda Bolivia</span> </div>
                                 </div>
@@ -223,6 +178,23 @@
             </div>
         </div>
     </div>
+    <script>
+        var homeList = new List('home', {
+            valueNames: [ 'Caracteristicas' ]
+        });
+        var profileList = new List('profile', {
+            valueNames: [ 'Caracteristicas' ]
+        });
+        var contactList = new List('contact', {
+            valueNames: [ 'Caracteristicas' ]
+        });
+        var lastList = new List('last', {
+            valueNames: [ 'Caracteristicas' ]
+        });
+        var pegaList = new List('pega', {
+            valueNames: [ 'Caracteristicas' ]
+        });
+    </script>
     <footer>
         <%- include('../partials/footer'); %>
     </footer>
