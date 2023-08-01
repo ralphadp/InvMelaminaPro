@@ -46,9 +46,9 @@ function convertHexToString(input) {
 }
 
 function fechaLiteral() {
-    var meses = ['Enero', 'Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
     var date = new Date();
-    var dia = date.getDay();
+    var dia = date.getDate();
 
     if (dia < 10) {
         dia = '0' + dia.toString();
