@@ -156,7 +156,8 @@ app.get('/pedidos', checkAuth, function(req, res) {
                                     historial: resultHistorial,
                                     inventario: rInventario,
                                     _inventario: resultsInventario,
-                                    _control: resultsControl
+                                    _control: resultsControl,
+                                    username: getCurrentUsername(req)
                                 });
                             })
                             .catch(error => console.error(error))
@@ -277,7 +278,8 @@ app.get('/ingresos', checkAuth, function(req, res) {
                                     historial: resultHistorial,
                                     inventario: rInventario,
                                     _inventario: resultsInventario,
-                                    _control: resultsControl
+                                    _control: resultsControl,
+                                    username: getCurrentUsername(req)
                                 });
                             })
                             .catch(error => console.error(error))
@@ -813,7 +815,8 @@ app.get('/reporte', checkAuth, function(req, res) {
         DB.collection("control_producto").find().toArray().then(resultsControl => {
             res.render('pages/reporte01', {
                 _inventario: resultsInventario,
-                _control: resultsControl
+                _control: resultsControl,
+                username: getCurrentUsername(req)
              });
         })
         .catch(error => console.error(error))
@@ -911,7 +914,8 @@ app.get('/catalogos', checkAuth, function(req, res) {
                                 tapatornillos:tapatornillos_results,
                                 cliente:    cliente_results,
                                 _inventario: resultsInventario,
-                                _control: resultsControl
+                                _control: resultsControl,
+                                username: getCurrentUsername(req)
                             });
                         })
                         .catch(error => console.error(error))
@@ -953,7 +957,8 @@ app.get('/historial', checkAuth, function(req, res) {
             res.render('pages/historial', {
                 historial: results,
                 _inventario: resultsInventario,
-                _control: resultsControl
+                _control: resultsControl,
+                username: getCurrentUsername(req)
             });
         })
         .catch(error => console.error(error))
@@ -1114,7 +1119,8 @@ app.get('/inventario', checkAuth, function(req, res) {
                                     control: control,
                                     size: (Object.keys(rInventario).length - 1),  //less 1 function
                                     _inventario: resultsInventario,
-                                    _control: resultControl
+                                    _control: resultControl,
+                                    username: getCurrentUsername(req)
                                 });
                             })
                             .catch(error => console.error(error))
@@ -1193,7 +1199,8 @@ app.get('/preferencias', checkAuth, function(req, res) {
                                                     preferencias: resultsPreferencias,
                                                     usuario: resultsUsuario,
                                                     _inventario: resultsInventario,
-                                                    _control: resultsControl
+                                                    _control: resultsControl,
+                                                    username: getCurrentUsername(req)
                                                 });
                                             })
                                             .catch(error => console.error(error))
@@ -3067,6 +3074,14 @@ app.get('/login', function (req, res) {
     });
  });
 
+function getCurrentUsername(req) {
+    if (USUARIOS && req.session.user_id && USUARIOS[req.session.user_id]) {
+        return USUARIOS[req.session.user_id].name;
+    }
+
+    return "Desconocido";
+}
+
 function isAuthorized(req) {
     if (USUARIOS[req.session.user_id]) {
 
@@ -3101,8 +3116,14 @@ function checkAuth(req, res, next) {
         } else {
             console.log('User: [' + req.session.user_id + '] not authorized to view this page');
             console.log('Back to ' + process.env.last_url);
-            process.env.message = "No esta autorizado para acceder esta pagina";
-            res.redirect(process.env.last_url);
+            process.env.message = "No esta autorizado para acceder a la pagina '" + req.url + "'";
+
+            req.url = process.env.last_url;
+            if (!isAuthorized(req)) {
+                res.redirect("/inventario");    
+            } else {
+                res.redirect(process.env.last_url);
+            }
         }
     }
 }
