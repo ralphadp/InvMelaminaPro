@@ -10,6 +10,11 @@ function getSelectedOption(elementId) {
 	return element.options[element.selectedIndex].value;
 }
 
+function getInput(elementId) {
+	var element = document.getElementById(elementId);
+	return element.value;
+}
+
 function Color() {
 	this.att = {
 	    nombre: "",
@@ -1551,7 +1556,6 @@ function Tapatornillos() {
 	};
 };
 
-
 function ControlProducto() {
 	this.att = {
 	    melamina:      null,
@@ -1595,3 +1599,153 @@ function ControlProducto() {
 	    });
 	};
 }
+
+function Preferencias() {
+	this.att = {
+	    telefono: 0,
+	};
+
+	this.asignar = function() {
+		this.att.telefono = getInput("telefono");
+	}
+
+/*UPDATE*/
+	this.actualizar = function() {
+		fetch('/actualizar_preferencias/', {
+	        method: 'PUT',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify(this.att)
+	    })
+	    .then(response => response.json())
+	    .then(response => {
+	        if (response.ok) {
+	            console.log(response.message);
+				document.getElementById("message").style.background = "#a4f1a4";
+	            document.getElementById("message").innerHTML = response.message + ". preferencias guardadas! <br>";
+	        } else {
+	            console.log(response.status, response.statusText);
+				document.getElementById("message").style.background = "red";
+	            document.getElementById("message").innerHTML = response.message + "<br>";
+	        }
+	    })
+	    .catch(error => {
+			document.getElementById("message").style.background = "red";
+	        document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+	        console.log(error.message);
+	    });
+	};
+}
+
+function Usuario() {
+	this.att = {
+	    name:"",
+		password:"",
+		compras:false,
+		ventas:false,
+		administrador:false,
+	};
+
+	this.getRowBuild = function(next_index, listas) {
+		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
+					<td class='item_td stopSpaces' id='u_nombre_${next_index}' contenteditable='true'></td>
+					<td class='item_td stopSpaces' id='u_password_${next_index}' contenteditable='true'></td>
+					<td><input type="checkbox" id="u_compras_${next_index}" /></td>
+					<td><input type="checkbox" id="u_ventas_${next_index}" /></td>
+					<td><input type="checkbox" id="u_administrador_${next_index}" /></td>
+					<td><button class='pref' type='button' title='Guardar' id='gu_${next_index}' onclick='guardarNuevo(this.id,"usuario_add")'><i class="fa fa-save"></i></button>
+						<button class='pref' type='button' title='Borrar' id='bu_${next_index}' onclick='borrarNuevo(this.id,"usuario_add")'><i class="fa fa-trash"></i></button>
+					</td>
+				</tr>`;
+	}
+
+	this.assignar = function(row_id) {
+		this.att.name = document.getElementById("u_nombre_" + row_id).innerText.trim();
+		this.att.password = document.getElementById("u_password_" + row_id).innerText.trim();
+		this.att.compras = $("#u_compras_" + row_id).is(":checked");
+		this.att.ventas = $("#u_ventas_" + row_id).is(":checked");
+		this.att.administrador = $("#u_administrador_" + row_id).is(":checked");
+	}
+
+/*UPDATE*/
+	this.guardarEditado = function(id) {
+		fetch('/actualizar_usuario/' + id + '/', {
+	        method: 'PUT',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify(this.att)
+	    })
+	    .then(response => response.json())
+	    .then(response => {
+	        if (response.ok) {
+	            console.log(response.message);
+				document.getElementById("message").style.background = "#a4f1a4";
+	            document.getElementById("message").innerHTML = response.message + ". en BD! <br>";
+	        } else {
+	            console.log(response.status, response.statusText);
+				document.getElementById("message").style.background = "red";
+	            document.getElementById("message").innerHTML = response.message + "<br>";
+	        }
+	    })
+	    .catch(error => {
+			document.getElementById("message").style.background = "red";
+	        document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+	        console.log(error.message);
+	    });
+	};
+
+/*ADD*/
+	this.guardarNuevo = function() {
+		fetch('/nuevo_usuario/', {
+	        method: 'POST',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify(this.att)
+	    })
+	    .then(response => response.json())
+	    .then(response => {
+	        if (response.ok) {
+	            console.log(response.message);
+				document.getElementById("message").style.background = "#a4f1a4";
+	            document.getElementById("message").innerHTML = response.message + ". usuario guardado!<br>";
+	            if (response.action == "reload") {
+	            	 window.location.reload();
+	            }
+	        } else {
+	            console.log(response.status, response.statusText);
+				document.getElementById("message").style.background = "red";
+	            document.getElementById("message").innerHTML = response.message + "<br>";
+	        }
+	    })
+	    .catch(error => {
+			document.getElementById("message").style.background = "red";
+	        document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+	        console.log(error.message);
+	    });
+	};
+
+/*DELETE*/
+	this.borrar = function(id) {
+		if(confirm("Realmente desea borrar al usuario!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			fetch('/delete_usuario/' + id + '/', {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+			})
+			.then(response => response.json())
+			.then(response => {
+				if (response.ok) {
+					console.log(response.message);
+					document.getElementById("message").style.background = "#a4f1a4";
+					document.getElementById("message").innerHTML = response.message + ". usuario eliminado! <br>";
+					document.getElementById("row_" + id).outerHTML = "";
+				} else {
+					console.log(response.status, response.statusText);
+					document.getElementById("message").style.background = "red";
+					document.getElementById("message").innerHTML = response.message + "<br>";
+				}
+			})
+			.catch(error => {
+				document.getElementById("message").style.background = "red";
+				document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+				alert(error.message);
+			});
+		}
+	};
+};

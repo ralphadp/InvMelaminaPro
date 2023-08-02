@@ -19,7 +19,7 @@
             <div class=" d-flex"> 
                 <a class="navbar-brand" href="/productos"><span>Melamina Pro</span><span class="detalle-titulo">Ventas al por mayor y menor</span></a>
                 <a class="navbar-brand" href="https://www.facebook.com/profile.php?id=100092987178870"><img src="../images/facebook.jpg" width="20" /></a>
-                <a class="navbar-brand" href="https://wa.me/71445232?text=¡Estoy+interesado+MelaminaPro"><img src="../images/whatsapp.jpg" width="30" /></a>
+                <a class="navbar-brand" href="https://wa.me/<%= preferencias.telefono%>?text=¡Estoy+interesado+MelaminaPro"><img src="../images/whatsapp.jpg" width="30" /></a>
             </div>    
             <div class="container-fluid d-flex" style="justify-content: end!important;"> 
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -197,7 +197,7 @@
 
         function sendToWhatsapp(ID) {
             let mensaje = document.getElementById(ID).innerText.trim()
-            window.open("https://wa.me/71445232?text=" + encodeURIComponent(mensaje));
+            window.open("https://wa.me/<%= preferencias.telefono%>?text=" + encodeURIComponent(mensaje));
             //"https://api.whatsapp.com/send?text="
         }
     </script>

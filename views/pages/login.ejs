@@ -7,17 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="stylesheets/login.css">
-    <style>
-        .melamina-icon {
-            position: absolute;
-            padding: 20px;
-        }
-        footer {
-            position: fixed;
-            top: 95%;
-            left: 10%;
-        }
-    </style>
 </head>
 <body>
     <a class="melamina-icon" href="/productos">
@@ -29,10 +18,10 @@
                 <h2>Login</h2>
                 <div class="input-box">
                     <span class="icon">
-                        <ion-icon name="mail"></ion-icon>
+                        <ion-icon name="person-outline"></ion-icon>
                     </span>
                     <input type="text" name="user" required />
-                    <label>Email</label>
+                    <label>Usuario</label>
                 </div>
                 <div class="input-box">
                     <span class="icon">
@@ -40,6 +29,9 @@
                     </span>
                     <input type="password" name="password" required />
                     <label>Password</label>
+                </div>
+                <div class="message-box">
+                    <h5 class="alert_message"><%= client_message %></h5>
                 </div>
                 <button type="submit">Login</button>
             </form>

@@ -22,7 +22,8 @@ console.log("Connected to " + uri );
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(session({ resave: true, secret: '123456', saveUninitialized: true}));
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(session({ resave: true, secret: '123456', /*cookie: { maxAge: oneDay },*/ saveUninitialized: true}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -69,7 +70,7 @@ app.get('/pedidos', checkAuth, function(req, res) {
     var DB = client.db();
     var items = {};
     var persona = {};
-    
+
     DB.collection("inventario").find().toArray().then(resultsInventario => {
         var rInventario = {};
         resultsInventario.forEach((value) => {
@@ -810,7 +811,7 @@ app.get('/reporte', checkAuth, function(req, res) {
 
     DB.collection("inventario").find().toArray().then(resultsInventario => {
         DB.collection("control_producto").find().toArray().then(resultsControl => {
-            res.render('pages/reporte01', { 
+            res.render('pages/reporte01', {
                 _inventario: resultsInventario,
                 _control: resultsControl
              });
@@ -902,7 +903,7 @@ app.get('/catalogos', checkAuth, function(req, res) {
                             tapatornillo.marca = (marcas[tapatornillo.marca])?marcas[tapatornillo.marca].nombre:'';
                         });
                         DB.collection("collectionCliente").find().toArray().then(cliente_results => {
-                            res.render('pages/contenidos', { 
+                            res.render('pages/contenidos', {
                                 tapacantos: tapacantos_results,
                                 melamina:   melamina_results,
                                 pegamento:  pegamento_results,
@@ -949,7 +950,7 @@ app.get('/historial', checkAuth, function(req, res) {
     DB.collection("control_producto").find().toArray().then(resultsControl => {
 
         DB.collection("historial").find().toArray().then(results => {
-            res.render('pages/historial', { 
+            res.render('pages/historial', {
                 historial: results,
                 _inventario: resultsInventario,
                 _control: resultsControl
@@ -969,6 +970,7 @@ app.get('/productos', function(req, res) {
     var DB = client.db();
   
     var items = {};
+    DB.collection("preferencias").findOne().then(resultsPreferencias => {
     DB.collection("color").find().toArray().then(resultsColor => {
         resultsColor.forEach((color) => {
             items[color._id.toString()] = color.nombre;
@@ -998,7 +1000,8 @@ app.get('/productos', function(req, res) {
                                             fondos: resultsFondos,
                                             tapatornillos: resultsTapatornillos,
                                             pegamento: resultsPegamento,
-                                            inventario: inventario
+                                            inventario: inventario,
+                                            preferencias: resultsPreferencias
                                         });
                                     })
                                     .catch(error => console.error(error))
@@ -1019,7 +1022,8 @@ app.get('/productos', function(req, res) {
         .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-
+    })
+    .catch(error => console.error(error))
 });
 
 // historia page
@@ -1143,6 +1147,8 @@ app.get('/preferencias', checkAuth, function(req, res) {
     client.connect();
     
     var CollectionInventario = client.db().collection("inventario");
+    var CollectionPreferencias = client.db().collection("preferencias");
+    var CollectionUsuario = client.db().collection("user");
     var CollectionControlProducto = client.db().collection("control_producto");
     var CollectionColor = client.db().collection("color");
     var CollectionMarcas = client.db().collection("marcas");
@@ -1157,6 +1163,8 @@ app.get('/preferencias', checkAuth, function(req, res) {
     var CollectionTapatornillos = client.db().collection("collectiontapatornillos");
 
     CollectionInventario.find().toArray().then(resultsInventario => {
+    CollectionPreferencias.findOne().then(resultsPreferencias => {
+    CollectionUsuario.find().toArray().then(resultsUsuario => {
     CollectionControlProducto.find().toArray().then(resultsControl => {
     CollectionColor.find().toArray().then(resultsColor => {
         CollectionMarcas.find().toArray().then(resultsMarcas => {
@@ -1182,6 +1190,8 @@ app.get('/preferencias', checkAuth, function(req, res) {
                                                     pegamento: resultsPegamento,
                                                     fondo: resultsFondo,
                                                     tapatornillos: resultsTapatornillos,
+                                                    preferencias: resultsPreferencias,
+                                                    usuario: resultsUsuario,
                                                     _inventario: resultsInventario,
                                                     _control: resultsControl
                                                 });
@@ -1206,6 +1216,10 @@ app.get('/preferencias', checkAuth, function(req, res) {
             .catch(error => console.error(error))
         })
         .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
     })
@@ -2656,6 +2670,81 @@ app.put('/actualizar_control_producto/',(req, res) => {
         .catch(error => console.error(error))
     })
     .catch(error => console.error(error));
+});
+
+app.put('/actualizar_preferencias/',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+
+    console.log("preferencias: ", req.body);
+
+    let CollectionPreferencias = client.db().collection("preferencias");
+    let idc = new ObjectID("64c9bb9c353410982749f89e");
+
+    CollectionPreferencias.findOneAndUpdate({_id: idc}, {$set: {telefono: Number(req.body.telefono)}}).then(results => {
+        console.log(results);
+        console.log("Preferencias ",req.body," actualizadas...");
+        res.status(200).json({ok: true, message: "Preferencias actualizadas.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
+});
+
+app.post('/nuevo_usuario',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    console.log("usuario",req.body);
+
+    let CollectionUser = client.db().collection("user");
+
+    CollectionUser.insertOne(req.body).then(results => {
+
+        console.log(results);
+        console.log(`Un usuario nuevo fue addicionado...`);
+
+        res.status(200).json({ok: true, message: "Un usuario nuevo fue addicionado ...", action: "reload"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.put('/actualizar_usuario/:id',(req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();   
+
+    console.log("user: ", req.body);
+    let idc = new ObjectID(req.params.id);
+    console.log(req.params.id, idc);
+
+    let CollectionUser = client.db().collection("user");
+
+    CollectionUser.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        console.log(results);
+        console.log(`Usuario ${req.body.nombre} actualizado...`);
+        res.status(200).json({ok: true, message: "Usuario (" + req.body.nombre + ") actualizado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close());
+})
+
+app.delete('/delete_usuario/:id', (req, res) => {
+    const client = new MongoClient(uri);
+    client.connect();
+    
+    var CollectionUser = client.db().collection("user");
+    let cid = new ObjectID(req.params.id);
+
+    CollectionUser.deleteOne({"_id": cid }).then(result => {
+        console.log(result);
+        console.log(`Usuario ${req.params.id} borrado...`);
+        res.status(200).json({ok: true, message: "Usuario (" + req.params.id + ") borrado.", action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
+    .finally(data => client.close())
 })
 
 app.post('/reporte_pedidos_cliente_interno_mes', function(req, res) {
@@ -2959,20 +3048,62 @@ app.post('/reporte_compra_venta_colores_mes', function(req, res) {
                    
 });
 
+var USUARIOS = {};
+
+var Messages = {
+    'f3g33vb5v443' : "Usuario o contraseña incorrectos.",
+    '545egetgedd0' : "Una Sesion ya fue inicializada en otro navegdor.",
+    'df34ef34erfg' : "No esta autorizado para ver esta pagina"
+}
+
 app.get('/login', function (req, res) {
+    var message = "";
+    if (req.query.response && Messages[req.query.response]) {
+        message = Messages[req.query.response];
+    }
+
     res.render('pages/login', {
-        cliente: "",
+        client_message: message,
     });
  });
 
+function isAuthorized(req) {
+    if (USUARIOS[req.session.user_id]) {
+
+        var usuario = USUARIOS[req.session.user_id];
+        if (req.url == '/preferencias') {
+            return usuario.administrador;
+        } else if (req.url == '/pedidos') {
+            return usuario.ventas;
+        } else if (req.url == '/ingresos') {
+            return usuario.compras;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
 function checkAuth(req, res, next) {
+    console.log("SESSION: ", req.session);
+    console.log("Usuarios: ", USUARIOS);
+
     if (!req.session.user_id) {
-        console.log('You are not authorized to view this page');
         process.env.last_url = req.url;
+        console.log('You are not authorized to view this page');
         res.redirect('/login');
     } else {
         console.log('logged');
-        next();
+        if (isAuthorized(req)) {
+            process.env.last_url = req.url;
+            next();
+        } else {
+            console.log('User: [' + req.session.user_id + '] not authorized to view this page');
+            console.log('Back to ' + process.env.last_url);
+            process.env.message = "No esta autorizado para acceder esta pagina";
+            res.redirect(process.env.last_url);
+        }
     }
 }
 
@@ -2981,23 +3112,34 @@ app.post('/login', function (req, res) {
     client.connect();
     var DB = client.db();
     var post = req.body;
+    var found = false;
 
     DB.collection("user").find().toArray().then((users) => {
         users.forEach((user) => {
             if (post.user === user.name && post.password === user.password) {
-                req.session.user_id = user._id.toString();
-                console.log(req.session.user_id);
-                if (process.env.last_url && process.env.last_url.length > 1) {
-                    res.redirect(process.env.last_url);
+                var ID = user._id.toString();
+                found = true;
+
+                if (USUARIOS && USUARIOS[ID]) {
+                    res.redirect('/login?response=545egetgedd0');
                 } else {
-                    res.redirect('/inventario');
+                    req.session.user_id = ID;
+                    USUARIOS[ID] = user;
+                    console.log("SESSION: ", req.session);
+                    console.log("Usuarios: ", USUARIOS);
+                    if (process.env.last_url && process.env.last_url.length > 1) {
+                        res.redirect(process.env.last_url);
+                    } else {
+                        res.redirect('/inventario');
+                    }
                 }
             }
         });
-        if (!req.session.user_id) {
+        if (!found) {
+            console.log("SESSION: ",req.session);
             console.log("Wrong password or username");
-            //res.status(200).json({ok: false, message: "Wrong password or username", action: "none"});
-            res.redirect('/login');
+            //var string = encodeURIComponent("Usuario o contraseña incorrecta");
+            res.redirect('/login?response=f3g33vb5v443');
         }
     })
     .catch(error => console.error(error))
@@ -3005,7 +3147,8 @@ app.post('/login', function (req, res) {
 });
 
 app.get('/logout', function (req, res) {
-    if (req.session) {
+    if (req.session && req.session.user_id) {
+        delete USUARIOS[req.session.user_id];
         delete req.session.user_id;
     }
    res.redirect('/login');

@@ -50,6 +50,12 @@ h2 {
     border-bottom: 2px solid #fff;
 }
 
+.message-box {
+    position: relative;
+    width: 310px;
+    margin: 30px 0;
+}
+
 .input-box label {
     position: absolute;
     top: 50%;
@@ -97,4 +103,19 @@ button {
     font-size: 1em;
     color: #000;    
     font-weight: 500;
+}
+
+.melamina-icon {
+    position: absolute;
+    padding: 20px;
+}
+
+footer {
+    position: fixed;
+    top: 95%;
+    left: 10%;
+}
+
+.alert_message {
+    color: #a70b0b;
 }

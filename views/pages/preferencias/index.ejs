@@ -120,9 +120,16 @@
 										<span class="select-arrow"></span>
 									</div>
 								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<span class="form-label"># Telefonico</span>
+										<input class="form-control" id="telefono" value="<%= preferencias.telefono%>" >
+										<span class="select-arrow"></span>
+									</div>
+								</div>
 							</div>
 							<div class="form-btn">
-								<button class="submit-btn" type="button" onclick="guardarControlMinimos()">Guardar</button>
+								<button class="submit-btn" type="button" onclick="guardar()">Guardar</button>
 							</div>
 							<hr>
 							<div class="form-group">
@@ -134,6 +141,7 @@
 									<option value="provedor">Provedor</option>
 									<option value="item">Productos</option>
 									<option value="cliente">Clientes</option>
+									<option value="usuario">Usuarios</option>
 									<option value="melamina">Catalogo Melaminas</option>
 									<option value="tapacantos">Catalogo Tapacantos</option>
 									<option value="pegamento">Catalogo Pegamentos</option>
@@ -421,34 +429,63 @@
 		</div>
 	  </div>
 	  <div id="cliente" class="container_table">
-		<span class="form-label"><h5>Cliente   <button class="pref" title="Addicionar Nuevo" type="button" id="cliente_add" onclick="add_row(this)">+</button></h5></span>
+			<span class="form-label"><h5>Cliente   <button class="pref" title="Addicionar Nuevo" type="button" id="cliente_add" onclick="add_row(this)">+</button></h5></span>
+			<div class="table-editable">
+			<table class="table" id="cliente_data_table">
+				<tr>
+				<th> Nombre </th>  
+				<th> CI </th>  
+				<th> NIT </th>
+				<th> Direccion </th>
+				<th> Celular </th>
+				<th> Email </th>
+				<th> Empresa </th>
+				<th> Tipo </th>
+				<th></th>
+				</tr>
+				<% for (let index = 0; index < cliente.length; index++) {
+						var ID = cliente[index]._id.toString() %>
+				<tr id="row_<%= ID %>">
+					<td class="item_td" contenteditable="true" id="l_nombre_<%= ID %>"><%= cliente[index].nombre %></td>
+					<td class="item_td" contenteditable="true" id="l_ci_<%= ID %>"><%= cliente[index].ci %></td>
+					<td class="item_td" contenteditable="true" id="l_nit_<%= ID %>"><%= cliente[index].nit %></td>
+					<td class="item_td" contenteditable="true" id="l_direccion_<%= ID %>"><%= cliente[index].direccion %></td>
+					<td class="item_td" contenteditable="true" id="l_celular_<%= ID %>"><%= cliente[index].celular %></td>
+					<td class="item_td" contenteditable="true" id="l_email_<%= ID %>"><%= cliente[index].email %></td>
+					<td class="item_td" contenteditable="true" id="l_empresa_<%= ID %>"><%= cliente[index].empresa %></td>
+					<td class="item_td" class="stopSpaces" contenteditable="true" id="l_tipo_<%= ID %>"><%= cliente[index].tipo %></td>
+					<td>
+						<button class="pref" type="button" title="Guardar" id="gl_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+						<button class="pref" type="button" title="Borrar" id="bl_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
+					</td>
+					</tr>
+				<% } %>
+			</table>
+			</div>
+	  </div>
+	  <div id="usuario" class="container_table">
+		<span class="form-label"><h5>Usuarios   <button class="pref" title="Addicionar Nuevo" type="button" id="usuario_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
-		  <table class="table" id="cliente_data_table">
+		  <table class="table" id="usuario_data_table">
 			<tr>
 			  <th> Nombre </th>  
-			  <th> CI </th>  
-			  <th> NIT </th>
-			  <th> Direccion </th>
-			  <th> Celular </th>
-			  <th> Email </th>
-			  <th> Empresa </th>
-			  <th> Tipo </th>
+			  <th> password </th>  
+			  <th> compras </th>
+			  <th> ventas </th>
+			  <th> Administrador </th>
 			  <th></th>
 			</tr>
-			 <% for (let index = 0; index < cliente.length; index++) {
-					 var ID = cliente[index]._id.toString() %>
+			 <% for (let index = 0; index < usuario.length; index++) {
+					 var ID = usuario[index]._id.toString() %>
 			  <tr id="row_<%= ID %>">
-				  <td class="item_td" contenteditable="true" id="l_nombre_<%= ID %>"><%= cliente[index].nombre %></td>
-				  <td class="item_td" contenteditable="true" id="l_ci_<%= ID %>"><%= cliente[index].ci %></td>
-				  <td class="item_td" contenteditable="true" id="l_nit_<%= ID %>"><%= cliente[index].nit %></td>
-				  <td class="item_td" contenteditable="true" id="l_direccion_<%= ID %>"><%= cliente[index].direccion %></td>
-				  <td class="item_td" contenteditable="true" id="l_celular_<%= ID %>"><%= cliente[index].celular %></td>
-				  <td class="item_td" contenteditable="true" id="l_email_<%= ID %>"><%= cliente[index].email %></td>
-				  <td class="item_td" contenteditable="true" id="l_empresa_<%= ID %>"><%= cliente[index].empresa %></td>
-				  <td class="item_td" class="stopSpaces" contenteditable="true" id="l_tipo_<%= ID %>"><%= cliente[index].tipo %></td>
+				  <td class="item_td stopSpaces" contenteditable="true" id="u_nombre_<%= ID %>"><%= usuario[index].name %></td>
+				  <td class="item_td stopSpaces" contenteditable="true" id="u_password_<%= ID %>"><%= usuario[index].password %></td>
+				  <td><input type="checkbox" id="u_compras_<%= ID %>" <%=(usuario[index].compras == true)?'checked':'' %> /></td>
+				  <td><input type="checkbox" id="u_ventas_<%= ID %>" <%=(usuario[index].ventas == true)?'checked':'' %> /></td>
+				  <td><input type="checkbox" id="u_administrador_<%= ID %>" <%=(usuario[index].administrador == true)?'checked':'' %> /></td>
 				  <td>
-					  <button class="pref" type="button" title="Guardar" id="gl_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
-					  <button class="pref" type="button" title="Borrar" id="bl_<%= ID %>"onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
+					  <button class="pref" type="button" title="Guardar" id="gu_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
+					  <button class="pref" type="button" title="Borrar" id="bu_<%= ID %>" onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
 				  </td>
 				</tr>
 			 <% } %>
@@ -791,7 +828,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
     <script src="javascripts/preferencias.js"></script>
     <script>
-		var CATALOGOS = ["color","marca","medidas","provedor","item","cliente","melamina","tapacantos","pegamento","fondo","tapatornillos"];
+		var CATALOGOS = ["color","marca","medidas","provedor","item","cliente","usuario","melamina","tapacantos","pegamento","fondo","tapatornillos"];
 		var SELECTED_CATALOGO = "color";
 		var objCatalog = null;
 		function ButtonAdd() {
@@ -877,6 +914,17 @@
 			var control = new ControlProducto();
 			control.asignar();
 			control.actualizar();
+		}
+
+		function guardarPreferencias() {
+			var preferencias = new Preferencias();
+			preferencias.asignar();
+			preferencias.actualizar();
+		}
+
+		function guardar() {
+			guardarControlMinimos();
+			guardarPreferencias();
 		}
 
 		$(".numericAllow").keypress(function(event) {
