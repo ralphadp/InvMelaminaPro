@@ -1051,7 +1051,6 @@ app.get('/inventario', checkAuth, function(req, res) {
         });
     DB.collection("inventario").find().toArray().then(resultsInventario => {
         var rInventario = {fetchInventarioValues: function(nombre, producto) {
-                // orfan 68f75d027e9060139a86229de5cb98e7
                 let item = producto_item[nombre];
                 let indexHash = MD5(item._id.toString() + producto.color + producto.medidas + producto.marca).toString();
                 if (nombre == "Pegamento") {
@@ -1059,6 +1058,12 @@ app.get('/inventario', checkAuth, function(req, res) {
                 } else if (nombre == "Tapatornillos") {
                     indexHash = MD5(item._id.toString() + producto.color + producto.marca).toString();
                 }
+
+                if (producto.apedido) {
+                    this[indexHash].apedido = true;
+                    return;
+                }
+
                 if (!this[indexHash]) {
                     console.log("["+indexHash+"] NO existe... ", nombre, item._id.toString(), producto.color , producto.medidas , producto.marca);
                 } else {

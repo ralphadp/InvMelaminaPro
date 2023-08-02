@@ -66,11 +66,12 @@
                 </tr>
             </thead>
             <tbody class="list">
-                <%  Object.keys(inventario).forEach(attribute => {
+            <%  Object.keys(inventario).forEach(attribute => {
                     let producto = inventario[attribute];
+
                     if (typeof producto !== 'function') {
                         if (!producto.nombre) {
-                            console.log("Codigo huerfano: ", producto.codigo);
+                            console.log((producto.apedido)?"Apedido: ":"Codigo huerfano: ", producto.codigo);
                         } else {
                             var alerta = (producto.existencia <= control[producto.nombre].minimo) ? 'talert' : '';
                 %>
