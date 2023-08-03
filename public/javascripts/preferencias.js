@@ -105,6 +105,9 @@ function Color() {
 
 /*DELETE*/
 	this.borrar = function(id) {
+		if (!confirm("Realmente desea borrar el color!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
+		}
 	    fetch('/delete_color/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
@@ -220,6 +223,9 @@ function Marca() {
 
 /*DELETE*/
 	this.borrar = function(id) {
+		if (!confirm("Realmente desea borrar la marca!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
+		}
 	    fetch('/delete_marca/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
@@ -332,6 +338,9 @@ function Medidas() {
 
 /*DELETE*/
 	this.borrar = function(id) {
+		if (!confirm("Realmente desea borrar la medida!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
+		}
 	    fetch('/delete_medida/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
@@ -468,6 +477,9 @@ function Provedor() {
 
 /*DELETE*/
 	this.borrar = function(id) {
+		if (!confirm("Realmente desea borrar al provedor!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
+		}
 	    fetch('/delete_provedor/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
@@ -574,6 +586,9 @@ function Item() {
 
 /*DELETE*/
 	this.borrar = function(id) {
+		if (!confirm("Realmente desea borrar el producto!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
+		}
 	    fetch('/delete_item/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
@@ -695,6 +710,9 @@ function Cliente() {
 
 /*DELETE*/
 	this.borrar = function(id) {
+		if (!confirm("Realmente desea borrar al cliente!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
+		}
 	    fetch('/delete_cliente/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
@@ -870,6 +888,9 @@ function Melamina() {
 
 /*DELETE*/
 	this.borrar = function(id) {
+		if (!confirm("Realmente desea borrar la melamina!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
+		}
 	    fetch('/delete_melamina/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
@@ -1057,6 +1078,9 @@ function Tapacantos() {
 
 /*DELETE*/
 	this.borrar = function(id) {
+		if (!confirm("Realmente desea borrar el tapacantos!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
+		}
 	    fetch('/delete_tapacantos/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
@@ -1195,6 +1219,9 @@ function Pegamento() {
 
 /*DELETE*/
 	this.borrar = function(id) {
+		if (!confirm("Realmente desea borrar el pegamento!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
+		}
 	    fetch('/delete_pegamento/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
@@ -1367,6 +1394,9 @@ function Fondo() {
 
 /*DELETE*/
 	this.borrar = function(id) {
+		if (!confirm("Realmente desea borrar el Fondo!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
+		}
 	    fetch('/delete_fondo/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
@@ -1531,6 +1561,9 @@ function Tapatornillos() {
 
 /*DELETE*/
 	this.borrar = function(id) {
+		if (!confirm("Realmente desea borrar el tapatornillos!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
+		}
 	    fetch('/delete_tapatornillos/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
@@ -1723,29 +1756,30 @@ function Usuario() {
 
 /*DELETE*/
 	this.borrar = function(id) {
-		if(confirm("Realmente desea borrar al usuario!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
-			fetch('/delete_usuario/' + id + '/', {
-				method: 'DELETE',
-				headers: { 'Content-Type': 'application/json' },
-			})
-			.then(response => response.json())
-			.then(response => {
-				if (response.ok) {
-					console.log(response.message);
-					document.getElementById("message").style.background = "#a4f1a4";
-					document.getElementById("message").innerHTML = response.message + ". usuario eliminado! <br>";
-					document.getElementById("row_" + id).outerHTML = "";
-				} else {
-					console.log(response.status, response.statusText);
-					document.getElementById("message").style.background = "red";
-					document.getElementById("message").innerHTML = response.message + "<br>";
-				}
-			})
-			.catch(error => {
-				document.getElementById("message").style.background = "red";
-				document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
-				alert(error.message);
-			});
+		if (!confirm("Realmente desea borrar al usuario!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
 		}
+		fetch('/delete_usuario/' + id + '/', {
+			method: 'DELETE',
+			headers: { 'Content-Type': 'application/json' },
+		})
+		.then(response => response.json())
+		.then(response => {
+			if (response.ok) {
+				console.log(response.message);
+				document.getElementById("message").style.background = "#a4f1a4";
+				document.getElementById("message").innerHTML = response.message + ". usuario eliminado! <br>";
+				document.getElementById("row_" + id).outerHTML = "";
+			} else {
+				console.log(response.status, response.statusText);
+				document.getElementById("message").style.background = "red";
+				document.getElementById("message").innerHTML = response.message + "<br>";
+			}
+		})
+		.catch(error => {
+			document.getElementById("message").style.background = "red";
+			document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+			alert(error.message);
+		});
 	};
 };
