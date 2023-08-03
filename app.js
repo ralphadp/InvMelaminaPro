@@ -2730,7 +2730,9 @@ app.put('/actualizar_usuario/:id',(req, res) => {
     CollectionUser.updateOne({"_id": idc}, {$set: req.body}).then(results => {
         console.log(results);
         if (results.modifiedCount) {
-            delete USUARIOS[req.params.id];
+            if (USUARIOS && USUARIOS[req.params.id]) {
+                delete USUARIOS[req.params.id];
+            }
         }
         console.log(`Usuario ${req.body.nombre} actualizado...`);
         res.status(200).json({ok: true, message: "Usuario (" + req.body.name + ") actualizado.", action: "none"});
@@ -2750,7 +2752,9 @@ app.delete('/delete_usuario/:id', (req, res) => {
     CollectionUser.deleteOne({"_id": cid }).then(result => {
         console.log(result);
         if (result.deletedCount) {
-            delete USUARIOS[req.params.id];
+            if (USUARIOS && USUARIOS[req.params.id]) {
+                delete USUARIOS[req.params.id];
+            }
         }
         console.log(`Usuario ${req.params.id} borrado...`);
         res.status(200).json({ok: true, message: "Usuario (" + req.params.id + ") borrado.", action: "none"});
