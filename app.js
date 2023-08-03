@@ -3076,10 +3076,10 @@ app.get('/login', function (req, res) {
 
 function getCurrentUsername(req) {
     if (USUARIOS && req.session.user_id && USUARIOS[req.session.user_id]) {
-        return USUARIOS[req.session.user_id].name;
+        return USUARIOS[req.session.user_id];
     }
 
-    return "Desconocido";
+    return {name:"Desconocido"};
 }
 
 function isAuthorized(req) {
