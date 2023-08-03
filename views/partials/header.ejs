@@ -89,7 +89,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="usuario-icon" onclick="userMenu()">
-    <img width="30px;" src="images/user.png" alt="Usuario" title="Usuario: <%- username.name%>"></img>
+    <img width="30px;" src="images/user.png" alt="Usuario" title="Usuario: <%- username.name%> (<%- username.completo%>)"></img>
   </div>
   <a href="/catalogos">
     <img width="30px;" src="images/logo.jpg" alt="Melamina pro"></img>
@@ -194,14 +194,12 @@
     </div>
 </div>
 
-<div id="user-info-frame" style="background: #FFFFFF;position:fixed;margin-left:50%;margin-top:50%;width:350px;height:350px;margin-left:-200px;margin-top:-200px;display:none;top: 50%;left: 50%;border-radius: 10px;">
+<div id="user-info-frame" style="background: #FFFFFF;position:fixed;margin-left:50%;margin-top:50%;width:380px;height:410px;margin-left:-200px;margin-top:-200px;display:none;top: 50%;left: 50%;border-radius: 10px;">
   <div style="cursor: pointer;float: right;padding: 20px;font-size: 12px;" onclick="$('#user-info-frame').hide()">&#10005;</div>
-  <div style="padding: 50px">
+  <div style="padding: 50px; border-radius: 10px; border: 1px solid #d7d7d7; margin:10px;">
       <h4>Melamina Pro User Info</h4><br>
-      <h5><span class="blues">Username:</span> <%=username.name %></h5><br>
-      <% if (username.administrador) { %>
-        <h5><span sclass="blues">Administrador</span></h5><br>  
-      <% } %>
+      <h5><span class="blues">Username:</span> <%=username.name %> <%= (username.administrador)?'(Administrador)':'' %></h5><br>
+      <h5><span class="blues">Nombre:</span> <%=username.completo %></h5><br>
       <div class="blues">Permissions: </div>
       <div class="blues span-user">&ensp;Preferencias:</div><span><%=username.administrador?'activo':'desactivado' %></span><br>
       <div class="blues span-user">&ensp;Compras:</div><span><%=username.compras?'activo':'desactivado' %></span><br>
@@ -217,5 +215,6 @@ function userMenu() {
 
 function displayUserInfo() {
     let state = document.getElementById("user-info-frame").style.display = "block";
+    document.getElementById("user-left-menu").style.display = "none";
 }
 </script>

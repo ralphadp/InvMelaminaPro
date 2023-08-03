@@ -1673,6 +1673,7 @@ function Usuario() {
 	this.att = {
 	    name:"",
 		password:"",
+		completo:"",
 		compras:false,
 		ventas:false,
 		administrador:false,
@@ -1682,6 +1683,7 @@ function Usuario() {
 		return `<tr style='background-color:#94c6e7' id='row_${next_index}'>
 					<td class='item_td stopSpaces' id='u_nombre_${next_index}' contenteditable='true'></td>
 					<td class='item_td stopSpaces' id='u_password_${next_index}' contenteditable='true'></td>
+					<td class='item_td stopSpaces' id='u_completo_${next_index}' contenteditable='true'></td>
 					<td><input type="checkbox" id="u_compras_${next_index}" /></td>
 					<td><input type="checkbox" id="u_ventas_${next_index}" /></td>
 					<td><input type="checkbox" id="u_administrador_${next_index}" /></td>
@@ -1694,6 +1696,7 @@ function Usuario() {
 	this.assignar = function(row_id) {
 		this.att.name = document.getElementById("u_nombre_" + row_id).innerText.trim();
 		this.att.password = document.getElementById("u_password_" + row_id).innerText.trim();
+		this.att.completo = document.getElementById("u_completo_" + row_id).innerText.trim();
 		this.att.compras = $("#u_compras_" + row_id).is(":checked");
 		this.att.ventas = $("#u_ventas_" + row_id).is(":checked");
 		this.att.administrador = $("#u_administrador_" + row_id).is(":checked");
