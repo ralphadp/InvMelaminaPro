@@ -2729,8 +2729,11 @@ app.put('/actualizar_usuario/:id',(req, res) => {
 
     CollectionUser.updateOne({"_id": idc}, {$set: req.body}).then(results => {
         console.log(results);
+        if (results.modifiedCount) {
+            delete USUARIOS[req.params.id];
+        }
         console.log(`Usuario ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Usuario (" + req.body.nombre + ") actualizado.", action: "none"});
+        res.status(200).json({ok: true, message: "Usuario (" + req.body.name + ") actualizado.", action: "none"});
         res.end();
     })
     .catch(error => console.error(error))
@@ -2746,6 +2749,9 @@ app.delete('/delete_usuario/:id', (req, res) => {
 
     CollectionUser.deleteOne({"_id": cid }).then(result => {
         console.log(result);
+        if (result.deletedCount) {
+            delete USUARIOS[req.params.id];
+        }
         console.log(`Usuario ${req.params.id} borrado...`);
         res.status(200).json({ok: true, message: "Usuario (" + req.params.id + ") borrado.", action: "none"});
         res.end();
@@ -3079,25 +3085,28 @@ function getCurrentUsername(req) {
         return USUARIOS[req.session.user_id];
     }
 
-    return {name:"Desconocido"};
+    return {name:"Desconocido",completo:"Desconocido"};
 }
 
-function isAuthorized(req) {
+function isRegistered(req) {
     if (USUARIOS[req.session.user_id]) {
-
-        var usuario = USUARIOS[req.session.user_id];
-        if (req.url == '/preferencias') {
-            return usuario.administrador;
-        } else if (req.url == '/pedidos') {
-            return usuario.ventas;
-        } else if (req.url == '/ingresos') {
-            return usuario.compras;
-        }
-
         return true;
     }
-
     return false;
+}
+
+
+function isAuthorized(req) {
+    var usuario = USUARIOS[req.session.user_id];
+    if (req.url == '/preferencias') {
+        return usuario.administrador;
+    } else if (req.url == '/pedidos') {
+        return usuario.ventas;
+    } else if (req.url == '/ingresos') {
+        return usuario.compras;
+    }
+
+    return true;
 }
 
 function checkAuth(req, res, next) {
@@ -3110,19 +3119,23 @@ function checkAuth(req, res, next) {
         res.redirect('/login');
     } else {
         console.log('logged');
-        if (isAuthorized(req)) {
-            process.env.last_url = req.url;
-            next();
+        if (!isRegistered(req)) {
+            res.redirect('/login');
         } else {
-            console.log('User: [' + req.session.user_id + '] not authorized to view this page');
-            console.log('Back to ' + process.env.last_url);
-            process.env.message = "No esta autorizado para acceder a la pagina '" + req.url + "'";
-
-            req.url = process.env.last_url;
-            if (!isAuthorized(req)) {
-                res.redirect("/inventario");    
+            if (isAuthorized(req)) {
+                process.env.last_url = req.url;
+                next();
             } else {
-                res.redirect(process.env.last_url);
+                console.log('User: [' + req.session.user_id + '] not authorized to view this page');
+                console.log('Back to ' + process.env.last_url);
+                process.env.message = "No esta autorizado para acceder a la pagina '" + req.url + "'";
+
+                req.url = process.env.last_url;
+                if (!isAuthorized(req)) {
+                    res.redirect("/inventario");
+                } else {
+                    res.redirect(process.env.last_url);
+                }
             }
         }
     }
