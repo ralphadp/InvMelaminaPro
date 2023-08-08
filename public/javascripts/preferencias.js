@@ -1687,6 +1687,8 @@ function Usuario() {
 					<td><input type="checkbox" id="u_compras_${next_index}" /></td>
 					<td><input type="checkbox" id="u_ventas_${next_index}" /></td>
 					<td><input type="checkbox" id="u_administrador_${next_index}" /></td>
+					<td id="u_connected_${next_index}"></td>
+				  	<td><button class="pref" type="button" title="Reset" id="ru_${next_index}" onclick="resetUsuario(this.id)"><i class="fa fa-key"></i></button></td>
 					<td><button class='pref' type='button' title='Guardar' id='gu_${next_index}' onclick='guardarNuevo(this.id,"usuario_add")'><i class="fa fa-save"></i></button>
 						<button class='pref' type='button' title='Borrar' id='bu_${next_index}' onclick='borrarNuevo(this.id,"usuario_add")'><i class="fa fa-trash"></i></button>
 					</td>
@@ -1785,4 +1787,32 @@ function Usuario() {
 			alert(error.message);
 		});
 	};
+
+	this.resetUsuario = function(id) {
+		if (!confirm("Realmente desea Resetear al usuario!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
+			return;
+		}
+		fetch('/reset_usuario/' + id + '/', {
+			method: 'PUT',
+			headers: { 'Content-Type': 'application/json' },
+		})
+		.then(response => response.json())
+		.then(response => {
+			if (response.ok) {
+				console.log(response.message);
+				document.getElementById("message").style.background = "#a4f1a4";
+				document.getElementById("message").innerHTML = response.message + ". usuario eliminado! <br>";
+				window.location.reload();
+			} else {
+				console.log(response.status, response.statusText);
+				document.getElementById("message").style.background = "red";
+				document.getElementById("message").innerHTML = response.message + "<br>";
+			}
+		})
+		.catch(error => {
+			document.getElementById("message").style.background = "red";
+			document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+			alert(error.message);
+		});
+	}
 };

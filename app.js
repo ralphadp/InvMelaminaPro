@@ -1200,7 +1200,8 @@ app.get('/preferencias', checkAuth, function(req, res) {
                                                     usuario: resultsUsuario,
                                                     _inventario: resultsInventario,
                                                     _control: resultsControl,
-                                                    username: getCurrentUsername(req)
+                                                    username: getCurrentUsername(req),
+                                                    registeredUsers: USUARIOS
                                                 });
                                             })
                                             .catch(error => console.error(error))
@@ -2762,6 +2763,28 @@ app.delete('/delete_usuario/:id', (req, res) => {
     })
     .catch(error => console.error(error))
     .finally(data => client.close())
+})
+
+app.put('/reset_usuario/:id',(req, res) => {
+    try {
+        console.log("reset user: ", req.body);
+
+        if (USUARIOS && USUARIOS[req.params.id]) {
+            delete USUARIOS[req.params.id];
+
+            console.log(`Usuario ${req.params.id} reseteado...`);
+            res.status(200).json({ok: true, message: "Usuario (" + req.params.id + ") reseteado.", action: "none"});
+            res.end();
+        } else {
+            console.log(`Usuario ${req.params.id} no puede ser reseteado...`);
+            res.status(200).json({ok: false, message: "Usuario (" + req.params.id + ") no puede ser reseteado.", action: "reload"});
+            res.end();
+        }
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
+        res.end();
+    }
 })
 
 app.post('/reporte_pedidos_cliente_interno_mes', function(req, res) {

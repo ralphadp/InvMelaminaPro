@@ -463,6 +463,15 @@
 			</table>
 			</div>
 	  </div>
+	  <% function isConnected(userID) {
+		console.log("ESTA CONECTADO....");
+		console.log(userID);
+		console.log(registeredUsers);
+			if (registeredUsers && registeredUsers[userID]) {
+				return true;
+			}
+			return false;
+	  } %>
 	  <div id="usuario" class="container_table">
 		<span class="form-label"><h5>Usuarios   <button class="pref" title="Addicionar Nuevo" type="button" id="usuario_add" onclick="add_row(this)">+</button></h5></span>
 		<div class="table-editable">
@@ -474,6 +483,8 @@
 			  <th> compras </th>
 			  <th> ventas </th>
 			  <th> Administrador </th>
+			  <th> Conectado </th>
+			  <th> Resetear </th>
 			  <th></th>
 			</tr>
 			 <% var user = null;
@@ -484,10 +495,12 @@
 			  <tr id="row_<%= ID %>">
 				  <td class="item_td stopSpaces" contenteditable="true" id="u_nombre_<%= ID %>"><%= user.name %></td>
 				  <td class="item_td stopSpaces" contenteditable="true" id="u_password_<%= ID %>"><%= user.password %></td>
-				  <td class="item_td stopSpaces" contenteditable="true" id="u_completo_<%= ID %>"><%= user.completo %></td>				  
+				  <td class="item_td stopSpaces" contenteditable="true" id="u_completo_<%= ID %>"><%= user.completo %></td>
 				  <td><input type="checkbox" id="u_compras_<%= ID %>" <%=(user.compras == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="u_ventas_<%= ID %>" <%=(user.ventas == true)?'checked':'' %> /></td>
 				  <td><input type="checkbox" id="u_administrador_<%= ID %>" <%=(user.administrador == true)?'checked':'' %> /></td>
+				  <td id="u_connected_<%= ID %>"><%= isConnected(ID)?'\u2713':'' %></td>
+				  <td><button class="pref" type="button" title="Reset" id="ru_<%= ID %>" onclick="resetUsuario(this.id)"><i class="fa fa-key"></i></button></td>
 				  <td>
 					  <button class="pref" type="button" title="Guardar" id="gu_<%= ID %>" onclick="guardarEditado(this.id)"><i class="fa fa-save"></i></button>
 					  <button class="pref" type="button" title="Borrar" id="bu_<%= ID %>" onclick="borrar(this.id)"><i class="fa fa-trash"></i></button>
@@ -913,6 +926,11 @@
 		function borrar(row_id) {
             row_id = row_id.substr(3);
             objCatalog.borrar(row_id);
+		}
+
+		function resetUsuario(row_id) {
+			row_id = row_id.substr(3);
+            objCatalog.resetUsuario(row_id);
 		}
 
 		function guardarControlMinimos() {
