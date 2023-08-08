@@ -685,7 +685,13 @@ app.post('/obtener_precio', (req, res) => {
                         producto.cajas = Math.trunc(producto.rollos / result.rollosxcaja);
 
                         EXPLICACION = `${req.body.cantidad} x ${precio_metros}(pm) Bs`;
+
                         precio = req.body.cantidad * precio_metros;
+                        if (req.body.tipo_cliente == 'interno' || req.body.canteo) {
+                            EXPLICACION = `${req.body.cantidad} x ${precio_metros-1}(pm) Bs`;
+                            precio = req.body.cantidad * (precio_metros - 1);
+                        }
+
                     } else if (req.body.unidad == "rollos") {
                         producto.cajas = Math.trunc(req.body.cantidad / result.rollosxcaja);
 
