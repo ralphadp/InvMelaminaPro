@@ -137,31 +137,31 @@
 
 <% 
     let alert = 0;
-    let controlValues = {};
+   /* let controlValues = {};
 
     _control.forEach((control) => {
         controlValues[control.item] = Number(control.minimo);
-    });
+    });*/
 
     _inventario.forEach((inventario) => {
         if (inventario.metraje >= 0 ) {
-          if (inventario.existencia <= controlValues["Tapacantos"]) {
+          if (inventario.existencia <= _control["Tapacantos"].minimo) {
             alert++;
           }
         } else if (inventario.metraje == -1 ) {
-          if (inventario.existencia <= controlValues["Melamina"]) {
+          if (inventario.existencia <= _control["Melamina"].minimo) {
             alert++;
           }
         } else if (inventario.metraje == -2 ) {
-          if (inventario.existencia <= controlValues["Pegamento"]) {
+          if (inventario.existencia <= _control["Pegamento"].minimo) {
             alert++;
           }
         } else if (inventario.metraje == -3 ) {
-          if (inventario.existencia <= controlValues["Fondo"]) {
+          if (inventario.existencia <= _control["Fondo"].minimo) {
             alert++;
           }
         } else if (inventario.metraje == -4 ) {
-          if (inventario.existencia <= controlValues["Tapatornillos"]) {
+          if (inventario.existencia <= _control["Tapatornillos"].minimo) {
             alert++;
           }
         }

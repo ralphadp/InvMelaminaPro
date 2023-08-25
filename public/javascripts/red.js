@@ -5,7 +5,7 @@ function getReportesPedidosClienteMes(mesElegido) {
     let data = {
         mes: mesElegido
     };
-    fetch('/reporte_pedidos_cliente_interno_mes/', {
+    fetch('/reports/reporte_pedidos_cliente_interno_mes/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -32,7 +32,7 @@ function getReportesPedidosMes(mesElegido) {
     let data = {
         mes: mesElegido
     };
-    fetch('/reporte_producto_pedido_mes/', {
+    fetch('/reports/reporte_producto_pedido_mes/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -56,7 +56,7 @@ function getReportesPedidosMes(mesElegido) {
 }
 
 function getConsumoCliente() {
-    fetch('/reporte_consumo_cliente/', {
+    fetch('/reports/reporte_consumo_cliente/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
     })
@@ -79,7 +79,7 @@ function getConsumoCliente() {
 }
 
 function getProductoXProvedor() {
-    fetch('/reporte_provedor_producto/', {
+    fetch('/reports/reporte_provedor_producto/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
     })
@@ -105,7 +105,7 @@ function getProductoXDia(dia) {
     let data = {
         day: dia
     };
-    fetch('/reporte_venta_producto_dia/', {
+    fetch('/reports/reporte_venta_producto_dia/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -133,7 +133,7 @@ function getVentaCompraHoy(dia) {
     let data = {
         day: dia
     };
-    fetch('/reporte_venta_compra_dia/', {
+    fetch('/reports/reporte_venta_compra_dia/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -156,7 +156,7 @@ function getVentaCompraColoresMes(mesElegido) {
     let data = {
         mes: mesElegido
     };
-    fetch('/reporte_compra_venta_colores_mes/', {
+    fetch('/reports/reporte_compra_venta_colores_mes/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

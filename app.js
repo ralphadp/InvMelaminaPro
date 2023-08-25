@@ -3,24 +3,23 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const ObjectID = require('mongodb').ObjectId;
-const MongoClient = require('mongodb').MongoClient;
 var MD5 = require("crypto-js/md5");
 var session = require('express-session');
+var util = require('./Util');
+var SU = require('./SessionUsers');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var reportesRouter = require('./routes/reportes');
+var preferenciasRouter = require('./routes/preferencias');
 
 var app = express();
 const dotenv = require('dotenv');
 dotenv.config();
-const uri = `mongodb+srv://${process.env.ATLAS_USER}:${process.env.ATLAS_PASS}@${process.env.ATLAS_HOST}/${process.env.ATLAS_DB}?retryWrites=true&w=majority`;
-console.log("Connected to " + uri );
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.set('USUARIOS', SU.USUARIOS);
 
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(session({ resave: true, secret: '123456', /*cookie: { maxAge: oneDay },*/ saveUninitialized: true}));
@@ -31,43 +30,25 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/reports', reportesRouter);
+app.use('/preferences', preferenciasRouter);
 
-
-let getFecha = function() {
-    let fecha = new Date();
-    let hoyDia = fecha.getDate();
-    let esteMes = fecha.getMonth() + 1;
-    let esteAnio = fecha.getFullYear();
-    hoyDia = (hoyDia<=9) ? ('0'+hoyDia) : hoyDia;
-    esteMes = (esteMes<=9) ? ('0'+esteMes) : esteMes;
-    return hoyDia + "/" + esteMes + "/" + esteAnio;
-}
-
-function formatColorMedida(producto) {
-    let color = "";
-    let medida = "";
-    if (producto.color != "(ninguno)") {
-        color = producto.color;
-    }
-    if (producto.medida != "(ninguno)") {
-        medida = producto.medida;
-    }
-
-    return [color, medida];
-}
-
-function getInventarioMD5(producto) {
-    let [color, medida] = formatColorMedida(producto);
-    console.log(producto.item, color, medida, producto.marca);
-    return MD5(producto.item + color + medida + producto.marca).toString();
+//verify the user auth 
+function checkAuth(req, res, next) {
+    SU.verifyAuthentication(req, res, next);
 }
 
 // pedidos page
 app.get('/pedidos', checkAuth, function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
+    var DB = req.app.settings.DB;
+    var _map = req.app.settings.MAP;
+    var resultsControl = _map.control_producto.list;
+    var persona_ = _map.collectionCliente.list;
+    var items_ =_map.item.list;
+    var resultsColor = _map.color.list;
+    var resultsMedidas = _map.medidas.list;
+    var resultsMarcas = _map.marcas.list;
+
     var items = {};
     var persona = {};
 
@@ -138,7 +119,7 @@ app.get('/pedidos', checkAuth, function(req, res) {
                             items[marca.nombre] = marca;
                         });
                         DB.collection("unidad").find().toArray().then(resultUnidad => {
-                            let fecha = getFecha();
+                            let fecha = util.getFecha();
                             console.log(fecha);
                             DB.collection("historial").find({
                                 "fecha": {$regex : fecha},
@@ -157,11 +138,10 @@ app.get('/pedidos', checkAuth, function(req, res) {
                                     inventario: rInventario,
                                     _inventario: resultsInventario,
                                     _control: resultsControl,
-                                    username: getCurrentUsername(req)
+                                    username: SU.getCurrentUsername(req)
                                 });
                             })
                             .catch(error => console.error(error))
-                            .finally(data => client.close())
                         })
                         .catch(error => console.error(error))
                     })
@@ -192,14 +172,12 @@ app.get('/pedidos', checkAuth, function(req, res) {
 
 // ingresos page
 app.get('/ingresos', checkAuth, function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
-    var items = {};
+    var DB = req.app.settings.DB;
+    var _map = req.app.settings.MAP;
+    var resultsControl = _map.control_producto.list;
 
     DB.collection("inventario").find().toArray().then(resultsInventario => {
         var rInventario = {};
-    DB.collection("control_producto").find().toArray().then(resultsControl => {
     DB.collection("item").find().toArray().then(resultsItem => {
         var items = {};
         resultsItem.forEach((item) => {
@@ -248,7 +226,7 @@ app.get('/ingresos', checkAuth, function(req, res) {
                             items[marca.nombre] = marca;
                         });
                         DB.collection("unidad").find().toArray().then(resultUnidad => {
-                            let fecha = getFecha();
+                            let fecha = util.getFecha();
                             console.log(fecha);
                             DB.collection("historial").find({
                                 "fecha": {$regex : fecha},
@@ -266,11 +244,10 @@ app.get('/ingresos', checkAuth, function(req, res) {
                                     inventario: rInventario,
                                     _inventario: resultsInventario,
                                     _control: resultsControl,
-                                    username: getCurrentUsername(req)
+                                    username: SU.getCurrentUsername(req)
                                 });
                             })
                             .catch(error => console.error(error))
-                            .finally(data => client.close())
                         })
                         .catch(error => console.error(error))
                     })
@@ -297,21 +274,19 @@ app.get('/ingresos', checkAuth, function(req, res) {
     .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
+  
 });
 
 app.post('/addicionar_ingreso', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
+    var DB = req.app.settings.DB;
 
     console.log("body:",req.body);
     let tipoItem = req.body.text.item.toLowerCase();
     let tipoUnidad = req.body.nombreDeUnidad.toLowerCase();
-    let [color, medida] = formatColorMedida(req.body);
+    let [color, medida] = util.formatColorMedida(req.body);
 
-    let CollectionItem = client.db().collection("collection" + tipoItem);
-    var CollectionInventario = client.db().collection("inventario");
+    let CollectionItem = DB.collection("collection" + tipoItem);
+    var CollectionInventario = DB.collection("inventario");
 
     let filtro = null;
     if (tipoItem == "pegamento") {
@@ -335,7 +310,7 @@ app.post('/addicionar_ingreso', (req, res) => {
     }
     console.log(filtro);
 
-    let hash = getInventarioMD5(req.body);
+    let hash = util.getInventarioMD5(req.body);
     console.log(hash);
     CollectionInventario.findOne({"codigo":hash}).then(INVENTARIO => {
         console.log(INVENTARIO);
@@ -391,7 +366,7 @@ app.post('/addicionar_ingreso', (req, res) => {
 
             CollectionInventario.updateOne({"codigo": hash}, {$set: resultTotal}).then(item => {
                 console.log(item);
-                var Collection = client.db().collection("historial");
+                var Collection = DB.collection("historial");
                 req.body.inventario_id = codigo.toString();
                 req.body.item = req.body.text.item;
                 req.body.cliente = req.body.text.cliente;
@@ -405,23 +380,21 @@ app.post('/addicionar_ingreso', (req, res) => {
                     res.end();
                 })
                 .catch(error => console.error(error))
-                .finally(data => client.close());
             }).catch(error => console.error(error))
         }).catch(error => console.error(error));
     }).catch(error => console.error(error));
 })
 
 app.post('/addicionar_pedido',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
+    var DB = req.app.settings.DB;
 
     console.log("body: ",req.body);
     let tipoItem = req.body.text.item.toLowerCase();
     let tipoUnidad = req.body.nombreDeUnidad.toLowerCase();
-    let [color, medida] = formatColorMedida(req.body);
+    let [color, medida] = util.formatColorMedida(req.body);
 
-    let CollectionItem = client.db().collection("collection" + tipoItem);
-    var CollectionInventario = client.db().collection("inventario");
+    let CollectionItem = DB.collection("collection" + tipoItem);
+    var CollectionInventario = DB.collection("inventario");
 
     var filter = null;
     if (tipoItem == "pegamento") {
@@ -442,7 +415,7 @@ app.post('/addicionar_pedido',(req, res) => {
     }
     console.log("Query:", filter);
 
-    let hash = getInventarioMD5(req.body);
+    let hash = util.getInventarioMD5(req.body);
     console.log(hash);
     CollectionInventario.findOne({"codigo":hash}).then(INVENTARIO => {
         console.log("Inventario:", INVENTARIO);
@@ -510,7 +483,7 @@ app.post('/addicionar_pedido',(req, res) => {
             console.log("Decrementado cantidad: ",cantidad);
 
             CollectionInventario.updateOne({"codigo": hash}, {$set: total}).then(item => {
-                  var CollectionHistorial = client.db().collection("historial");
+                  var CollectionHistorial = DB.collection("historial");
                   req.body.inventario_id = ID.toString();
                   req.body.item = req.body.text.item;
                   req.body.cliente = req.body.text.cliente;
@@ -533,8 +506,6 @@ app.post('/addicionar_pedido',(req, res) => {
                         res.end();
                         //Salvar cliente nuevo
                         if (typeof(req.body.ci) != "undefined") {
-                            const clientDB = new MongoClient(uri);
-                            clientDB.connect();
                             cliente_nuevo = {
                                 ci: req.body.ci,
                                 celular: req.body.celular,
@@ -545,34 +516,31 @@ app.post('/addicionar_pedido',(req, res) => {
                                 empresa: req.body.empresa,
                                 tipo: "externo"
                             };
-                            clientDB.db().collection("collectionCliente").findOne(cliente_nuevo).then(results => {
+                            DB.collection("collectionCliente").findOne(cliente_nuevo).then(results => {
                                 console.log("CLIENTE -> ",results);
                                 if (results == null) {
-                                    clientDB.db().collection("collectionCliente").insertOne(cliente_nuevo)
+                                    DB.collection("collectionCliente").insertOne(cliente_nuevo)
                                     .then(results => {
                                         console.log(results, `cliente guardado...`);
                                     })
                                     .catch(error => console.error(error))
-                                    .finally(data => clientDB.close());
                                 }
                             })
                             .catch(error => console.error(error))
                         }
                   })
                   .catch(error => console.error(error))
-                  .finally(data => client.close());
             }).catch(error => console.error(error))
         }).catch(error => console.error(error))
     }).catch(error => console.error(error))
 })
 
 app.post('/obtener_precio', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
+    var DB = req.app.settings.DB;
 
     let tipoItem = req.body.item.toLowerCase();
-    var CollectionItem = client.db().collection("collection" + tipoItem);
-    var CollectionProvedor = client.db().collection("collectionprovedor");
+    var CollectionItem = DB.collection("collection" + tipoItem);
+    var CollectionProvedor = DB.collection("collectionprovedor");
     var jsonQuery;
 
     console.log(req.body);
@@ -793,43 +761,38 @@ app.post('/obtener_precio', (req, res) => {
         res.end();
     })
     .catch(error => console.error(error))
-    .finally(data => client.close());
     })
     .catch(error => console.error(error));
 });
 
 // reporte page
 app.get('/reporte', checkAuth, function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    let DB = client.db();
+    var DB = req.app.settings.DB;
+    var _map = req.app.settings.MAP;
+    var resultsControl = _map.control_producto.list;
 
     DB.collection("inventario").find().toArray().then(resultsInventario => {
-        DB.collection("control_producto").find().toArray().then(resultsControl => {
-            res.render('pages/reporte01', {
-                _inventario: resultsInventario,
-                _control: resultsControl,
-                username: getCurrentUsername(req)
-             });
-        })
-        .catch(error => console.error(error))
-        .finally(data => client.close())
+        res.render('pages/reporte01', {
+            _inventario: resultsInventario,
+            _control: resultsControl,
+            username: SU.getCurrentUsername(req)
+        });
     })
     .catch(error => console.error(error))
 });
 
 // tapacantos_standar page
 app.get('/catalogos', checkAuth, function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
+    var DB = req.app.settings.DB;
+    var _map = req.app.settings.MAP;
+    var resultsControl = _map.control_producto.list;
+
     let colores = {};
     let medidas = {};
     let provedores = {};
     let marcas = {};
 
     DB.collection("inventario").find().toArray().then(resultsInventario => {
-    DB.collection("control_producto").find().toArray().then(resultsControl => {
    
     DB.collection("color").find().toArray().then(color_results => {
         color_results.forEach((color)=>{
@@ -908,11 +871,10 @@ app.get('/catalogos', checkAuth, function(req, res) {
                                 cliente:    cliente_results,
                                 _inventario: resultsInventario,
                                 _control: resultsControl,
-                                username: getCurrentUsername(req)
+                                username: SU.getCurrentUsername(req)
                             });
                         })
                         .catch(error => console.error(error))
-                        .finally(data => client.close())
                     })
                     .catch(error => console.error(error))
                 })
@@ -933,39 +895,30 @@ app.get('/catalogos', checkAuth, function(req, res) {
     .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
 });
 
 // historia page
 app.get('/historial', checkAuth, function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
-  
-    DB.collection("inventario").find().toArray().then(resultsInventario => {
-    DB.collection("control_producto").find().toArray().then(resultsControl => {
+    var DB = req.app.settings.DB;
+    var _map = req.app.settings.MAP;
+    var resultsControl = _map.control_producto.list;
 
+    DB.collection("inventario").find().toArray().then(resultsInventario => {
         DB.collection("historial").find().toArray().then(results => {
             res.render('pages/historial', {
                 historial: results,
                 _inventario: resultsInventario,
                 _control: resultsControl,
-                username: getCurrentUsername(req)
+                username: SU.getCurrentUsername(req)
             });
         })
         .catch(error => console.error(error))
-        .finally(data => client.close())
-    })
-    .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
 });
 
 app.get('/productos', function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
+    var DB = req.app.settings.DB;
   
     var items = {};
     DB.collection("preferencias").findOne().then(resultsPreferencias => {
@@ -1003,7 +956,6 @@ app.get('/productos', function(req, res) {
                                         });
                                     })
                                     .catch(error => console.error(error))
-                                    .finally(data => client.close())
                                 })
                                 .catch(error => console.error(error))
                             })
@@ -1026,15 +978,15 @@ app.get('/productos', function(req, res) {
 
 // historia page
 app.get('/inventario', checkAuth, function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
+    var DB = req.app.settings.DB;
+    var _map = req.app.settings.MAP;
+    var resultsControl = _map.control_producto.list;
 
     let producto_item ={};
     let colores = {};
     let medidas = {};
     let marcas = {};
-    var control = [];
+
     DB.collection("item").find().toArray().then(resultsItem => {
         resultsItem.forEach((item)=>{
             producto_item[item.nombre] = item;
@@ -1100,24 +1052,19 @@ app.get('/inventario', checkAuth, function(req, res) {
                             resultTapatornillos.forEach((tapatornillos) => {
                                 rInventario.fetchInventarioValues("Tapatornillos", tapatornillos);
                             });
-                            DB.collection("control_producto").find().toArray().then(resultControl => {
-                                resultControl.forEach(element => {
-                                    control[element.item] = element;
-                                });
                                 res.render('pages/inventario', {
                                     colores: colores,
                                     medidas: medidas,
                                     marcas: marcas,
                                     inventario: rInventario,
-                                    control: control,
+                                    control: resultsControl,
                                     size: (Object.keys(rInventario).length - 1),  //less 1 function
                                     _inventario: resultsInventario,
-                                    _control: resultControl,
-                                    username: getCurrentUsername(req)
+                                    _control: resultsControl,
+                                    username: SU.getCurrentUsername(req)
                                 });
                             })
                             .catch(error => console.error(error))
-                            .finally(data => client.close())
                         })
                         .catch(error => console.error(error))
                     })
@@ -1136,35 +1083,32 @@ app.get('/inventario', checkAuth, function(req, res) {
     .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
 });
 
 // preferencias page
 app.get('/preferencias', checkAuth, function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
+    var DB = req.app.settings.DB;
+    var _map = req.app.settings.MAP;
+    var resultsControl = _map.control_producto.list;
     
-    var CollectionInventario = client.db().collection("inventario");
-    var CollectionPreferencias = client.db().collection("preferencias");
-    var CollectionUsuario = client.db().collection("user");
-    var CollectionControlProducto = client.db().collection("control_producto");
-    var CollectionColor = client.db().collection("color");
-    var CollectionMarcas = client.db().collection("marcas");
-    var CollectionMedidas = client.db().collection("medidas");
-    var CollectionProvedor = client.db().collection("collectionprovedor");
-    var CollectionItem = client.db().collection("item");
-    var CollectionCliente = client.db().collection("collectionCliente");
-    var CollectionMelamina = client.db().collection("collectionmelamina");
-    var CollectionTapacantos = client.db().collection("collectiontapacantos");
-    var CollectionPegamento = client.db().collection("collectionpegamento");
-    var CollectionFondo = client.db().collection("collectionfondo");
-    var CollectionTapatornillos = client.db().collection("collectiontapatornillos");
+    var CollectionInventario = DB.collection("inventario");
+    var CollectionPreferencias = DB.collection("preferencias");
+    var CollectionUsuario = DB.collection("user");
+    var CollectionColor = DB.collection("color");
+    var CollectionMarcas = DB.collection("marcas");
+    var CollectionMedidas = DB.collection("medidas");
+    var CollectionProvedor = DB.collection("collectionprovedor");
+    var CollectionItem = DB.collection("item");
+    var CollectionCliente = DB.collection("collectionCliente");
+    var CollectionMelamina = DB.collection("collectionmelamina");
+    var CollectionTapacantos = DB.collection("collectiontapacantos");
+    var CollectionPegamento = DB.collection("collectionpegamento");
+    var CollectionFondo = DB.collection("collectionfondo");
+    var CollectionTapatornillos = DB.collection("collectiontapatornillos");
 
     CollectionInventario.find().toArray().then(resultsInventario => {
     CollectionPreferencias.findOne().then(resultsPreferencias => {
     CollectionUsuario.find().toArray().then(resultsUsuario => {
-    CollectionControlProducto.find().toArray().then(resultsControl => {
     CollectionColor.find().toArray().then(resultsColor => {
         CollectionMarcas.find().toArray().then(resultsMarcas => {
             CollectionMedidas.find().toArray().then(resultsMedidas => {
@@ -1193,12 +1137,11 @@ app.get('/preferencias', checkAuth, function(req, res) {
                                                     usuario: resultsUsuario,
                                                     _inventario: resultsInventario,
                                                     _control: resultsControl,
-                                                    username: getCurrentUsername(req),
-                                                    registeredUsers: USUARIOS
+                                                    username: SU.getCurrentUsername(req),
+                                                    registeredUsers: SU.USUARIOS
                                                 });
                                             })
                                             .catch(error => console.error(error))
-                                            .finally(data => client.close())
                                         })
                                         .catch(error => console.error(error))
                                     })
@@ -1225,1871 +1168,15 @@ app.get('/preferencias', checkAuth, function(req, res) {
     .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
 });
-
-app.post('/nuevo_color',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    console.log("color",req.body);
-
-    let CollectionColor = client.db().collection("color");
-
-    CollectionColor.insertOne(req.body).then(results => {
-
-        console.log(results);
-        console.log(`Un color nuevo addicionado a catalogo...`);
-
-        res.status(200).json({ok: true, message: "Un color nuevo addicionado a catalogo....", action: "reload"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.put('/actualizar_color/:id',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();   
-
-    console.log("color: ", req.body);
-    let idc = new ObjectID(req.params.id);
-    console.log(req.params.id, idc);
-
-    let CollectionColor = client.db().collection("color");
-
-    CollectionColor.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Color ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Color (" + req.body.nombre + ") actualizado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.delete('/delete_color/:id', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    
-    var CollectionColor = client.db().collection("color");
-    let cid = new ObjectID(req.params.id);
-
-    CollectionColor.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Color ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Color (" + req.params.id + ") borrado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close())
-})
-
-app.post('/nueva_marca',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    console.log("marca",req.body);
-
-    let CollectionMarca = client.db().collection("marcas");
-
-    CollectionMarca.insertOne(req.body).then(results => {
-
-        console.log(results);
-        console.log(`Uns marca nuevo addicionado a catalogo...`);
-
-        res.status(200).json({ok: true, message: "Una marca nuevo addicionado a catalogo....", action: "reload"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.put('/actualizar_marca/:id',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();   
-
-    console.log("marca: ", req.body);
-    let idc = new ObjectID(req.params.id);
-    console.log(req.params.id, idc);
-
-    let CollectionMarca = client.db().collection("marcas");
-
-    CollectionMarca.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Marca ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Marca (" + req.body.nombre + ") actualizado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.delete('/delete_marca/:id', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    
-    var CollectionMarca = client.db().collection("marcas");
-    let cid = new ObjectID(req.params.id);
-
-    CollectionMarca.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Marca ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Marca (" + req.params.id + ") borrado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close())
-})
-
-app.post('/nueva_medida',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    console.log("medida",req.body);
-
-    let CollectionMedida = client.db().collection("medidas");
-
-    CollectionMedida.insertOne(req.body).then(results => {
-
-        console.log(results);
-        console.log(`Una medida nueva fue addicionada al catalogo...`);
-
-        res.status(200).json({ok: true, message: "Una medida nueva addicionada al catalogo....", action: "reload"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.put('/actualizar_medida/:id',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();   
-
-    console.log("medida: ", req.body);
-    let idc = new ObjectID(req.params.id);
-    console.log(req.params.id, idc);
-
-    let CollectionMedida = client.db().collection("medidas");
-
-    CollectionMedida.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Medida ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Medida (" + req.body.nombre + ") actualizado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.delete('/delete_medida/:id', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    
-    var CollectionMedida = client.db().collection("medidas");
-    let cid = new ObjectID(req.params.id);
-
-    CollectionMedida.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Medida ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Medida (" + req.params.id + ") borrado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close())
-})
-
-app.post('/nuevo_provedor',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    console.log("provedor",req.body);
-
-    let CollectionProvedor = client.db().collection("collectionprovedor");
-
-    CollectionProvedor.insertOne(req.body).then(results => {
-
-        console.log(results);
-        console.log(`Un provedor nuevo fue addicionado al catalogo...`);
-
-        res.status(200).json({ok: true, message: "Un provedor nuevo fue addicionado al catalogo....", action: "reload"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.put('/actualizar_provedor/:id',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();   
-
-    console.log("provedor: ", req.body);
-    let idc = new ObjectID(req.params.id);
-    console.log(req.params.id, idc);
-
-    let CollectionProvedor = client.db().collection("collectionprovedor");
-
-    CollectionProvedor.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Provedor ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Provedor (" + req.body.nombre + ") actualizado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.delete('/delete_provedor/:id', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    
-    var CollectionProvedor = client.db().collection("collectionprovedor");
-    let cid = new ObjectID(req.params.id);
-
-    CollectionProvedor.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Provedor ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Provedor (" + req.params.id + ") borrado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close())
-})
-
-app.post('/nuevo_item',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    console.log("item",req.body);
-
-    let CollectionItem = client.db().collection("item");
-
-    CollectionItem.insertOne(req.body).then(results => {
-
-        console.log(results);
-        console.log(`Un item nuevo fue addicionado al catalogo...`);
-
-        res.status(200).json({ok: true, message: "Un item nuevo fue addicionado al catalogo....", action: "reload"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.put('/actualizar_item/:id',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();   
-
-    console.log("item: ", req.body);
-    let idc = new ObjectID(req.params.id);
-    console.log(req.params.id, idc);
-
-    let CollectionItem = client.db().collection("item");
-
-    CollectionItem.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Item ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Item (" + req.body.nombre + ") actualizado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.delete('/delete_item/:id', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    
-    var CollectionItem = client.db().collection("item");
-    let cid = new ObjectID(req.params.id);
-
-    CollectionItem.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Item ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Item (" + req.params.id + ") borrado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close())
-})
-
-app.post('/nuevo_cliente',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    console.log("cliente",req.body);
-
-    let CollectionCliente = client.db().collection("collectionCliente");
-
-    CollectionCliente.insertOne(req.body).then(results => {
-
-        console.log(results);
-        console.log(`Un Cliente nuevo fue addicionado al catalogo...`);
-
-        res.status(200).json({ok: true, message: "Un Cliente nuevo fue addicionado al catalogo....", action: "reload"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.put('/actualizar_cliente/:id',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();   
-
-    console.log("cliente: ", req.body);
-    let idc = new ObjectID(req.params.id);
-    console.log(req.params.id, idc);
-
-    let CollectionCliente = client.db().collection("collectionCliente");
-
-    CollectionCliente.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Cliente ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Cliente (" + req.body.nombre + ") actualizado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.delete('/delete_cliente/:id', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    
-    var CollectionCliente = client.db().collection("collectionCliente");
-    let cid = new ObjectID(req.params.id);
-
-    CollectionCliente.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Cliente ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Cliente (" + req.params.id + ") borrado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close())
-})
-
-app.post('/nueva_melamina',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    console.log("nueva melamina",req.body);
-
-    let CollectionItem = client.db().collection("item");
-    CollectionItem.findOne({nombre:"Melamina"}).then(producto => {
-        console.log(producto);
-
-        let CollectionMelamina = client.db().collection("collectionmelamina");
-        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
-
-        req.body.hash_inventario = hash;
-        CollectionMelamina.insertOne(req.body).then(results => {
-
-            console.log(results);
-
-            let CollectionInventario = client.db().collection("inventario");
-            console.log(producto._id.toString(), req.body.color, req.body.medidas, req.body.marca);
-
-            CollectionInventario.findOne({codigo: hash}).then(results => {
-
-                console.log("Existe inventario? ",results);
-
-                if (!results) {
-                    console.log("Nuevo md5", hash);
-                    let inv = {
-                        codigo: hash,
-                        existencia: 0,
-                        metraje:-1
-                    };
-
-                    CollectionInventario.insertOne(inv).then(results => {
-                        console.log(results);
-                        console.log(`Una melamina nueva fue adicionada al catalogo e inventario...`);
-
-                        res.status(200).json({ok: true, message: "Una melamina nueva fue adicionada al catalogo e inventario....", action: "reload"});
-                        res.end();
-
-                    })
-                    .catch(error => console.error(error))
-                    .finally(data => client.close());
-                } else {
-                    console.log(`Una melamina nueva fue adicionada al catalogo...`);
-
-                    res.status(200).json({ok: true, message: "Una melamina nueva fue adicionada al catalogo....", action: "reload"});
-                    res.end();
-                    client.close();
-                }
-            })
-            .catch(error => console.error(error))
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.put('/actualizar_melamina/:id',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-
-    let CollectionItem = client.db().collection("item");
-    let CollectionInventario = client.db().collection("inventario");
-
-    CollectionItem.findOne({nombre:"Melamina"}).then(producto => {
-
-        console.log("Melamina: ", req.body);
-        let idc = new ObjectID(req.params.id);
-        console.log("param: "+req.params.id);
-
-        let hashOld = req.body.hash_inventario;
-        let hashNew = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
-        req.body.hash_inventario = hashNew;
-
-        let CollectionProducto = client.db().collection("collectionmelamina");
-
-        CollectionProducto.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-            console.log(results);
-            console.log("hash Nuevo:", hashNew, "hash viejo:", hashOld);
-            if (hashNew != hashOld) {
-                CollectionInventario.find({codigo: hashNew}).toArray().then(inventario => {
-                    console.log(inventario);
-                    if (!inventario.length) { //no existe inventario
-                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
-                            console.log(productos);
-                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
-                                //actualiza el inventario existente
-                                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hashNew}}).then(results => {
-                                    console.log(results);
-                                    console.log(`Fue actualizado en catalogo e inventario...`);
-
-                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado en catalogo e inventario....", new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            } else {
-                                let inv = {
-                                    codigo: hashNew,
-                                    existencia: 0,
-                                    metraje: -3
-                                };
-
-                                CollectionInventario.insertOne(inv).then(results => {
-                                    console.log(results);
-                                    console.log(`El Melamina se actualizo y se creo un nuevo inventario ${hashNew}...`);
-
-                                    res.status(200).json({ok: true, message: `El Melamina se actualizo y se creo un nuevo inventario ${hashNew}...`, new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            }
-                        })
-                        .catch(error => console.error(error))
-                    } else {  //existe inventario
-                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
-                            console.log(productos);
-                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
-
-                                //Se suma existencia al nuevo inventario enlazado???
-                                CollectionInventario.deleteOne({codigo: hashOld}).then(results => {
-                                    console.log(results);
-                                    console.log(`Se borro inventario viejo y se actualizo Melamina con enlaze a otro inventario...`);
-
-                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Se borro inventario viejo y se actualizo Melamina con enlaze a otro inventario...", new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            } else {
-                                console.log(`Se actualizo Melamina y se cambio el enlaze a otro inventario...`);
-
-                                res.status(200).json({ok: true, message: "(" + req.body.color + ") Se actualizo Melamina y se cambio el enlaze a otro inventario......", new_hash: hashNew, action: "reload"});
-                                res.end();
-                                client.close();
-                            }
-                        })
-                        .catch(error => console.error(error))
-                    }
-                })
-                .catch(error => console.error(error))
-            } else {
-                //no se envio datos actualizado, o no se actualizo en el UI
-                console.log(results);
-                console.log(`Melamina  ${idc} conserva los datos...`);
-                res.status(200).json({ok: true, message: "Melamina (" + idc + ") conserva los datos.", new_hash: hashNew, action: "none"});
-                res.end();
-                client.close();
-            }
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.delete('/delete_melamina/:id', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-
-    let CollectionItem = client.db().collection("item");
-    var CollectionProducto = client.db().collection("collectionmelamina");
-    var CollectionInventario = client.db().collection("inventario");
-    let cid = new ObjectID(req.params.id);
-    console.log("ID: ",req.params.id);
-
-    CollectionItem.findOne({nombre:"Melamina"}).then(producto => {
-
-        CollectionProducto.findOne({"_id": cid }).then(melamina => {
-
-            let hash = MD5(producto._id.toString() + melamina.color + melamina.medidas + melamina.marca).toString();
-
-            if (melamina.hash_inventario != hash) {
-                console.log("Discrepancias en hash, inventarioID: ",melamina.hash_inventario, " hash generado:" ,hash);
-
-                res.status(500).json({ok: true, message: "No se pudo borrar Melamina (" + req.params.id + ") revise el codigo de inventario.", action: "none"});
-                res.end();
-                throw "Revise el hash de inventario vs producto...";
-            }
-
-            CollectionProducto.find({"hash_inventario": hash }).toArray().then(result => {
-                let productosDeInventario = result.length;
-                console.log(result);
-
-                CollectionProducto.deleteOne({"_id": cid }).then(result => {
-                    console.log(result);
-
-                    if (productosDeInventario > 1) {
-                        console.log("Invantario [codigo: "+hash+"] se conserva, existe para otros productos.");
-                        console.log(`Melamina ${req.params.id} fue borrado...`);
-
-                        res.status(200).json({ok: true, message: "Melamina (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
-                        res.end();
-                        client.close();
-                    } else {
-                        CollectionInventario.deleteOne({"codigo": hash }).then(result => {
-                            console.log(result);
-                            console.log(`Melamina y su inventario ${req.params.id} fueron borrados...`);
-
-                            res.status(200).json({ok: true, message: "Melamina (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
-                            res.end();
-                        })
-                        .catch(error => console.error(error))
-                        .finally(data => client.close())
-                    }
-                })
-                .catch(error => console.error(error))
-            })
-            .catch(error => console.error(error))
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.post('/nuevo_tapacantos',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    console.log("tapacantos",req.body);
-
-    let CollectionItem = client.db().collection("item");
-    CollectionItem.findOne({nombre:"Tapacantos"}).then(producto => {
-        console.log(producto);
-    
-        let CollectionTapacantos = client.db().collection("collectiontapacantos");
-        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
-
-        req.body.hash_inventario = hash;
-        CollectionTapacantos.insertOne(req.body).then(results => {
-
-            console.log(results);
-
-            let CollectionInventario = client.db().collection("inventario");
-            console.log(producto._id.toString(), req.body.color, req.body.medidas, req.body.marca);
-            let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
-
-            CollectionInventario.findOne({codigo: hash}).then(results => {
-
-                console.log("Existe inventario? ",results);
-
-                if (!results) {
-                    console.log("Nuevo md5", hash);
-                    let inv = {
-                        codigo: hash,
-                        existencia: 0,
-                        metraje:0
-                    };
-
-                    CollectionInventario.insertOne(inv).then(results => {
-                        console.log(results);
-                        console.log(`Un tapacantos nuevo fue adicionado al catalogo e inventario...`);
-
-                        res.status(200).json({ok: true, message: "Un tapacantos nuevo fue adicionado al catalogo e inventario....", action: "reload"});
-                        res.end();
-
-                    })
-                    .catch(error => console.error(error))
-                    .finally(data => client.close());
-                } else {
-                    console.log(`Un tapacantos nuevo fue adicionado al catalogo...`);
-
-                    res.status(200).json({ok: true, message: "Un tapacantos nuevo fue adicionado al catalogo....", action: "reload"});
-                    res.end();
-                    client.close();
-                }
-            })
-            .catch(error => console.error(error))
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.put('/actualizar_tapacantos/:id',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-
-    let CollectionItem = client.db().collection("item");
-    let CollectionInventario = client.db().collection("inventario");
-
-    CollectionItem.findOne({nombre:"Tapacantos"}).then(producto => {
-
-        console.log("tapacantos: ", req.body);
-        let idc = new ObjectID(req.params.id);
-        console.log("param: "+req.params.id);
-
-        let hashOld = req.body.hash_inventario;
-        let hashNew = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
-        req.body.hash_inventario = hashNew;
-
-        let CollectionProducto = client.db().collection("collectiontapacantos");
-
-        CollectionProducto.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-            console.log(results);
-            console.log("hash Nuevo:", hashNew, "hash viejo:", hashOld);
-            if (hashNew != hashOld) {
-                CollectionInventario.find({codigo: hashNew}).toArray().then(inventario => {
-                    console.log(inventario);
-                    if (!inventario.length) { //no existe inventario
-                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
-                            console.log(productos);
-                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
-                                //actualiza el inventario existente
-                                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hashNew}}).then(results => {
-                                    console.log(results);
-                                    console.log(`Fue actualizado en catalogo e inventario...`);
-
-                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado en catalogo e inventario....", new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            } else {
-                                let inv = {
-                                    codigo: hashNew,
-                                    existencia: 0,
-                                    metraje: -3
-                                };
-
-                                CollectionInventario.insertOne(inv).then(results => {
-                                    console.log(results);
-                                    console.log(`El Tapacantos se actualizo y se creo un nuevo inventario ${hashNew}...`);
-
-                                    res.status(200).json({ok: true, message: `El Tapacantos se actualizo y se creo un nuevo inventario ${hashNew}...`, new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            }
-                        })
-                        .catch(error => console.error(error))
-                    } else {  //existe inventario
-                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
-                            console.log(productos);
-                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
-
-                                //Se suma existencia al nuevo inventario enlazado???
-                                CollectionInventario.deleteOne({codigo: hashOld}).then(results => {
-                                    console.log(results);
-                                    console.log(`Se borro inventario viejo y se actualizo Tapacantos con enlaze a otro inventario...`);
-
-                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Se borro inventario viejo y se actualizo Tapacantos con enlaze a otro inventario...", new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            } else {
-                                console.log(`Se actualizo Tapacantos y se cambio el enlaze a otro inventario...`);
-
-                                res.status(200).json({ok: true, message: "(" + req.body.color + ") Se actualizo Tapacantos y se cambio el enlaze a otro inventario......", new_hash: hashNew, action: "reload"});
-                                res.end();
-                                client.close();
-                            }
-                        })
-                        .catch(error => console.error(error))
-                    }
-                })
-                .catch(error => console.error(error))
-            } else {
-                //no se envio datos actualizado, o no se actualizo en el UI
-                console.log(results);
-                console.log(`Tapacantos  ${idc} conserva los datos...`);
-                res.status(200).json({ok: true, message: "Tapacantos (" + idc + ") conserva los datos.", new_hash: hashNew, action: "none"});
-                res.end();
-                client.close();
-            }
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.delete('/delete_tapacantos/:id', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-
-    let CollectionItem = client.db().collection("item");
-    var CollectionProducto = client.db().collection("collectiontapacantos");
-    var CollectionInventario = client.db().collection("inventario");
-    let cid = new ObjectID(req.params.id);
-    console.log("ID: ",req.params.id);
-
-    CollectionItem.findOne({nombre:"Tapacantos"}).then(producto => {
-
-        CollectionProducto.findOne({"_id": cid }).then(tapacantos => {
-
-            let hash = MD5(producto._id.toString() + tapacantos.color + tapacantos.medidas + tapacantos.marca).toString();
-
-            if (tapacantos.hash_inventario != hash) {
-                console.log("Discrepancias en hash, inventarioID: ",tapacantos.hash_inventario, " hash generado:" ,hash);
-
-                res.status(500).json({ok: true, message: "No se pudo borrar Tapacantos (" + req.params.id + ") revise el codigo de inventario.", action: "none"});
-                res.end();
-                throw "Revise el hash de inventario vs producto...";
-            }
-
-            CollectionProducto.find({"hash_inventario": hash }).toArray().then(result => {
-                let productosDeInventario = result.length;
-                console.log(result);
-
-                CollectionProducto.deleteOne({"_id": cid }).then(result => {
-                    console.log(result);
-
-                    if (productosDeInventario > 1) {
-                        console.log("Invantario [codigo: "+hash+"] se conserva, existe para otros productos.");
-                        console.log(`Tapacantos ${req.params.id} fue borrado...`);
-
-                        res.status(200).json({ok: true, message: "Tapacantos (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
-                        res.end();
-                        client.close();
-                    } else {
-                        CollectionInventario.deleteOne({"codigo": hash }).then(result => {
-                            console.log(result);
-                            console.log(`Tapacantos y su inventario ${req.params.id} fueron borrados...`);
-
-                            res.status(200).json({ok: true, message: "Tapacantos (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
-                            res.end();
-                        })
-                        .catch(error => console.error(error))
-                        .finally(data => client.close())
-                    }
-                })
-                .catch(error => console.error(error))
-            })
-            .catch(error => console.error(error))
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.post('/nuevo_pegamento',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    console.log("nuevo pegamento",req.body);
-
-    let CollectionItem = client.db().collection("item");
-    CollectionItem.findOne({nombre:"Pegamento"}).then(producto => {
-        console.log("item:",producto);
-
-        let CollectionPegamento = client.db().collection("collectionpegamento");
-        let hash = MD5(producto._id.toString() + req.body.marca).toString();
-
-        req.body.hash_inventario = hash;
-        CollectionPegamento.insertOne(req.body).then(results => {
-
-            console.log(results);
-
-            let CollectionInventario = client.db().collection("inventario");
-            console.log(producto._id.toString(),  req.body.marca);
-
-            CollectionInventario.findOne({codigo: hash}).then(results => {
-
-                console.log("Existe inventario? ",results);
-
-                if (!results) {
-                    console.log("Nuevo md5", hash);
-                    let inv = {
-                        codigo: hash,
-                        existencia: 0,
-                        metraje:-2
-                    };
-
-                    CollectionInventario.insertOne(inv).then(results => {
-                        console.log(results);
-                        console.log(`Un pegamento nuevo fue adicionado al catalogo e inventario...`);
-
-                        res.status(200).json({ok: true, message: "Un pegamento nuevo fue adicionado al catalogo e inventario....", action: "reload"});
-                        res.end();
-
-                    })
-                    .catch(error => console.error(error))
-                    .finally(data => client.close());
-                } else {
-                    console.log(`Un pegamento nuevo fue adicionado al catalogo...`);
-
-                    res.status(200).json({ok: true, message: "Un pegamento nuevo fue adicionado al catalogo....", action: "reload"});
-                    res.end();
-                    client.close();
-                }
-            })
-            .catch(error => console.error(error))
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.put('/actualizar_pegamento/:id',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-
-    let CollectionItem = client.db().collection("item");
-    let CollectionInventario = client.db().collection("inventario");
-
-    CollectionItem.findOne({nombre:"Pegamento"}).then(producto => {
-
-        console.log("pegamento: ", req.body);
-        let idc = new ObjectID(req.params.id);
-        console.log("param: "+req.params.id);
-
-        let hashOld = req.body.hash_inventario;
-        let hashNew = MD5(producto._id.toString() + req.body.marca).toString();
-        req.body.hash_inventario = hashNew;
-
-        let CollectionProducto = client.db().collection("collectionpegamento");
-
-        CollectionProducto.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-            console.log(results);
-            console.log("hash Nuevo:", hashNew, "hash viejo:", hashOld);
-            if (hashNew != hashOld) {
-                CollectionInventario.find({codigo: hashNew}).toArray().then(inventario => {
-                    console.log(inventario);
-                    if (!inventario.length) { //no existe inventario
-                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
-                            console.log(productos);
-                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
-                                //actualiza el inventario existente
-                                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hashNew}}).then(results => {
-                                    console.log(results);
-                                    console.log(`Fue actualizado en catalogo e inventario...`);
-
-                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado en catalogo e inventario....", new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            } else {
-                                let inv = {
-                                    codigo: hashNew,
-                                    existencia: 0,
-                                    metraje: -3
-                                };
-
-                                CollectionInventario.insertOne(inv).then(results => {
-                                    console.log(results);
-                                    console.log(`El pegamento se actualizo y se creo un nuevo inventario ${hashNew}...`);
-
-                                    res.status(200).json({ok: true, message: `El pegamento se actualizo y se creo un nuevo inventario ${hashNew}...`, new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            }
-                        })
-                        .catch(error => console.error(error))
-                    } else {  //existe inventario
-                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
-                            console.log(productos);
-                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
-
-                                //Se suma existencia al nuevo inventario enlazado???
-                                CollectionInventario.deleteOne({codigo: hashOld}).then(results => {
-                                    console.log(results);
-                                    console.log(`Se borro inventario viejo y se actualizo pegamento con enlaze a otro inventario...`);
-
-                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Se borro inventario viejo y se actualizo pegamento con enlaze a otro inventario...", new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            } else {
-                                console.log(`Se actualizo pegamento y se cambio el enlaze a otro inventario...`);
-
-                                res.status(200).json({ok: true, message: "(" + req.body.color + ") Se actualizo pegamento y se cambio el enlaze a otro inventario......", new_hash: hashNew, action: "reload"});
-                                res.end();
-                                client.close();
-                            }
-                        })
-                        .catch(error => console.error(error))
-                    }
-                })
-                .catch(error => console.error(error))
-            } else {
-                //no se envio datos actualizado, o no se actualizo en el UI
-                console.log(results);
-                console.log(`pegamento  ${idc} conserva los datos...`);
-                res.status(200).json({ok: true, message: "pegamento (" + idc + ") conserva los datos.", new_hash: hashNew, action: "none"});
-                res.end();
-                client.close();
-            }
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.delete('/delete_pegamento/:id', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-
-    let CollectionItem = client.db().collection("item");
-    var CollectionProducto = client.db().collection("collectionpegamento");
-    var CollectionInventario = client.db().collection("inventario");
-    let cid = new ObjectID(req.params.id);
-    console.log("Id: ",req.params.id);
-
-    CollectionItem.findOne({nombre:"Pegamento"}).then(producto => {
-
-        CollectionProducto.findOne({"_id": cid }).then(pegamento => {
-
-            let hash = MD5(producto._id.toString() + pegamento.marca).toString();
-
-            if (pegamento.hash_inventario != hash) {
-                console.log("Discrepancias en hash, inventarioID: ",pegamento.hash_inventario, " hash generado:" ,hash);
-
-                res.status(500).json({ok: true, message: "No se pudo borrar Fondo (" + req.params.id + ") revise  el codigo de inventario.", action: "none"});
-                res.end();
-                throw "Revise el hash de inventario vs producto...";
-            }
-
-            CollectionProducto.find({"hash_inventario": hash }).toArray().then(result => {
-                let productosDeInventario = result.length;
-                console.log(result);
-
-                CollectionProducto.deleteOne({"_id": cid }).then(result => {
-                    console.log(result);
-
-                    if (productosDeInventario > 1) {
-                        console.log("Invantario [codigo: "+hash+"] se conserva, existe para otros productos.");
-                        console.log(`Pegamento ${req.params.id} fue borrado...`);
-
-                        res.status(200).json({ok: true, message: "Pegamento (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
-                        res.end();
-                        client.close();
-                    } else {
-                        CollectionInventario.deleteOne({"codigo": hash }).then(result => {
-                            console.log(result);
-                            console.log(`Pegamento y su inventario ${req.params.id} fueron borrados...`);
-
-                            res.status(200).json({ok: true, message: "Pegamento (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
-                            res.end();
-                        })
-                        .catch(error => console.error(error))
-                        .finally(data => client.close())
-                    }
-                })
-                .catch(error => console.error(error))
-            })
-            .catch(error => console.error(error))
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.post('/nuevo_fondo',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    console.log("fondo",req.body);
-
-    let CollectionItem = client.db().collection("item");
-    CollectionItem.findOne({nombre:"Fondo"}).then(producto => {
-        console.log(producto);
-        let CollectionPegamento = client.db().collection("collectionfondo");
-        let hash = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
-
-        req.body.hash_inventario = hash;
-        CollectionPegamento.insertOne(req.body).then(results => {
-
-            console.log(results);
-
-            let CollectionInventario = client.db().collection("inventario");
-            console.log(producto._id.toString(), req.body.color, req.body.medidas, req.body.marca);
-
-            CollectionInventario.findOne({codigo: hash}).then(results => {
-
-                console.log("Existe inventario? ", results);
-
-                if (!results) {
-                    console.log("Nuevo md5", hash);
-                    let inv = {
-                        codigo: hash,
-                        existencia: 0,
-                        metraje:-3
-                    };
-
-                    CollectionInventario.insertOne(inv).then(results => {
-                        console.log(results);
-                        console.log(`Un fondo nuevo fue adicionado al catalogo e inventario...`);
-
-                        res.status(200).json({ok: true, message: "Un fondo nuevo fue adicionado al catalogo e inventario....", action: "reload"});
-                        res.end();
-
-                    })
-                    .catch(error => console.error(error))
-                    .finally(data => client.close());
-                } else {
-                    console.log(`Un fondo nuevo fue adicionado al catalogo...`);
-
-                    res.status(200).json({ok: true, message: "Un fondo nuevo fue adicionado al catalogo....", action: "reload"});
-                    res.end();
-                    client.close();
-                }
-            })
-            .catch(error => console.error(error))
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.put('/actualizar_fondo/:id',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-
-    let CollectionItem = client.db().collection("item");
-    let CollectionInventario = client.db().collection("inventario");
-
-    CollectionItem.findOne({nombre:"Fondo"}).then(producto => {
-
-        console.log("fondo: ", req.body);
-        let idc = new ObjectID(req.params.id);
-        console.log("param: "+req.params.id);
-
-        let hashOld = req.body.hash_inventario;
-        let hashNew = MD5(producto._id.toString() + req.body.color + req.body.medidas + req.body.marca).toString();
-        req.body.hash_inventario = hashNew;
-
-        let CollectionProducto = client.db().collection("collectionfondo");
-
-        CollectionProducto.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-            console.log(results);
-            console.log("hash Nuevo:", hashNew, "hash viejo:", hashOld);
-            if (hashNew != hashOld) {
-                CollectionInventario.find({codigo: hashNew}).toArray().then(inventario => {
-                    console.log(inventario);
-                    if (!inventario.length) { //no existe inventario
-                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
-                            console.log(productos);
-                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
-                                //actualiza el inventario existente
-                                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hashNew}}).then(results => {
-                                    console.log(results);
-                                    console.log(`Fue actualizado en catalogo e inventario...`);
-
-                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado en catalogo e inventario....", new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            } else {
-                                let inv = {
-                                    codigo: hashNew,
-                                    existencia: 0,
-                                    metraje: -3
-                                };
-
-                                CollectionInventario.insertOne(inv).then(results => {
-                                    console.log(results);
-                                    console.log(`El fondo se actualizo y se creo un nuevo inventario ${hashNew}...`);
-
-                                    res.status(200).json({ok: true, message: `El fondo se actualizo y se creo un nuevo inventario ${hashNew}...`, new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            }
-                        })
-                        .catch(error => console.error(error))
-                    } else {  //existe inventario
-                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
-                            console.log(productos);
-                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
-
-                                //Se suma existencia al nuevo inventario enlazado???
-                                CollectionInventario.deleteOne({codigo: hashOld}).then(results => {
-                                    console.log(results);
-                                    console.log(`Se borro inventario viejo y se actualizo Fondo con enlaze a otro inventario...`);
-
-                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Se borro inventario viejo y se actualizo Fondo con enlaze a otro inventario...", new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            } else {
-                                console.log(`Se actualizo Fondo y se cambio el enlaze a otro inventario...`);
-
-                                res.status(200).json({ok: true, message: "(" + req.body.color + ") Se actualizo Fondo y se cambio el enlaze a otro inventario......", new_hash: hashNew, action: "reload"});
-                                res.end();
-                                client.close();
-                            }
-                        })
-                        .catch(error => console.error(error))
-                    }
-                })
-                .catch(error => console.error(error))
-            } else {
-                //no se envio datos actualizado, o no se actualizo en el UI
-                console.log(results);
-                console.log(`Fondo  ${idc} conserva los datos...`);
-                res.status(200).json({ok: true, message: "Fondo (" + idc + ") conserva los datos.", new_hash: hashNew, action: "none"});
-                res.end();
-                client.close();
-            }
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.delete('/delete_fondo/:id', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-
-    let CollectionItem = client.db().collection("item");
-    var CollectionProducto = client.db().collection("collectionfondo");
-    var CollectionInventario = client.db().collection("inventario");
-    let cid = new ObjectID(req.params.id);
-    console.log("Id: ",req.params.id);
-
-    CollectionItem.findOne({nombre:"Fondo"}).then(producto => {
-
-        CollectionProducto.findOne({"_id": cid }).then(fondo => {
-
-            let hash = MD5(producto._id.toString() + fondo.color + fondo.medidas + fondo.marca).toString();
-
-            if (fondo.hash_inventario != hash) {
-                console.log("Discrepancias en hash, inventarioID: ",fondo.hash_inventario, " hash generado:" ,hash);
-
-                res.status(500).json({ok: true, message: "No se pudo borrar Fondo (" + req.params.id + ") revise  el codigo de inventario.", action: "none"});
-                res.end();
-                throw "Revise el hash de inventario vs producto...";
-            }
-
-            CollectionProducto.find({"hash_inventario": hash }).toArray().then(result => {
-                let productosDeInventario = result.length;
-                console.log(result);
-
-                CollectionProducto.deleteOne({"_id": cid }).then(result => {
-                    console.log(result);
-
-                    if (productosDeInventario > 1) {
-                        console.log("Invantario [codigo: "+hash+"] se conserva, existe para otros productos.");
-                        console.log(`Fondo ${req.params.id} fue borrado...`);
-
-                        res.status(200).json({ok: true, message: "Fondo (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
-                        res.end();
-                        client.close();
-                    } else {
-                        CollectionInventario.deleteOne({"codigo": hash }).then(result => {
-                            console.log(result);
-                            console.log(`Fondo y su inventario ${req.params.id} fueron borrados...`);
-
-                            res.status(200).json({ok: true, message: "Fondo (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
-                            res.end();
-                        })
-                        .catch(error => console.error(error))
-                        .finally(data => client.close())
-                    }
-                })
-                .catch(error => console.error(error))
-            })
-            .catch(error => console.error(error))
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.post('/nuevo_tapatornillos',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    console.log("Tapatornillos",req.body);
-
-    let CollectionItem = client.db().collection("item");
-    CollectionItem.findOne({nombre:"Tapatornillos"}).then(producto => {
-        console.log(producto);
-        let CollectionTapatornillos = client.db().collection("collectiontapatornillos");
-        let hash = MD5(producto._id.toString() + req.body.color + req.body.marca).toString();
-
-        req.body.hash_inventario = hash;
-        CollectionTapatornillos.insertOne(req.body).then(results => {
-
-            console.log(results);
-
-            let CollectionInventario = client.db().collection("inventario");
-            console.log(producto._id.toString(), req.body.color, req.body.marca);
-
-            CollectionInventario.findOne({codigo: hash}).then(results => {
-
-                console.log("Existe inventario? ", results);
-
-                if (!results) {
-                    console.log("Nuevo md5", hash);
-                    let inv = {
-                        codigo: hash,
-                        existencia: 0,
-                        metraje:-4
-                    };
-
-                    CollectionInventario.insertOne(inv).then(results => {
-                        console.log(results);
-                        console.log(`Un Tapatornillos nuevo fue adicionado al catalogo e inventario...`);
-
-                        res.status(200).json({ok: true, message: "Un Tapatornillos nuevo fue adicionado al catalogo e inventario....", action: "reload"});
-                        res.end();
-
-                    })
-                    .catch(error => console.error(error))
-                    .finally(data => client.close());
-                } else {
-                    console.log(`Un Tapatornillos nuevo fue adicionado al catalogo...`);
-
-                    res.status(200).json({ok: true, message: "Un Tapatornillos nuevo fue adicionado al catalogo....", action: "reload"});
-                    res.end();
-                    client.close();
-                }
-            })
-            .catch(error => console.error(error))
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.put('/actualizar_tapatornillos/:id',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-
-    let CollectionItem = client.db().collection("item");
-    let CollectionInventario = client.db().collection("inventario");
-
-    CollectionItem.findOne({nombre:"Tapatornillos"}).then(producto => {
-
-        console.log("tapatornillos: ", req.body);
-        let idc = new ObjectID(req.params.id);
-        console.log("param: "+req.params.id);
-
-        let hashOld = req.body.hash_inventario;
-        let hashNew = MD5(producto._id.toString() + req.body.color + req.body.marca).toString();
-        req.body.hash_inventario = hashNew;
-
-        let CollectionProducto = client.db().collection("collectiontapatornillos");
-
-        CollectionProducto.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-            console.log(results);
-            console.log("hash Nuevo:", hashNew, "hash viejo:", hashOld);
-            if (hashNew != hashOld) {
-                CollectionInventario.find({codigo: hashNew}).toArray().then(inventario => {
-                    console.log(inventario);
-                    if (!inventario.length) { //no existe inventario
-                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
-                            console.log(productos);
-                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
-                                //actualiza el inventario existente
-                                CollectionInventario.updateOne({codigo: hashOld}, {$set:{codigo: hashNew}}).then(results => {
-                                    console.log(results);
-                                    console.log(`Fue actualizado en catalogo e inventario...`);
-
-                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Fue actualizado en catalogo e inventario....", new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            } else {
-                                let inv = {
-                                    codigo: hashNew,
-                                    existencia: 0,
-                                    metraje: -3
-                                };
-
-                                CollectionInventario.insertOne(inv).then(results => {
-                                    console.log(results);
-                                    console.log(`El tapatornillos se actualizo y se creo un nuevo inventario ${hashNew}...`);
-
-                                    res.status(200).json({ok: true, message: `El tapatornillos se actualizo y se creo un nuevo inventario ${hashNew}...`, new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            }
-                        })
-                        .catch(error => console.error(error))
-                    } else {  //existe inventario
-                        CollectionProducto.find({hash_inventario: hashOld}).toArray().then(productos => {
-                            console.log(productos);
-                            if (productos && productos.length <= 0) {//no existe producto ENLAZADO al antiguo HASH
-
-                                //Se suma existencia al nuevo inventario enlazado???
-                                CollectionInventario.deleteOne({codigo: hashOld}).then(results => {
-                                    console.log(results);
-                                    console.log(`Se borro inventario viejo y se actualizo tapatornillos con enlaze a otro inventario...`);
-
-                                    res.status(200).json({ok: true, message: "(" + req.body.color + ") Se borro inventario viejo y se actualizo tapatornillos con enlaze a otro inventario...", new_hash: hashNew, action: "reload"});
-                                    res.end();
-                                })
-                                .catch(error => console.error(error))
-                                .finally(data => client.close());
-                            } else {
-                                console.log(`Se actualizo tapatornillos y se cambio el enlaze a otro inventario...`);
-
-                                res.status(200).json({ok: true, message: "(" + req.body.color + ") Se actualizo tapatornillos y se cambio el enlaze a otro inventario......", new_hash: hashNew, action: "reload"});
-                                res.end();
-                                client.close();
-                            }
-                        })
-                        .catch(error => console.error(error))
-                    }
-                })
-                .catch(error => console.error(error))
-            } else {
-                //no se envio datos actualizado, o no se actualizo en el UI
-                console.log(results);
-                console.log(`tapatornillos  ${idc} conserva los datos...`);
-                res.status(200).json({ok: true, message: "tapatornillos (" + idc + ") conserva los datos.", new_hash: hashNew, action: "none"});
-                res.end();
-                client.close();
-            }
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.delete('/delete_tapatornillos/:id', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-
-    let CollectionItem = client.db().collection("item");
-    var CollectionProducto = client.db().collection("collectiontapatornillos");
-    var CollectionInventario = client.db().collection("inventario");
-    let cid = new ObjectID(req.params.id);
-    console.log("ID: ",req.params.id);
-
-    CollectionItem.findOne({nombre:"Tapatornillos"}).then(producto => {
-
-        CollectionProducto.findOne({"_id": cid }).then(tapatornillos => {
-
-            let hash = MD5(producto._id.toString() + tapatornillos.color + tapatornillos.marca).toString();
-
-            if (tapatornillos.hash_inventario != hash) {
-                console.log("Discrepancias en hash, inventarioID: ",tapatornillos.hash_inventario, " hash generado:" ,hash);
-
-                res.status(500).json({ok: true, message: "No se pudo borrar Tapatornillos (" + req.params.id + ") revise  el codigo de inventario.", action: "none"});
-                res.end();
-                throw "Revise el hash de inventario vs producto...";
-            }
-
-            CollectionProducto.find({"hash_inventario": hash }).toArray().then(result => {
-                let productosDeInventario = result.length;
-                console.log(result);
-
-                CollectionProducto.deleteOne({"_id": cid }).then(result => {
-                    console.log(result);
-
-                    if (productosDeInventario > 1) {
-                        console.log("Invantario [codigo: "+hash+"] se conserva, existe para otros productos.");
-                        console.log(`Tapatornillos ${req.params.id} fue borrado...`);
-
-                        res.status(200).json({ok: true, message: "Tapatornillos (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
-                        res.end();
-                        client.close();
-                    } else {
-                        CollectionInventario.deleteOne({"codigo": hash }).then(result => {
-                            console.log(result);
-                            console.log(`Tapatornillos y su inventario ${req.params.id} fueron borrados...`);
-
-                            res.status(200).json({ok: true, message: "Tapatornillos (" + req.params.id + ") e inventario ("+hash+") fueron borrados.", action: "none"});
-                            res.end();
-                        })
-                        .catch(error => console.error(error))
-                        .finally(data => client.close())
-                    }
-                })
-                .catch(error => console.error(error))
-            })
-            .catch(error => console.error(error))
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
-})
-
-app.put('/actualizar_control_producto/',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-
-    console.log("control: ", req.body);
-
-    let CollectionControl = client.db().collection("control_producto");
-
-    CollectionControl.findOneAndUpdate({item: "Melamina"}, {$set: {minimo: Number(req.body.melamina)}}).then(results => {
-        console.log(results);
-        CollectionControl.findOneAndUpdate({item: "Tapacantos"}, {$set: {minimo: Number(req.body.tapacantos)}}).then(results => {
-            console.log(results);
-            CollectionControl.findOneAndUpdate({item: "Pegamento"}, {$set: {minimo: Number(req.body.pegamento)}}).then(results => {
-                console.log(results);
-                CollectionControl.findOneAndUpdate({item: "Fondo"}, {$set: {minimo: Number(req.body.fondo)}}).then(results => {
-                    console.log(results);
-                    CollectionControl.findOneAndUpdate({item: "Tapatornillos"}, {$set: {minimo: Number(req.body.tapatornillos)}}).then(results => {
-                        console.log(results);
-                        console.log("Control producto ",req.body," actualizado...");
-                        res.status(200).json({ok: true, message: "Control Producto actualizado.", action: "none"});
-                        res.end();
-                    })
-                    .catch(error => console.error(error))
-                    .finally(data => client.close())
-                })
-                .catch(error => console.error(error))
-            })
-            .catch(error => console.error(error))
-        })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error));
-});
-
-app.put('/actualizar_preferencias/',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-
-    console.log("preferencias: ", req.body);
-
-    let CollectionPreferencias = client.db().collection("preferencias");
-    let idc = new ObjectID("64c9bb9c353410982749f89e");
-
-    CollectionPreferencias.findOneAndUpdate({_id: idc}, {$set: {telefono: Number(req.body.telefono)}}).then(results => {
-        console.log(results);
-        console.log("Preferencias ",req.body," actualizadas...");
-        res.status(200).json({ok: true, message: "Preferencias actualizadas.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close())
-});
-
-app.post('/nuevo_usuario',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    console.log("usuario",req.body);
-
-    let CollectionUser = client.db().collection("user");
-
-    CollectionUser.insertOne(req.body).then(results => {
-
-        console.log(results);
-        console.log(`Un usuario nuevo fue addicionado...`);
-
-        res.status(200).json({ok: true, message: "Un usuario nuevo fue addicionado ...", action: "reload"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.put('/actualizar_usuario/:id',(req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();   
-
-    console.log("user: ", req.body);
-    let idc = new ObjectID(req.params.id);
-    console.log(req.params.id, idc);
-
-    let CollectionUser = client.db().collection("user");
-
-    CollectionUser.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        if (results.modifiedCount) {
-            if (USUARIOS && USUARIOS[req.params.id]) {
-                delete USUARIOS[req.params.id];
-            }
-        }
-        console.log(`Usuario ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Usuario (" + req.body.name + ") actualizado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close());
-})
-
-app.delete('/delete_usuario/:id', (req, res) => {
-    const client = new MongoClient(uri);
-    client.connect();
-    
-    var CollectionUser = client.db().collection("user");
-    let cid = new ObjectID(req.params.id);
-
-    CollectionUser.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        if (result.deletedCount) {
-            if (USUARIOS && USUARIOS[req.params.id]) {
-                delete USUARIOS[req.params.id];
-            }
-        }
-        console.log(`Usuario ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Usuario (" + req.params.id + ") borrado.", action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close())
-})
-
-app.put('/reset_usuario/:id',(req, res) => {
-    try {
-        console.log("reset user: ", req.body);
-
-        if (USUARIOS && USUARIOS[req.params.id]) {
-            delete USUARIOS[req.params.id];
-
-            console.log(`Usuario ${req.params.id} reseteado...`);
-            res.status(200).json({ok: true, message: "Usuario (" + req.params.id + ") reseteado.", action: "none"});
-            res.end();
-        } else {
-            console.log(`Usuario ${req.params.id} no puede ser reseteado...`);
-            res.status(200).json({ok: false, message: "Usuario (" + req.params.id + ") no puede ser reseteado.", action: "reload"});
-            res.end();
-        }
-    } catch(error) {
-        console.log(error);
-        res.status(200).json({ok: false, message: error, action: "none"});
-        res.end();
-    }
-})
-
-app.post('/reporte_pedidos_cliente_interno_mes', function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
-    var SelectedMonth = '/' + req.body.mes + '/2023';
-    console.log("mes: ", SelectedMonth);
-    DB.collection("collectionCliente").find({
-        "tipo": "interno"
-      }).toArray().then(resultCliente => {
-            DB.collection("historial").find({
-                "fecha": { $regex: SelectedMonth },
-                "tipo_entrada": "pedido"
-            }).toArray().then(resultHistorial => {
-                let reporte = [];
-                let index = 0;
-
-                resultCliente.forEach((row) => {
-                    let DATA = {cliente:"", Volume:0};
-                    DATA.cliente = row.nombre;
-                    resultHistorial.forEach((historia) => {
-                        if (historia.cliente == row.nombre) {
-                            DATA.Volume++;
-                        }
-                    });
-                    reporte[index++] = DATA;
-                });
-                console.log(reporte);
-                res.status(200).json({ok: true, message: "Encontrados", chartData: reporte, action: "none"});
-                res.end();
-            })
-            .catch(error => console.error(error))
-            .finally(data => client.close())
-    })
-    .catch(error => console.error(error))               
-});
-
-app.post('/reporte_producto_pedido_mes', function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
-    var SelectedMonth = '/' + req.body.mes + '/2023';
-    console.log("mes: ", SelectedMonth);
-
-    DB.collection("item").find().toArray().then(resultItem => {
-            DB.collection("historial").find({
-                "fecha": { $regex: SelectedMonth },
-                "tipo_entrada": "pedido"
-            }).toArray().then(resultHistorial => {
-                let reporte = [];
-                let index = 0;
-
-                resultItem.forEach((row) => {
-                    let DATA = {cliente:"", Volume:0};
-                    DATA.cliente = row.nombre;
-                    resultHistorial.forEach((historia) => {
-                        if (historia.item == row.nombre) {
-                            DATA.Volume++;
-                        }
-                    });
-                    reporte[index++] = DATA;
-                });
-                console.log(reporte);
-                res.status(200).json({ok: true, message: "Encontrados", chartData: reporte, action: "none"});
-                res.end();
-            })
-            .catch(error => console.error(error))
-            .finally(data => client.close())
-    })
-    .catch(error => console.error(error))               
-});
-
-app.post('/reporte_consumo_cliente', function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
-
-    DB.collection("collectionCliente").find({tipo:"interno"}).toArray().then(resultCliente => {
-        var filtro = [];
-        resultCliente.forEach((cliente, index)=> {
-            filtro[index] = { "cliente" : cliente.nombre };
-        });
-        var clientesInternos = { "$or": filtro };
-        DB.collection("historial").find(clientesInternos).toArray().then(resultHistorial => {
-            let reporte = [];
-
-            resultCliente.forEach((row, index) => {
-                let DATA = {cliente:"", Volume:0};
-                DATA.cliente = row.nombre;
-                resultHistorial.forEach((historia) => {
-                    if (historia.cliente == row.nombre) {
-                        DATA.Volume = DATA.Volume + Number(historia.precioVenta);
-                    }
-                });
-                reporte[index] = DATA;
-            });
-            console.log(reporte);
-            res.status(200).json({ok: true, message: "Encontrados", chartData: reporte, action: "none"});
-            res.end();
-        })
-        .catch(error => console.error(error))
-        .finally(data => client.close())
-    })
-    .catch(error => console.error(error))
-});
-
-app.post('/reporte_provedor_producto', function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
-
-    DB.collection("collectionprovedor").find().toArray().then(resultProvedor => {
-        var filtro = [];
-        resultProvedor.forEach((provedor, index)=> {
-            filtro[index] = { "cliente" : provedor.nombre };
-        });
-        var todosLosProvedores = { "$or": filtro };
-        DB.collection("historial").find(todosLosProvedores).toArray().then(resultHistorial => {
-            let reporte = [];
-
-            resultProvedor.forEach((provedor, index) => {
-                let DATA = {cliente:"", Volume:0};
-                DATA.cliente = provedor.nombre;
-                resultHistorial.forEach((historia) => {
-                    if (historia.cliente == provedor.nombre) {
-                        DATA.Volume = DATA.Volume + Number(historia.precioCompra);
-                    }
-                });
-                reporte[index] = DATA;
-            });
-            console.log(reporte);
-            res.status(200).json({ok: true, message: "Encontrados", chartData: reporte, action: "none"});
-            res.end();
-        })
-        .catch(error => console.error(error))
-        .finally(data => client.close())
-    })
-    .catch(error => console.error(error))
-});
-
-app.post('/reporte_venta_producto_dia', function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
-    console.log("Getting from "+req.body.day);
-    DB.collection("item").find().toArray().then(resultItem => {
-        var productos = [
-            "Melamina_laminas",
-            "Melamina_paquetes",
-            "Tapacantos_rollos",
-            "Tapacantos_cajas",
-            "Tapacantos_metros",
-            "Pegamento_bolsas",
-            "Fondo_laminas",
-            "Fondo_paquetes",
-        ];
-
-        DB.collection("historial").find({
-            "fecha": {$regex : req.body.day},
-            "tipo_entrada": "pedido"
-        }).toArray().then(resultHistorial => {
-            let reporte = [];
-
-            productos.forEach((producto, index) => {
-                let DATA = {cliente:"", Volume:0};
-                DATA.cliente = producto;
-                resultHistorial.forEach((historia) => {
-                    let [ITEM, UNIDAD] = producto.split("_");
-                    console.log(ITEM, UNIDAD);
-                    console.log(historia.item,historia.nombreDeUnidad, historia.cantidad);
-                    if (historia.item == ITEM && historia.nombreDeUnidad == UNIDAD) {
-                        DATA.Volume = DATA.Volume + Number(historia.cantidad);
-                    }
-                });
-                reporte[index] = DATA;
-            });
-            console.log(reporte);
-            res.status(200).json({ok: true, message: "Encontrados", chartData: reporte, action: "none"});
-            res.end();
-        })
-        .catch(error => console.error(error))
-        .finally(data => client.close())
-    })
-    .catch(error => console.error(error))
-});
-
-app.post('/reporte_venta_compra_dia', function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
-
-    console.log("Getting from " + req.body.day);
-    DB.collection("item").find().toArray().then(resultItem => {
-        var productos = [];
-        resultItem.forEach((item, index)=> {
-            productos[index] = item.nombre;
-        });
-
-        DB.collection("historial").find({
-            "fecha": {$regex : req.body.day}
-        }).toArray().then(resultHistorial => {
-            let reporte = [];
-
-            productos.forEach((producto, index) => {
-                let DATA = {item:"", venta:0, compra:0};
-                DATA.item = producto;
-                resultHistorial.forEach((historia) => {
-                    if (historia.item == producto) {
-                        if (historia.tipo_entrada == "pedido") {
-                            DATA.venta = DATA.venta + Number(historia.precioVenta);
-                        } else if (historia.tipo_entrada == "ingreso") {
-                            DATA.compra = DATA.compra + Number(historia.precioCompra);
-                        } else {
-                            console.log("Tipo de entrada desconocida: '" + historia.tipo_entrada +"'");
-                        }
-                    }
-                });
-                reporte[index] = DATA;
-            });
-            console.log(reporte);
-            res.status(200).json({ok: true, message: "Encontrados", chartData: reporte, action: "none"});
-            res.end();
-        })
-        .catch(error => console.error(error))
-        .finally(data => client.close())
-    })
-    .catch(error => console.error(error))
-});
-
-app.post('/reporte_compra_venta_colores_mes', function(req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
-
-    var SelectedMonth = '/' + req.body.mes + '/' + (new Date()).getFullYear();
-    console.log("selected mes: ", SelectedMonth);
-
-    let productos = {
-        "Melamina":["laminas","paquetes"],
-        "Tapacantos":["rollos","cajas","metros"],
-        "Fondo":["laminas","paquetes"],
-        "Pegamento":["bolsas"],
-        "Tapatornillos":["hojas","cajas"]
-    };
-
-    DB.collection("historial").find({
-        "fecha": { $regex: SelectedMonth }
-    }).toArray().then(resultHistorial => {
-        let reporte = [];
-        let index = 0;
-
-        Object.keys(productos).forEach(product => {
-
-            productos[product].forEach((tipoProducto) => {
-                let DATA = {
-                    producto: product,
-                    blanco: {tipo:tipoProducto, cantidadItemsVenta:0, cantidadItemsCompra:0, venta:0, compra:0}, 
-                    colores: {tipo:tipoProducto, cantidadItemsVenta:0, cantidadItemsCompra:0, venta:0, compra:0}
-                };
-                //DATA.producto = product;
-                resultHistorial.forEach((historia) => {
-
-                    if (historia.item == product && historia.nombreDeUnidad == tipoProducto) {
-                        console.log(historia.item, historia.nombreDeUnidad, historia.color);
-                        if (historia.color == "Blanco") {
-                            DATA.blanco.tipo = historia.nombreDeUnidad;
-                            if (historia.tipo_entrada == "pedido") {
-                                DATA.blanco.cantidadItemsVenta += Number(historia.cantidad);
-                                DATA.blanco.venta += Number(historia.precioVenta);
-                            } else if (historia.tipo_entrada == "ingreso") {
-                                DATA.blanco.cantidadItemsCompra += Number(historia.cantidad);
-                                DATA.blanco.compra += Number(historia.precioCompra);
-                            } else {
-                                console.log("Tipo de entrada desconocida: '" + historia.tipo_entrada +"'");
-                            }
-                        } else {
-                            DATA.colores.tipo = historia.nombreDeUnidad;
-                            if (historia.tipo_entrada == "pedido") { 
-                                DATA.colores.cantidadItemsVenta += Number(historia.cantidad);
-                                DATA.colores.venta += Number(historia.precioVenta);
-                            } else if (historia.tipo_entrada == "ingreso") {
-                                DATA.colores.cantidadItemsCompra += Number(historia.cantidad);
-                                DATA.colores.compra += Number(historia.precioCompra);
-                            } else {
-                                console.log("Tipo de entrada desconocida: '" + historia.tipo_entrada +"'");
-                            }
-                        }
-                    }
-                });
-                console.log(index, reporte[index]);
-                reporte[index++] = DATA;
-            });
-        });
-        console.log(reporte);
-        res.status(200).json({ok: true, message: "Encontrados", chartData: reporte, action: "none"});
-        res.end();
-    })
-    .catch(error => console.error(error))
-    .finally(data => client.close())
-                   
-});
-
-var USUARIOS = {};
-
-var Messages = {
-    'f3g33vb5v443' : "Usuario o contraseña incorrectos.",
-    '545egetgedd0' : "Una Sesion ya fue inicializada en otro navegdor.",
-    'df34ef34erfg' : "No esta autorizado para ver esta pagina"
-}
 
 app.get('/login', function (req, res) {
+    var Messages = {
+        'f3g33vb5v443' : "Usuario o contraseña incorrectos.",
+        '545egetgedd0' : "La session ya fue inicializada",
+        'df34ef34erfg' : "No esta autorizado para ver esta pagina"
+    };
+
     var message = "";
     if (req.query.response && Messages[req.query.response]) {
         message = Messages[req.query.response];
@@ -3097,74 +1184,20 @@ app.get('/login', function (req, res) {
 
     res.render('pages/login', {
         client_message: message,
+        code: req.query.response
     });
- });
+});
 
-function getCurrentUsername(req) {
-    if (USUARIOS && req.session.user_id && USUARIOS[req.session.user_id]) {
-        return USUARIOS[req.session.user_id];
-    }
-
-    return {name:"Desconocido",completo:"Desconocido"};
-}
-
-function isRegistered(req) {
-    if (USUARIOS[req.session.user_id]) {
-        return true;
-    }
-    return false;
-}
-
-
-function isAuthorized(req) {
-    var usuario = USUARIOS[req.session.user_id];
-    if (req.url == '/preferencias') {
-        return usuario.administrador;
-    } else if (req.url == '/pedidos') {
-        return usuario.ventas;
-    } else if (req.url == '/ingresos') {
-        return usuario.compras;
-    }
-
-    return true;
-}
-
-function checkAuth(req, res, next) {
-    console.log("SESSION: ", req.session);
-    console.log("Usuarios: ", USUARIOS);
-
-    if (!req.session.user_id) {
-        process.env.last_url = req.url;
-        console.log('You are not authorized to view this page');
-        res.redirect('/login');
+app.post('/continue', function (req, res) {
+    if (process.env.last_url && process.env.last_url.length > 1) {
+        res.redirect(process.env.last_url);
     } else {
-        console.log('logged');
-        if (!isRegistered(req)) {
-            res.redirect('/login');
-        } else {
-            if (isAuthorized(req)) {
-                process.env.last_url = req.url;
-                next();
-            } else {
-                console.log('User: [' + req.session.user_id + '] not authorized to view this page');
-                console.log('Back to ' + process.env.last_url);
-                process.env.message = "No esta autorizado para acceder a la pagina '" + req.url + "'";
-
-                req.url = process.env.last_url;
-                if (!isAuthorized(req)) {
-                    res.redirect("/inventario");
-                } else {
-                    res.redirect(process.env.last_url);
-                }
-            }
-        }
+        res.redirect('/inventario');
     }
-}
+});
 
 app.post('/login', function (req, res) {
-    const client = new MongoClient(uri);
-    client.connect();
-    var DB = client.db();
+    var DB = req.app.settings.DB;
     var post = req.body;
     var found = false;
 
@@ -3174,13 +1207,13 @@ app.post('/login', function (req, res) {
                 var ID = user._id.toString();
                 found = true;
 
-                if (USUARIOS && USUARIOS[ID]) {
+                if (SU.userExists(ID)) {
                     res.redirect('/login?response=545egetgedd0');
                 } else {
                     req.session.user_id = ID;
-                    USUARIOS[ID] = user;
+                    SU.setUser(ID, user);
                     console.log("SESSION: ", req.session);
-                    console.log("Usuarios: ", USUARIOS);
+                    console.log("Usuarios: ", SU.USUARIOS);
                     if (process.env.last_url && process.env.last_url.length > 1) {
                         res.redirect(process.env.last_url);
                     } else {
@@ -3189,6 +1222,7 @@ app.post('/login', function (req, res) {
                 }
             }
         });
+
         if (!found) {
             console.log("SESSION: ",req.session);
             console.log("Wrong password or username");
@@ -3197,18 +1231,17 @@ app.post('/login', function (req, res) {
         }
     })
     .catch(error => console.error(error))
-    .finally(data => client.close())
 });
 
 app.get('/logout', function (req, res) {
     if (req.session && req.session.user_id) {
-        delete USUARIOS[req.session.user_id];
+        SU.removeUser(req);
         delete req.session.user_id;
     }
-   res.redirect('/login');
+    res.redirect('/login');
 });
 
-  // catch 404 and forward to error handler
+// catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });

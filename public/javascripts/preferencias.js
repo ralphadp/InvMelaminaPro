@@ -50,7 +50,7 @@ function Color() {
 
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/actualizar_color/' + id + '/', {
+		fetch('/preferences/actualizar_color/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -76,7 +76,7 @@ function Color() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/nuevo_color/', {
+		fetch('/preferences/nuevo_color/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -108,7 +108,7 @@ function Color() {
 		if (!confirm("Realmente desea borrar el color!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-	    fetch('/delete_color/' + id + '/', {
+	    fetch('/preferences/delete_color/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
 	    })
@@ -168,7 +168,7 @@ function Marca() {
 
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/actualizar_marca/' + id + '/', {
+		fetch('/preferences/actualizar_marca/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -194,7 +194,7 @@ function Marca() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/nueva_marca/', {
+		fetch('/preferences/nueva_marca/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -226,7 +226,7 @@ function Marca() {
 		if (!confirm("Realmente desea borrar la marca!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-	    fetch('/delete_marca/' + id + '/', {
+	    fetch('/preferences/delete_marca/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
 	    })
@@ -283,7 +283,7 @@ function Medidas() {
 
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/actualizar_medida/' + id + '/', {
+		fetch('/preferences/actualizar_medida/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -309,7 +309,7 @@ function Medidas() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/nueva_medida/', {
+		fetch('/preferences/nueva_medida/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -341,7 +341,7 @@ function Medidas() {
 		if (!confirm("Realmente desea borrar la medida!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-	    fetch('/delete_medida/' + id + '/', {
+	    fetch('/preferences/delete_medida/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
 	    })
@@ -422,7 +422,7 @@ function Provedor() {
 
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/actualizar_provedor/' + id + '/', {
+		fetch('/preferences/actualizar_provedor/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -448,7 +448,7 @@ function Provedor() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/nuevo_provedor/', {
+		fetch('/preferences/nuevo_provedor/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -480,7 +480,7 @@ function Provedor() {
 		if (!confirm("Realmente desea borrar al provedor!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-	    fetch('/delete_provedor/' + id + '/', {
+	    fetch('/preferences/delete_provedor/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
 	    })
@@ -531,7 +531,7 @@ function Item() {
 
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/actualizar_item/' + id + '/', {
+		fetch('/preferences/actualizar_item/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -557,7 +557,7 @@ function Item() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/nuevo_item/', {
+		fetch('/preferences/nuevo_item/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -589,7 +589,7 @@ function Item() {
 		if (!confirm("Realmente desea borrar el producto!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-	    fetch('/delete_item/' + id + '/', {
+	    fetch('/preferences/delete_item/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
 	    })
@@ -655,7 +655,7 @@ function Cliente() {
 
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/actualizar_cliente/' + id + '/', {
+		fetch('/preferences/actualizar_cliente/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -681,7 +681,7 @@ function Cliente() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/nuevo_cliente/', {
+		fetch('/preferences/nuevo_cliente/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -713,7 +713,7 @@ function Cliente() {
 		if (!confirm("Realmente desea borrar al cliente!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-	    fetch('/delete_cliente/' + id + '/', {
+	    fetch('/preferences/delete_cliente/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
 	    })
@@ -832,7 +832,7 @@ function Melamina() {
 
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/actualizar_melamina/' + id + '/', {
+		fetch('/preferences/actualizar_melamina/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -859,7 +859,7 @@ function Melamina() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/nueva_melamina/', {
+		fetch('/preferences/nueva_melamina/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -891,7 +891,7 @@ function Melamina() {
 		if (!confirm("Realmente desea borrar la melamina!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-	    fetch('/delete_melamina/' + id + '/', {
+	    fetch('/preferences/delete_melamina/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
 	    })
@@ -1022,7 +1022,7 @@ function Tapacantos() {
 
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/actualizar_tapacantos/' + id + '/', {
+		fetch('/preferences/actualizar_tapacantos/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -1049,7 +1049,7 @@ function Tapacantos() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/nuevo_tapacantos/', {
+		fetch('/preferences/nuevo_tapacantos/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -1081,7 +1081,7 @@ function Tapacantos() {
 		if (!confirm("Realmente desea borrar el tapacantos!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-	    fetch('/delete_tapacantos/' + id + '/', {
+	    fetch('/preferences/delete_tapacantos/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
 	    })
@@ -1163,7 +1163,7 @@ function Pegamento() {
 
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/actualizar_pegamento/' + id + '/', {
+		fetch('/preferences/actualizar_pegamento/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -1190,7 +1190,7 @@ function Pegamento() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/nuevo_pegamento/', {
+		fetch('/preferences/nuevo_pegamento/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -1222,7 +1222,7 @@ function Pegamento() {
 		if (!confirm("Realmente desea borrar el pegamento!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-	    fetch('/delete_pegamento/' + id + '/', {
+	    fetch('/preferences/delete_pegamento/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
 	    })
@@ -1338,7 +1338,7 @@ function Fondo() {
 
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/actualizar_fondo/' + id + '/', {
+		fetch('/preferences/actualizar_fondo/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -1365,7 +1365,7 @@ function Fondo() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/nuevo_fondo/', {
+		fetch('/preferences/nuevo_fondo/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -1397,7 +1397,7 @@ function Fondo() {
 		if (!confirm("Realmente desea borrar el Fondo!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-	    fetch('/delete_fondo/' + id + '/', {
+	    fetch('/preferences/delete_fondo/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
 	    })
@@ -1505,7 +1505,7 @@ function Tapatornillos() {
 
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/actualizar_tapatornillos/' + id + '/', {
+		fetch('/preferences/actualizar_tapatornillos/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -1532,7 +1532,7 @@ function Tapatornillos() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/nuevo_tapatornillos/', {
+		fetch('/preferences/nuevo_tapatornillos/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -1564,7 +1564,7 @@ function Tapatornillos() {
 		if (!confirm("Realmente desea borrar el tapatornillos!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-	    fetch('/delete_tapatornillos/' + id + '/', {
+	    fetch('/preferences/delete_tapatornillos/' + id + '/', {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' },
 	    })
@@ -1608,7 +1608,7 @@ function ControlProducto() {
 
 /*UPDATE*/
 	this.actualizar = function() {
-		fetch('/actualizar_control_producto/', {
+		fetch('/preferencias/actualizar_control_producto/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -1644,7 +1644,7 @@ function Preferencias() {
 
 /*UPDATE*/
 	this.actualizar = function() {
-		fetch('/actualizar_preferencias/', {
+		fetch('/preferences/actualizar_preferencias/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -1706,7 +1706,7 @@ function Usuario() {
 
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/actualizar_usuario/' + id + '/', {
+		fetch('/preferences/actualizar_usuario/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -1732,7 +1732,7 @@ function Usuario() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/nuevo_usuario/', {
+		fetch('/preferences/nuevo_usuario/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -1764,7 +1764,7 @@ function Usuario() {
 		if (!confirm("Realmente desea borrar al usuario!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-		fetch('/delete_usuario/' + id + '/', {
+		fetch('/preferences/delete_usuario/' + id + '/', {
 			method: 'DELETE',
 			headers: { 'Content-Type': 'application/json' },
 		})
@@ -1792,7 +1792,7 @@ function Usuario() {
 		if (!confirm("Realmente desea Resetear al usuario!\n Presione Ok para Borrar o de lo contrario presione Cancel.")) {
 			return;
 		}
-		fetch('/reset_usuario/' + id + '/', {
+		fetch('/preferences/reset_usuario/' + id + '/', {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
 		})
