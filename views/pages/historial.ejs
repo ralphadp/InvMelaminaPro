@@ -117,7 +117,8 @@
 								<th class="th_history"><button class="sort" data-sort="Marca">Marca</button></th>
 								<th class="th_history"><button class="sort" data-sort="Unidad">Unidad</button></th>
 								<th class="th_history"><button class="sort" data-sort="Cantidad">Cantidad</button></th>
-								<th class="th_history"><button class="sort" data-sort="Precio">Precio</button></th>
+								<th class="th_history"><button class="sort" data-sort="Compra">Compra</button></th>
+								<th class="th_history"><button class="sort" data-sort="Venta">Venta</button></th>
 							</tr>
 						</thead>
 						<thead id="historial-header-printer">
@@ -131,7 +132,8 @@
 								<th class="th_history">Marca</th>
 								<th class="th_history">Unidad</th>
 								<th class="th_history">Cantidad</th>
-								<th class="th_history">Precio</th>
+								<th class="th_history">Compra</th>
+								<th class="th_history">Venta</th>
 							</tr>
 						</thead>
 						<tbody class="list">
@@ -149,7 +151,8 @@
 								<td class="td_history Marca"><%= historial[index].marca %></td>
 								<td class="td_history Unidad"><%= historial[index].nombreDeUnidad %><%= historial[index].canteo?' con canteo':'' %></td>
 								<td class="td_history Cantidad"><%= historial[index].cantidad %></td>
-								<td class="td_history Precio"><%= (historial[index].tipo_entrada == 'ingreso')?historial[index].precioCompra:historial[index].precioVenta %></td>
+								<td class="td_history Compra"><%=historial[index].precioCompra %></td>
+								<td class="td_history Venta"><%=historial[index].precioVenta %></td>
 							</tr>
 							<% } %>
 						</tbody>
@@ -168,17 +171,44 @@
 			item.style.textAlign = "center";
 			item.style.borderTop = "1px solid";
 		};
+
 		var greying = function(item) {
 			item.style.color = "#A2A1A1";
 		};
 
 		var options = {
-			valueNames: [ 'Cliente', 'Item', 'Tipo', 'Timestamp', 'Color', 'Medida', 'Marca', 'Unidad', 'Cantidad', 'Precio' ],
+			valueNames: [ 'Cliente', 'Item', 'Tipo', 'Timestamp', 'Color', 'Medida', 'Marca', 'Unidad', 'Cantidad', 'Precio', 'Compra', 'Venta' ],
 		};
 
 		var userList = new List('historial', options);
 
 		function imprimirHistorial() {
+			
+			//sum all the compra & venta
+			var table = document.getElementById("historial-table");
+
+			var compra = 0;
+			[].forEach.call(table.getElementsByClassName('Compra'), (item) => {
+				if (item.innerText.trim().length && !isNaN(item.innerText)) {
+					compra += parseInt(item.innerText);
+				}
+			});
+			var venta = 0;
+			[].forEach.call(table.getElementsByClassName('Venta'), (item) => {
+				if (item.innerText.trim().length && !isNaN(item.innerText)) {
+					venta += parseInt(item.innerText);
+				}
+			});
+
+		    var table_len = table.rows.length;
+		    var row = table.insertRow(table_len).outerHTML = 
+			`<tr id='totales'>
+				<td class='td_history' colspan="9"></td>
+				<td class='td_history'>${compra}</td>
+				<td class='td_history'>${venta}</td>
+			</tr>`;
+
+			//format all
 			document.getElementById("historial-table").style.borderSpacing = "0px";
 			document.getElementById("head-sort").style.display="none";
 			document.getElementById("historial-header-printer").style.display="table-header-group";
@@ -187,16 +217,21 @@
 			[].forEach.call(head, blacking);
 			[].forEach.call(rows, blacking);
 
+			
+			//print
 			var printData = document.getElementById("historial-frame");
 			newWindow = window.open("");
 			newWindow.document.write(printData.outerHTML);
 			newWindow.print();
 			newWindow.close();
 
+			//remove all printing setup and format
 			document.getElementById("historial-header-printer").style.display="none";
 			document.getElementById("head-sort").style.display="table-header-group";
 			[].forEach.call(head, greying);
 			[].forEach.call(rows, greying);
+
+			document.getElementById("totales").outerHTML = "";
 		}
 
 		function selectMes(selectBox) {
