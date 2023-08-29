@@ -340,8 +340,16 @@
 						</tbody>
 					</table>
 				</div><!-- end frame -->
-		
 				<div class="container" id="frame-venta-compra-mes">
+					<h5>Cliente
+						<select id="cliente" onchange="getClienteVentaCompraMes(this)">
+							<option value="All" selected>Todos</option>
+							<% for (let index = 0; index < cliente.length; index++) {%>
+							<option value="<%= cliente[index].nombre %>"><%= cliente[index].nombre %> (<%= cliente[index].tipo %>)</option>
+							<% } %>
+						</select>
+					</h5>
+					<br>
 					<button type="button" id="c2_clickEnero" onclick="getVentaCompraMes(0)" class="mes-button">Enero</button>
 					<button type="button" id="c2_clickFebrero" onclick="getVentaCompraMes(1)" class="mes-button">Febrero</button>
 					<button type="button" id="c2_clickMarzo" onclick="getVentaCompraMes(2)" class="mes-button">Marzo</button>

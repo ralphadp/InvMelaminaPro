@@ -1,4 +1,6 @@
 const nombreMes = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+let COMPRA_VENTA_MES;
+let COMPRA_VENTA_CLIENTE;
 
 //--------------REQUESTS---------------------------
 function getReportesPedidosClienteMes(mesElegido) {
@@ -137,7 +139,7 @@ function getVentaCompraHoy(dia) {
     });
 }
 
-function getVentaCompraColoresMes(mesElegido) {
+/*function getVentaCompraColoresMes(mesElegido) {
     let data = {
         mes: mesElegido
     };
@@ -145,6 +147,31 @@ function getVentaCompraColoresMes(mesElegido) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            console.log(response.message);
+            BuildTableMes(response.chartData);
+        } else {
+            console.log(response.status, response.statusText);
+        }
+    })
+    .catch(error => {
+        console.log(error.message);
+    });
+}*/
+
+function selectVentaCompraColoresMes(nombreCliente, mesElegido) {
+    let clienteInfo = {
+        cliente: nombreCliente,
+        mes: mesElegido
+    };
+
+    fetch('/reports/reporte_compra_venta_mes_por_cliente/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(clienteInfo)
     })
     .then(response => response.json())
     .then(response => {
@@ -228,8 +255,15 @@ function getVentaCompraMes(mes) {
     lightSelectedMenuTable(2, mes);
     mes++;
     mes = (mes < 10) ? ('0' + mes) : mes;
+    COMPRA_VENTA_MES = mes;
 
-    getVentaCompraColoresMes(mes);
+    selectVentaCompraColoresMes(COMPRA_VENTA_CLIENTE, COMPRA_VENTA_MES);
+}
+
+function getClienteVentaCompraMes(selected) {
+    COMPRA_VENTA_CLIENTE = selected.value;
+
+    selectVentaCompraColoresMes(COMPRA_VENTA_CLIENTE, COMPRA_VENTA_MES);
 }
 
 /////////////////// D3  functions ///////////////////
@@ -595,6 +629,7 @@ function generarVentaCompraDia() {
 function generarVentaCompraMes() {
     lightLeftMenu(6, "Reporte: Volumen de Ventas y compras por mes y color");
 
+    COMPRA_VENTA_CLIENTE = "All";
     let mes = (new Date()).getMonth();
     getVentaCompraMes(mes);
 }

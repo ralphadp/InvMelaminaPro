@@ -770,11 +770,13 @@ app.get('/reporte', checkAuth, function(req, res) {
     var DB = req.app.settings.DB;
     var _map = req.app.settings.MAP;
     var resultsControl = _map.control_producto.list;
+    var resultCliente = _map.collectionCliente.array;
 
     DB.collection("inventario").find().toArray().then(resultsInventario => {
         res.render('pages/reporte01', {
             _inventario: resultsInventario,
             _control: resultsControl,
+            cliente: resultCliente,
             username: SU.getCurrentUsername(req)
         });
     })

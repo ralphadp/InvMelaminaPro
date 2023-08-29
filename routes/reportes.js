@@ -215,7 +215,7 @@ router.post('/reporte_venta_compra_dia', function(req, res) {
     .catch(error => console.error(error))
 });
 
-router.post('/reporte_compra_venta_colores_mes', function(req, res) {
+/*router.post('/reporte_compra_venta_colores_mes', function(req, res) {
     var DB = req.app.settings.DB;
 
     var SelectedMonth = '/' + req.body.mes + '/' + (new Date()).getFullYear();
@@ -282,7 +282,86 @@ router.post('/reporte_compra_venta_colores_mes', function(req, res) {
         res.end();
     })
     .catch(error => console.error(error))
-                   
+});*/
+
+router.post('/reporte_compra_venta_mes_por_cliente', function(req, res) {
+    var DB = req.app.settings.DB;
+    var filter;
+
+    var SelectedCliente = req.body.cliente;
+    var SelectedMonth = '/' + req.body.mes + '/' + (new Date()).getFullYear();
+    console.log("selected: mes: ", SelectedMonth, " cliente:", SelectedCliente);
+
+    let productos = {
+        "Melamina":["laminas","paquetes"],
+        "Tapacantos":["rollos","cajas","metros"],
+        "Fondo":["laminas","paquetes"],
+        "Pegamento":["bolsas"],
+        "Tapatornillos":["hojas","cajas"]
+    };
+
+    if (SelectedCliente == "All") {
+        filter = {
+            "fecha": { $regex: SelectedMonth }
+        }
+    } else {
+        filter = {
+            "fecha": { $regex: SelectedMonth },
+            "cliente": SelectedCliente
+        }
+    }
+
+    DB.collection("historial").find(filter).toArray().then(resultHistorial => {
+        let reporte = [];
+        let index = 0;
+
+        Object.keys(productos).forEach(product => {
+
+            productos[product].forEach((tipoProducto) => {
+                let DATA = {
+                    producto: product,
+                    blanco: {tipo:tipoProducto, cantidadItemsVenta:0, cantidadItemsCompra:0, venta:0, compra:0}, 
+                    colores: {tipo:tipoProducto, cantidadItemsVenta:0, cantidadItemsCompra:0, venta:0, compra:0}
+                };
+                //DATA.producto = product;
+                resultHistorial.forEach((historia) => {
+
+                    if (historia.item == product && historia.nombreDeUnidad == tipoProducto) {
+                        console.log(historia.item, historia.nombreDeUnidad, historia.color);
+                        if (historia.color == "Blanco") {
+                            DATA.blanco.tipo = historia.nombreDeUnidad;
+                            if (historia.tipo_entrada == "pedido") {
+                                DATA.blanco.cantidadItemsVenta += Number(historia.cantidad);
+                                DATA.blanco.venta += Number(historia.precioVenta);
+                            } else if (historia.tipo_entrada == "ingreso") {
+                                DATA.blanco.cantidadItemsCompra += Number(historia.cantidad);
+                                DATA.blanco.compra += Number(historia.precioCompra);
+                            } else {
+                                console.log("Tipo de entrada desconocida: '" + historia.tipo_entrada +"'");
+                            }
+                        } else {
+                            DATA.colores.tipo = historia.nombreDeUnidad;
+                            if (historia.tipo_entrada == "pedido") { 
+                                DATA.colores.cantidadItemsVenta += Number(historia.cantidad);
+                                DATA.colores.venta += Number(historia.precioVenta);
+                            } else if (historia.tipo_entrada == "ingreso") {
+                                DATA.colores.cantidadItemsCompra += Number(historia.cantidad);
+                                DATA.colores.compra += Number(historia.precioCompra);
+                            } else {
+                                console.log("Tipo de entrada desconocida: '" + historia.tipo_entrada +"'");
+                            }
+                        }
+                    }
+                });
+                console.log(index, reporte[index]);
+                reporte[index++] = DATA;
+            });
+        });
+        console.log(reporte);
+        res.status(200).json({ok: true, message: "Encontrados", chartData: reporte, action: "none"});
+        res.end();
+    })
+    .catch(error => console.error(error))
 });
 
 

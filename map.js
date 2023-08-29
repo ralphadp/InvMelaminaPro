@@ -104,6 +104,7 @@ class Map {
                 let collection = this.collections[i];
                 this[collection.name] = collection; // Creating attribute in order to access to the object reference easly
                 let resultsItem = await this.DB.collection(collection.name).find().toArray();
+                collection.array = resultsItem;
                 resultsItem.forEach((item) => {
                     collection.list[this.getFieldNameToMap(item)] = item; // Mapping by attribute
                     collection.list[item._id.toString()] = item; // Mapping by ID
