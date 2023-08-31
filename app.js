@@ -57,7 +57,6 @@ app.get('/pedidos', checkAuth, function(req, res) {
         resultsInventario.forEach((value) => {
             rInventario[value.codigo] = value;
         });
-    DB.collection("control_producto").find().toArray().then(resultsControl => {
     ///use redis to speed and save internally       
     DB.collection("collectionCliente").find().toArray().then(resultsCliente => {
         resultsCliente.forEach((cliente) => {
@@ -154,8 +153,6 @@ app.get('/pedidos', checkAuth, function(req, res) {
             .catch(error => console.error(error))
         })
         .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
     })
