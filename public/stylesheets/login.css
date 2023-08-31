@@ -114,6 +114,7 @@ footer {
     position: fixed;
     top: 95%;
     left: 10%;
+    color: aliceblue;
 }
 
 .alert_message {
