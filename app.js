@@ -105,6 +105,14 @@ app.get('/pedidos', checkAuth, function(req, res) {
                         rInventario[hash].contenido = tapatornillos;
                     }
                 })
+            DB.collection("collectioncanteo").find().toArray().then(resultsCanteo => {
+                resultsCanteo.forEach((canteo) => {
+                    let hash = MD5(items["Canteo"]._id.toString()).toString();
+                    console.log(hash);
+                    console.log('Ok ', canteo);
+                    rInventario[hash] = {existencia : "(1 Servicio)"};
+                    rInventario[hash].contenido = canteo;
+                })
             DB.collection("color").find().toArray().then(resultsColor => {
                 resultsColor.forEach((color) => {
                     items[color.nombre] = color;
@@ -153,6 +161,8 @@ app.get('/pedidos', checkAuth, function(req, res) {
             .catch(error => console.error(error))
         })
         .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
     })
     .catch(error => console.error(error))
     })
@@ -394,7 +404,10 @@ app.post('/addicionar_pedido',(req, res) => {
     var CollectionInventario = DB.collection("inventario");
 
     var filter = null;
-    if (tipoItem == "pegamento") {
+    if (tipoItem === "canteo") {
+        filter = {
+        }
+    } else if (tipoItem == "pegamento") {
         filter = {
             "marca":    req.body.marca
         };
@@ -419,6 +432,54 @@ app.post('/addicionar_pedido',(req, res) => {
         CollectionItem.find(filter).toArray().then(item => {
             console.log(item);
             var ID = item[0]._id;
+
+            ///Check on SERVICES
+            if (tipoItem == "canteo") {
+                var CollectionHistorial = DB.collection("historial");
+                  req.body.inventario_id = ID.toString();
+                  req.body.item = req.body.text.item;
+                  req.body.cliente = req.body.text.cliente;
+                  req.body.marca = req.body.text.marca;
+                  req.body.medida = req.body.text.medida;
+                  req.body.color = req.body.text.color;
+                  delete req.body.text;
+
+                  if (req.body.canteo) {
+                    req.body.servicio = "Canteo";
+                  }
+
+                CollectionHistorial.insertOne(req.body).then(results => {
+                    console.log(`Un Servicio addicionado al historial...`);
+                    res.status(200).json({ok: true, numPedido: Number(req.body.numIngreso), message: "Historial actualizado."});
+                    res.end();
+                    //Salvar cliente nuevo
+                    if (typeof(req.body.ci) != "undefined") {
+                        cliente_nuevo = {
+                            ci: req.body.ci,
+                            celular: req.body.celular,
+                            email: req.body.email,
+                            nombre: req.body.cliente,
+                            direccion: req.body.direccion,
+                            nit: req.body.nit,
+                            empresa: req.body.empresa,
+                            tipo: "externo"
+                        };
+                        DB.collection("collectionCliente").findOne(cliente_nuevo).then(results => {
+                            console.log("CLIENTE -> ",results);
+                            if (results == null) {
+                                DB.collection("collectionCliente").insertOne(cliente_nuevo)
+                                .then(results => {
+                                    console.log(results, `cliente guardado...`);
+                                })
+                                .catch(error => console.error(error))
+                            }
+                        })
+                        .catch(error => console.error(error))
+                    }
+              })
+              .catch(error => console.error(error))
+              return;
+            }
 
             let cantidad = 0;
             let cantidadExistente = INVENTARIO.existencia;
@@ -544,7 +605,10 @@ app.post('/obtener_precio', (req, res) => {
     console.log('Provedor de compra:',req.body.provedor);
 
     if (typeof(req.body.provedor) == "undefined") {
-        if (tipoItem === "pegamento") {
+        if (tipoItem === "canteo") {
+            jsonQuery = {
+            }
+        } else if (tipoItem === "pegamento") {
             jsonQuery = {
                 "marca": req.body.marca
             }
@@ -733,8 +797,22 @@ app.post('/obtener_precio', (req, res) => {
 
                     EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
                     precio = req.body.cantidad * precio;
+
+                } else if (tipoItem == "canteo") {
+
+                    if (req.body.unidad.length <= 0) {
+                        e_message = "No se envio la Unidad del pedido.";
+                    } else if (req.body.unidad !== "metros") {
+                        e_message = "Unidad desconocida [" + req.body.unidad + "]";
+                    }
+
+                    producto = {metros:0};
+                    producto.metros = req.body.cantidad;
+
+                    EXPLICACION = `${req.body.cantidad} x ${precio} Bs`;
+                    precio = req.body.cantidad * precio;
                 } else {
-                    e_message = "[" + tipoItem + "] es un producto no conocido.";
+                    e_message = "[" + tipoItem + "] es un producto (o servicio) no conocido.";
                 }
 
                 precios[index] = {

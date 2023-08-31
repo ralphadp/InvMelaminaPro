@@ -219,16 +219,21 @@ let setHistorial = function() {
     }
 
     var _producto = getCurrentProduct();
+    if (_producto == "Canteo") {
+        //SERVICE canteo
+        historialUnit.canteo   = true;
+        historialUnit.nombreDeUnidad = "metros";
+    }
     historialUnit.text = {
         item: _producto,
         cliente: (tipo_cliente==1||tipo_cliente==3)?$('#'+ids.CLIENTE_ID).find(":selected").text():document.getElementById("complete_name").value,
-        marca: $('#'+ids.MARCA_ID).find(":selected").text(),
-        color: (_producto=="Pegamento")?'(ninguno)':$('#'+ids.COLOR_ID).find(":selected").text(),
-        medida: (_producto=="Pegamento"||_producto=="Tapatornillos")?'(ninguno)':$('#'+ids.MEDIDA_ID).find(":selected").text()
+        marca:   (_producto=="Canteo")?'(ninguno)':$('#'+ids.MARCA_ID).find(":selected").text(),
+        color:   (_producto=="Pegamento"||_producto=="Canteo")?'(ninguno)':$('#'+ids.COLOR_ID).find(":selected").text(),
+        medida:  (_producto=="Pegamento"||_producto=="Tapatornillos"||_producto=="Canteo")?'(ninguno)':$('#'+ids.MEDIDA_ID).find(":selected").text()
     };
         
 
-    if (item != "Pegamento") {
+    if (item == "Tapacanto" || item == "Melamina" || item == "Fondo" || item == "Tapatornillos") {
         historialUnit.color    = $('#'+ids.COLOR_ID).find(":selected").val();
         historialUnit.medida   = $('#'+ids.MEDIDA_ID).find(":selected").val();
         
@@ -760,6 +765,11 @@ let cleanColor = function(ids) {
     document.getElementById(ids.COLOR_ID).value = "";
 }
 
+let cleanMarca = function(ids) {
+    document.getElementById(ids.DIVMARCA).style.display = "none";
+    document.getElementById(ids.MARCA_ID).value = "";
+}
+
 let fillPropiedad = function(selectedItem, nombrePropiedad, item_propiedad) {
     selected = cleanOptionsFrom(nombrePropiedad);
     addOption(selected, "", "(Elija " + nombrePropiedad + ")");
@@ -784,6 +794,7 @@ let getIDS = function() {
     this.TIME_ID     = "timestamp1";
     this.DIVMEDIDA   = "divmedida";
     this.DIVCOLOR    = "divcolor";
+    this.DIVMARCA    = "divmarca";
     this.CARRITO     = "carrito_interno";
     this.PRECIO_MENSAJE = "precio-globo-mensajes";
     this.PRODUCT_MENSAJE = "product_message";
@@ -803,6 +814,7 @@ let getIDS = function() {
             this.TIME_ID        = "timestamp2";
             this.DIVMEDIDA = "divmedida_ex";
             this.DIVCOLOR = "divcolor_ex";
+            this.DIVMARCA    = "divmarca_ex";
             this.CARRITO  = "carrito_externo";
             this.PRECIO_MENSAJE = "precio-globo-mensajes_ex";
             this.PRODUCT_MENSAJE = "product_message_ex";
@@ -821,6 +833,7 @@ let getIDS = function() {
             this.TIME_ID     = "timestamp3";
             this.DIVMEDIDA = "divmedida_re";
             this.DIVCOLOR = "divcolor_re";
+            this.DIVMARCA    = "divmarca_re";
             this.CARRITO  = "carrito_regular";
             this.PRECIO_MENSAJE = "precio-globo-mensajes_re";
             this.PRODUCT_MENSAJE = "product_message_re";
@@ -850,6 +863,10 @@ let selectItem = function(selected) {
         cleanMedida(ids);
         fillPropiedad(selectedItem, ids.COLOR_ID, item_color);
         fillPropiedad(selectedItem, ids.MARCA_ID, item_marca);
+    } else if (selectedItem == "canteo") {
+        cleanColor(ids);
+        cleanMedida(ids);
+        cleanMarca(ids);
     } else {
         document.getElementById(ids.DIVMEDIDA).style.display = "block";
         document.getElementById(ids.DIVCOLOR).style.display = "block";
@@ -858,7 +875,7 @@ let selectItem = function(selected) {
         fillPropiedad(selectedItem, ids.MEDIDA_ID, item_medida);
         fillPropiedad(selectedItem, ids.MARCA_ID, item_marca);
     }
-    fillUnidad(ids.UNIDAD_ID, selectedItem); 
+    fillUnidad(ids.UNIDAD_ID, selectedItem);
  
 }
 
