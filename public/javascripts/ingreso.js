@@ -21,8 +21,9 @@ let GuardarIngreso = function() {
     historialUnit.fecha          = document.getElementById('timestamp1').value;
     historialUnit.numIngreso     = $('#ingreso').val();
     historialUnit.item           = $('[name="item"]').find(":selected").val();
+    historialUnit.itemName       = $('[name="item"]').find(":selected").text();
 
-    let item = historialUnit.item;
+    let item = historialUnit.itemName;
     historialUnit.cliente        = $('[name="provedor"]').find(":selected").val();
     historialUnit.nombreDeUnidad = $('#unidad').find(":selected").text();
     historialUnit.embalaje       = (item == "Pegamento") ? "Bolsa" : ((item == "Tapacanto" ? "Caja" : ((item == "Melamina" ? "Paquete" : "Paquete"))));;

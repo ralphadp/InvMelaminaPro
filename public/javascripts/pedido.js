@@ -183,10 +183,11 @@ let setHistorial = function() {
     historialUnit.fecha          = document.getElementById(ids.TIME_ID).value;
     historialUnit.numIngreso     = Number(document.getElementById(ids.INGRESO_ID).innerText);
     historialUnit.item           = $('#'+ids.ITEM_ID).find(":selected").val();
+    historialUnit.itemName       = $('#'+ids.ITEM_ID).find(":selected").text();
     localStorage.setItem("NUM_PEDIDO", historialUnit.numIngreso);
 
     historialUnit.canteo   = false;
-    let item = historialUnit.item;
+    let item = historialUnit.itemName;
     historialUnit.cliente        = (tipo_cliente==1||tipo_cliente==3)?$('#'+ids.CLIENTE_ID).find(":selected").val():document.getElementById("complete_name").value;
     if (tipo_cliente == 2) {
         historialUnit.celular   = document.getElementById("phone").value;
@@ -233,7 +234,7 @@ let setHistorial = function() {
     };
         
 
-    if (item == "Tapacanto" || item == "Melamina" || item == "Fondo" || item == "Tapatornillos") {
+    if (["Tapacanto","Melamina","Fondo","Tapatornillos"].includes(item)) {
         historialUnit.color    = $('#'+ids.COLOR_ID).find(":selected").val();
         historialUnit.medida   = $('#'+ids.MEDIDA_ID).find(":selected").val();
         
