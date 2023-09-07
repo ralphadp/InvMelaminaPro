@@ -59,7 +59,6 @@ function fechaLiteral() {
 
 function addCarrito() {
     let ids = new getIDS();
-    let tipo_cliente = ids.verify();
 
     var tbodyRef = document.getElementById(ids.CARRITO).getElementsByTagName('tbody')[0];
 
@@ -171,13 +170,11 @@ let isMetrosAlCanteo = (valor) => {
 
 let getCurrentProduct = () => {
     let ids = new getIDS();
-    let tipo_cliente = ids.verify();
     return $('#'+ids.ITEM_ID).find(":selected").text();
 }
 
 let setHistorial = function() {
     let ids = new getIDS();
-    let tipo_cliente = ids.verify();
 
     let NONE = "(ninguno)";
     historialUnit.fecha          = document.getElementById(ids.TIME_ID).value;
@@ -188,8 +185,8 @@ let setHistorial = function() {
 
     historialUnit.canteo   = false;
     let item = historialUnit.itemName;
-    historialUnit.cliente        = (tipo_cliente==1||tipo_cliente==3)?$('#'+ids.CLIENTE_ID).find(":selected").val():document.getElementById("complete_name").value;
-    if (tipo_cliente == 2) {
+    historialUnit.cliente        = (ids.esInterno()||ids.esRegular())?$('#'+ids.CLIENTE_ID).find(":selected").val():document.getElementById("complete_name").value;
+    if (ids.esExterno()) {
         historialUnit.celular   = document.getElementById("phone").value;
         historialUnit.email     = document.getElementById("email").value;
         historialUnit.ci        = document.getElementById("carnet").value;
@@ -216,7 +213,11 @@ let setHistorial = function() {
             historialUnit.pu   = PRODUCTO.contenido.precio_venta_caja;
         }
     } else {
-        historialUnit.pu       = PRODUCTO.contenido.precio_venta;
+        if (ids.esInterno()) {
+            historialUnit.pu   = PRODUCTO.contenido.precio_venta_interno;
+        } else {
+            historialUnit.pu   = PRODUCTO.contenido.precio_venta;
+        }
     }
 
     var _producto = getCurrentProduct();
@@ -227,7 +228,7 @@ let setHistorial = function() {
     }
     historialUnit.text = {
         item: _producto,
-        cliente: (tipo_cliente==1||tipo_cliente==3)?$('#'+ids.CLIENTE_ID).find(":selected").text():document.getElementById("complete_name").value,
+        cliente: (ids.esInterno()||ids.esRegular())?$('#'+ids.CLIENTE_ID).find(":selected").text():document.getElementById("complete_name").value,
         marca:   (_producto=="Canteo")?'(ninguno)':$('#'+ids.MARCA_ID).find(":selected").text(),
         color:   (_producto=="Pegamento"||_producto=="Canteo")?'(ninguno)':$('#'+ids.COLOR_ID).find(":selected").text(),
         medida:  (_producto=="Pegamento"||_producto=="Tapatornillos"||_producto=="Canteo")?'(ninguno)':$('#'+ids.MEDIDA_ID).find(":selected").text()
@@ -252,7 +253,6 @@ let setHistorial = function() {
 
 let GuardarPedidos = function() {
     let ids = new getIDS();
-    let tipo_cliente = ids.verify();
 
     var table_carrito = document.getElementById(ids.CARRITO).getElementsByTagName('tbody')[0];
     MAX_REQUESTS = table_carrito.children.length;
@@ -282,7 +282,7 @@ let addicionarPedidoAlCarrito = function() {
 
 let removerUltimoPedidoDelCarrito = function() {
     let ids = new getIDS();
-    let tipo_cliente = ids.verify();
+
     carritoReg--;
 
     var table = document.getElementById(ids.CARRITO);
@@ -430,10 +430,9 @@ function centenalConvert(num) {
 
 function PrePrint() {
     let ids = new getIDS();
-    let tipo_cliente = ids.verify();
 
     NotaVenta.NumeroPedido  = $('#pedido').text();
-    if ((tipo_cliente==1 || tipo_cliente==3)) {
+    if (ids.esInterno() || ids.esRegular()) {
         NotaVenta.NombreCliente = $('#'+ids.CLIENTE_ID).find(":selected").text();
         DatosCliente(document.getElementById(ids.CLIENTE_ID));
     } else {
@@ -491,10 +490,9 @@ function getAllItemsToString(list) {
 
 function PrePrintCarrito() {
     let ids = new getIDS();
-    let tipo_cliente = ids.verify();
 
     NotaVenta.NumeroPedido  = $('#pedido').text();
-    if ((tipo_cliente==1 || tipo_cliente==3)) {
+    if (ids.esInterno() || ids.esRegular()) {
         NotaVenta.NombreCliente = $('#'+ids.CLIENTE_ID).find(":selected").text();
         DatosCliente(document.getElementById(ids.CLIENTE_ID));
     } else {
@@ -663,21 +661,18 @@ function toPrintHistory() {
 
 function setPrice(monto) {
     let ids = new getIDS();
-    ids.verify();
     document.getElementById(ids.PRECIO_ID).value = monto;
     this.event.stopPropagation();
 }
 
 function cerrarGloboMensaje() {
     let ids = new getIDS();
-    ids.verify();
     document.getElementById(ids.PRECIO_MENSAJE).style.position = "fixed";
     document.getElementById(ids.PRECIO_MENSAJE).innerHTML = "";
 }
 
 function obtenerPrecioStandard() {
     let ids = new getIDS();
-    let tipo = ids.verify();
 
     let claanUnidad = $('#' + ids.UNIDAD_ID).find(":selected").val();
 
@@ -689,7 +684,7 @@ function obtenerPrecioStandard() {
         cantidad: $('#' + ids.CANTIDAD_ID).val(),
         unidad:   isMetrosAlCanteo(claanUnidad)?'metros':claanUnidad,
         canteo:   isMetrosAlCanteo(claanUnidad)?true:false,
-        tipo_cliente: (tipo == 1)?'interno':'externo',
+        tipo_cliente: (ids.esInterno())?'interno':'externo',
         tipo_entrada: "pedido"
     };
 
@@ -800,54 +795,63 @@ let getIDS = function() {
     this.PRECIO_MENSAJE = "precio-globo-mensajes";
     this.PRODUCT_MENSAJE = "product_message";
     this.CLIENTE_TIPO = "interno";
+    this.tipo_cliente = 0;
 
-    this.verify = function() {
-        if (document.getElementById("form-total-p-1").style.display === "block") {
-            this.INGRESO_ID  = "pedido";
-            this.CLIENTE_ID  = "cliente_ex"
-            this.ITEM_ID = "item_ex";
-            this.COLOR_ID = "color_ex";
-            this.MEDIDA_ID = "medida_ex";
-            this.MARCA_ID = "marca_ex";
-            this.CANTIDAD_ID  = "cantidad_ex";
-            this.UNIDAD_ID   = "unidad_ex";
-            this.PRECIO_ID   = "precio_ex";
-            this.TIME_ID        = "timestamp2";
-            this.DIVMEDIDA = "divmedida_ex";
-            this.DIVCOLOR = "divcolor_ex";
-            this.DIVMARCA    = "divmarca_ex";
-            this.CARRITO  = "carrito_externo";
-            this.PRECIO_MENSAJE = "precio-globo-mensajes_ex";
-            this.PRODUCT_MENSAJE = "product_message_ex";
-            this.CLIENTE_TIPO = "externo";
-            return 2;
-        } else if (document.getElementById("form-total-p-2").style.display === "block") {
-            this.INGRESO_ID  = "pedido";
-            this.CLIENTE_ID  = "cliente_re";
-            this.ITEM_ID = "item_re";
-            this.COLOR_ID = "color_re";
-            this.MEDIDA_ID = "medida_re";
-            this.MARCA_ID = "marca_re";
-            this.CANTIDAD_ID  = "cantidad_re";
-            this.UNIDAD_ID   = "unidad_re";
-            this.PRECIO_ID   = "precio_re";
-            this.TIME_ID     = "timestamp3";
-            this.DIVMEDIDA = "divmedida_re";
-            this.DIVCOLOR = "divcolor_re";
-            this.DIVMARCA    = "divmarca_re";
-            this.CARRITO  = "carrito_regular";
-            this.PRECIO_MENSAJE = "precio-globo-mensajes_re";
-            this.PRODUCT_MENSAJE = "product_message_re";
-            this.CLIENTE_TIPO = "regular";
-            return 3;
-        }
-        return 1;
+    if (document.getElementById("form-total-p-1").style.display === "block") {
+        this.INGRESO_ID  = "pedido";
+        this.CLIENTE_ID  = "cliente_ex"
+        this.ITEM_ID = "item_ex";
+        this.COLOR_ID = "color_ex";
+        this.MEDIDA_ID = "medida_ex";
+        this.MARCA_ID = "marca_ex";
+        this.CANTIDAD_ID  = "cantidad_ex";
+        this.UNIDAD_ID   = "unidad_ex";
+        this.PRECIO_ID   = "precio_ex";
+        this.TIME_ID     = "timestamp2";
+        this.DIVMEDIDA = "divmedida_ex";
+        this.DIVCOLOR = "divcolor_ex";
+        this.DIVMARCA    = "divmarca_ex";
+        this.CARRITO  = "carrito_externo";
+        this.PRECIO_MENSAJE = "precio-globo-mensajes_ex";
+        this.PRODUCT_MENSAJE = "product_message_ex";
+        this.CLIENTE_TIPO = "externo";
+        this.tipo_cliente = 1;
+    } else if (document.getElementById("form-total-p-2").style.display === "block") {
+        this.INGRESO_ID  = "pedido";
+        this.CLIENTE_ID  = "cliente_re";
+        this.ITEM_ID = "item_re";
+        this.COLOR_ID = "color_re";
+        this.MEDIDA_ID = "medida_re";
+        this.MARCA_ID = "marca_re";
+        this.CANTIDAD_ID  = "cantidad_re";
+        this.UNIDAD_ID   = "unidad_re";
+        this.PRECIO_ID   = "precio_re";
+        this.TIME_ID     = "timestamp3";
+        this.DIVMEDIDA = "divmedida_re";
+        this.DIVCOLOR = "divcolor_re";
+        this.DIVMARCA    = "divmarca_re";
+        this.CARRITO  = "carrito_regular";
+        this.PRECIO_MENSAJE = "precio-globo-mensajes_re";
+        this.PRODUCT_MENSAJE = "product_message_re";
+        this.CLIENTE_TIPO = "regular";
+        this.tipo_cliente = 2;
+    }
+
+    this.esInterno = function() {
+        return this.tipo_cliente === 0;
+    }
+
+    this.esExterno = function() {
+        return this.tipo_cliente === 1;
+    }
+
+    this.esRegular = function() {
+        return this.tipo_cliente === 2;
     }
 }
 
 let selectItem = function(selected) {
     let ids = new getIDS();
-    ids.verify();
 
     _CLIENTE[ids.CLIENTE_TIPO].clean();
     let selectedItem = selected.options[selected.selectedIndex].text.toLowerCase();
@@ -951,7 +955,6 @@ var PRODUCTO;
 
 $(".verify").on("change", function() {
     let ids = new getIDS();
-    ids.verify();
 
     var propiedad = $("option:selected", this).prevObject[0].name;
     _CLIENTE[ids.CLIENTE_TIPO][propiedad] = this.value;
