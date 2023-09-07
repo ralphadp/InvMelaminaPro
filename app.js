@@ -371,7 +371,7 @@ app.post('/addicionar_pedido',(req, res) => {
     CollectionInventario.findOne({"codigo":hash}).then(INVENTARIO => {
         console.log("Inventario:", INVENTARIO);
         CollectionItem.find(filter).toArray().then(item => {
-            console.log(item);
+            console.log("Catalogo:", item);
             if (item.length == 0) {
                 res.status(200).json({ok: false, numPedido: Number(req.body.numIngreso), message: `No se encontro el item en collection${tipoItem}`});
                 res.end();
