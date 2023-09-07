@@ -1,19 +1,30 @@
 var express = require('express');
 var router = express.Router();
 
+/******************************** COLOR ******************************************************/
 
 router.post('/nuevo_color',(req, res) => {
     var DB = req.app.settings.DB;
-    console.log("color",req.body);
+    var _map = req.app.settings.MAP;
+
+    console.log("color: ",req.body);
 
     let CollectionColor = DB.collection("color");
 
     CollectionColor.insertOne(req.body).then(results => {
+        var messageText =  "No se pudo addicionar el color al catalogo....";
+        var state = false;
+        var reaction = "none";
 
-        console.log(results);
-        console.log(`Un color nuevo fue addicionado al catalogo...`);
+        if (results.insertedId) {
+            _map.color.add(req.body);
+            messageText = `Un color nuevo fue addicionado al catalogo...`;
+            state = true;
+            reaction = "reload"
+        }
 
-        res.status(200).json({ok: true, message: "Un color nuevo fue addicionado a catalogo....", action: "reload"});
+        console.log(messageText);
+        res.status(200).json({ok: state, message: messageText, action: reaction});
         res.end();
     })
     .catch(error => console.error(error))
@@ -22,6 +33,7 @@ router.post('/nuevo_color',(req, res) => {
 router.put('/actualizar_color/:id',(req, res) => {
     try {
         var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
 
         console.log("color: ", req.body);
         let idc = DB.getObjectID(req.params.id);
@@ -30,9 +42,19 @@ router.put('/actualizar_color/:id',(req, res) => {
         let CollectionColor = DB.collection("color");
 
         CollectionColor.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-            console.log(results);
-            console.log(`Color ${req.body.nombre} actualizado...`);
-            res.status(200).json({ok: true, message: "Color (" + req.body.nombre + ") actualizado.", action: "none"});
+            var messageText = `Color ${req.body.nombre} no pudo ser actualizado...`;
+            var state = false;
+            var reaction = "none";
+
+            if (results.modifiedCount) {
+                _map.color.update(idc, req.body);
+                _map.color.reload();
+                messageText = `Color ${req.body.nombre} actualizado...`;
+                state = true;
+            }
+
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
             res.end();
         })
         .catch(error => console.error(error))
@@ -46,14 +68,25 @@ router.put('/actualizar_color/:id',(req, res) => {
 router.delete('/delete_color/:id', (req, res) => {
     try {
         var DB = req.app.settings.DB;
-        
+        var _map = req.app.settings.MAP;
+
         var CollectionColor = DB.collection("color");
         let cid = DB.getObjectID(req.params.id);
 
         CollectionColor.deleteOne({"_id": cid }).then(result => {
-            console.log(result);
-            console.log(`Color ${req.params.id} borrado...`);
-            res.status(200).json({ok: true, message: "Color (" + req.params.id + ") borrado.", action: "none"});
+            var messageText = `Color ${req.params.id} no pudo ser borrado...`;
+            var state = false;
+            var reaction = "none";
+
+            if (result.deletedCount) {
+                _map.color.delete(cid);
+                _map.color.reload();
+                messageText = `Color ${req.params.id} borrado...`;
+                state = true;
+            }
+
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
             res.end();
         })
         .catch(error => console.error(error))
@@ -64,255 +97,493 @@ router.delete('/delete_color/:id', (req, res) => {
     }
 })
 
+/******************************** MARCA ******************************************************/
+
 router.post('/nueva_marca',(req, res) => {
     var DB = req.app.settings.DB;
-    console.log("marca",req.body);
+    var _map = req.app.settings.MAP;
+    console.log("marca", req.body);
 
     let CollectionMarca = DB.collection("marcas");
 
     CollectionMarca.insertOne(req.body).then(results => {
+        var messageText =  "No se pudo adicionar la marca al catalogo....";
+        var state = false;
+        var reaction = "none";
 
-        console.log(results);
-        console.log(`Una marca nueva fie addicionado al catalogo...`);
+        if (results.insertedId) {
+            _map.marcas.add(req.body);
+            messageText = `Una marca nueva fue addicionado al catalogo...`;
+            state = true;
+            reaction = "reload"
+        }
 
-        res.status(200).json({ok: true, message: "Una marca nueva fue addicionada al catalogo....", action: "reload"});
+        console.log(messageText);
+        res.status(200).json({ok: state, message: messageText, action: reaction});
         res.end();
     })
     .catch(error => console.error(error))
 })
 
 router.put('/actualizar_marca/:id',(req, res) => {
-    var DB = req.app.settings.DB;
+    try {
+        var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
 
-    console.log("marca: ", req.body);
-    let idc = DB.getObjectID(req.params.id);
-    console.log(req.params.id, idc);
+        console.log("marca: ", req.body);
+        let idc = DB.getObjectID(req.params.id);
+        console.log(req.params.id, idc);
 
-    let CollectionMarca = DB.collection("marcas");
+        let CollectionMarca = DB.collection("marcas");
 
-    CollectionMarca.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Marca ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Marca (" + req.body.nombre + ") actualizado.", action: "none"});
+        CollectionMarca.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+            var messageText = `Marca ${req.body.nombre} no pudo ser actualizada...`;
+            var state = false;
+            var reaction = "none";
+
+            if (results.modifiedCount) {
+                _map.marcas.update(idc, req.body);
+                _map.marcas.reload();
+                messageText = `Marca ${req.body.nombre} actualizada...`;
+                state = true;
+            }
+
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
+            res.end();
+        })
+        .catch(error => console.error(error))
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
         res.end();
-    })
-    .catch(error => console.error(error))
+    }
 })
 
 router.delete('/delete_marca/:id', (req, res) => {
-    var DB = req.app.settings.DB;
-    
-    var CollectionMarca = DB.collection("marcas");
-    let cid = DB.getObjecyID(req.params.id);
+    try {
+        var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
+        
+        var CollectionMarca = DB.collection("marcas");
+        let cid = DB.getObjecyID(req.params.id);
 
-    CollectionMarca.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Marca ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Marca (" + req.params.id + ") borrado.", action: "none"});
+        CollectionMarca.deleteOne({"_id": cid }).then(result => {
+            var messageText = `Marca ${req.params.id} no pudo ser borrada...`;
+            var state = false;
+            var reaction = "none";
+
+            if (result.deletedCount) {
+                _map.marcas.delete(cid);
+                _map.marcas.reload();
+                messageText = `Marca ${req.params.id} borrada...`;
+                state = true;
+            }
+
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
+            res.end();
+        })
+        .catch(error => console.error(error))
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
         res.end();
-    })
-    .catch(error => console.error(error))
+    }
 })
+
+/******************************** MEDIDA ****************************************************/
 
 router.post('/nueva_medida',(req, res) => {
     var DB = req.app.settings.DB;
-    console.log("medida",req.body);
+    var _map = req.app.settings.MAP;
+    console.log("medida", req.body);
 
     let CollectionMedida = DB.collection("medidas");
 
     CollectionMedida.insertOne(req.body).then(results => {
+        var messageText =  "No se pudo addicionar la medida al catalogo....";
+        var state = false;
+        var reaction = "none";
 
-        console.log(results);
-        console.log(`Una medida nueva fue addicionada al catalogo...`);
+        if (results.insertedId) {
+            _map.medidas.add(req.body);
+            messageText = `Una medida nueva fue addicionada al catalogo...`;
+            state = true;
+            reaction = "reload"
+        }
 
-        res.status(200).json({ok: true, message: "Una medida nueva fue addicionada al catalogo....", action: "reload"});
+        console.log(messageText);
+        res.status(200).json({ok: state, message: messageText, action: reaction});
         res.end();
     })
     .catch(error => console.error(error))
 })
 
 router.put('/actualizar_medida/:id',(req, res) => {
-    var DB = req.app.settings.DB; 
+    try {
+        var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
 
-    console.log("medida: ", req.body);
-    let idc = DB.getObjecyID(req.params.id);
-    console.log(req.params.id, idc);
+        console.log("medida: ", req.body);
+        let idc = DB.getObjecyID(req.params.id);
+        console.log(req.params.id, idc);
 
-    let CollectionMedida = DB.collection("medidas");
+        let CollectionMedida = DB.collection("medidas");
 
-    CollectionMedida.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Medida ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Medida (" + req.body.nombre + ") actualizado.", action: "none"});
+        CollectionMedida.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+            var messageText = `Medida ${req.body.nombre} no pudo ser actualizada...`;
+            var state = false;
+            var reaction = "none";
+
+            if (results.modifiedCount) {
+                _map.medidas.update(idc, req.body);
+                _map.medidas.reload();
+                messageText = `Medida ${req.body.nombre} actualizada...`;
+                state = true;
+            }
+
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
+            res.end();
+
+            console.log(results);
+            console.log(`Medida ${req.body.nombre} actualizado...`);
+            res.status(200).json({ok: true, message: "Medida (" + req.body.nombre + ") actualizado.", action: "none"});
+            res.end();
+        })
+        .catch(error => console.error(error))
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
         res.end();
-    })
-    .catch(error => console.error(error))
+    }
 })
 
 router.delete('/delete_medida/:id', (req, res) => {
-    var DB = req.app.settings.DB;
-    
-    var CollectionMedida = DB.collection("medidas");
-    let cid = DB.getObjecyID(req.params.id);
+    try {
+        var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
+        
+        var CollectionMedida = DB.collection("medidas");
+        let cid = DB.getObjecyID(req.params.id);
 
-    CollectionMedida.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Medida ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Medida (" + req.params.id + ") borrado.", action: "none"});
+        CollectionMedida.deleteOne({"_id": cid }).then(result => {
+            var messageText = `Medida ${req.params.id} no pudo ser borrada...`;
+            var state = false;
+            var reaction = "none";
+
+            if (result.deletedCount) {
+                _map.medidas.delete(cid);
+                _map.medidas.reload();
+                messageText = `Medida ${req.params.id} borrada...`;
+                state = true;
+            }
+
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
+            res.end();
+        })
+        .catch(error => console.error(error))
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
         res.end();
-    })
-    .catch(error => console.error(error))
+    }
 })
+
+/******************************** Provedor ****************************************************/
 
 router.post('/nuevo_provedor',(req, res) => {
     var DB = req.app.settings.DB;
-    console.log("provedor",req.body);
+    var _map = req.app.settings.MAP;
+    console.log("provedor", req.body);
 
     let CollectionProvedor = DB.collection("collectionprovedor");
 
     CollectionProvedor.insertOne(req.body).then(results => {
+        var messageText =  "No se pudo addicionar el provedor al catalogo....";
+        var state = false;
+        var reaction = "none";
 
-        console.log(results);
-        console.log(`Un provedor nuevo fue addicionado al catalogo...`);
+        if (results.insertedId) {
+            _map.collectionprovedor.add(req.body);
+            messageText = `El provedor nuevo fue addicionada al catalogo...`;
+            state = true;
+            reaction = "reload"
+        }
 
-        res.status(200).json({ok: true, message: "Un provedor nuevo fue addicionado al catalogo....", action: "reload"});
+        console.log(messageText);
+        res.status(200).json({ok: state, message: messageText, action: reaction});
         res.end();
     })
     .catch(error => console.error(error))
 })
 
 router.put('/actualizar_provedor/:id',(req, res) => {
-    var DB = req.app.settings.DB;  
+    try {
+        var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
 
-    console.log("provedor: ", req.body);
-    let idc = DB.getObjecyID(req.params.id);
-    console.log(req.params.id, idc);
+        console.log("provedor: ", req.body);
+        let idc = DB.getObjecyID(req.params.id);
+        console.log(req.params.id, idc);
 
-    let CollectionProvedor = DB.collection("collectionprovedor");
+        let CollectionProvedor = DB.collection("collectionprovedor");
 
-    CollectionProvedor.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Provedor ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Provedor (" + req.body.nombre + ") actualizado.", action: "none"});
+        CollectionProvedor.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+            var messageText = `El provedor ${req.body.nombre} no pudo ser actualizado...`;
+            var state = false;
+            var reaction = "none";
+
+            if (results.modifiedCount) {
+                _map.collectionprovedor.update(idc, req.body);
+                _map.collectionprovedor.reload();
+                messageText = `Provedor ${req.body.nombre} actualizado...`;
+                state = true;
+            }
+
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
+            res.end();
+        })
+        .catch(error => console.error(error))
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
         res.end();
-    })
-    .catch(error => console.error(error))
+    }
 })
 
 router.delete('/delete_provedor/:id', (req, res) => {
-    var DB = req.app.settings.DB;
-    
-    var CollectionProvedor = DB.collection("collectionprovedor");
-    let cid = DB.getObjecyID(req.params.id);
+    try {
+        var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
+        
+        var CollectionProvedor = DB.collection("collectionprovedor");
+        let cid = DB.getObjecyID(req.params.id);
 
-    CollectionProvedor.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Provedor ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Provedor (" + req.params.id + ") borrado.", action: "none"});
+        CollectionProvedor.deleteOne({"_id": cid }).then(result => {
+            var messageText = `El provedor ${req.params.id} no pudo ser borrado...`;
+            var state = false;
+            var reaction = "none";
+
+            if (result.deletedCount) {
+                _map.collectionprovedor.delete(cid);
+                _map.collectionprovedor.reload();
+                messageText = `Provedor ${req.params.id} borrado...`;
+                state = true;
+            }
+
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
+            res.end();
+        })
+        .catch(error => console.error(error))
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
         res.end();
-    })
-    .catch(error => console.error(error))
+    }
 })
+
+/******************************** Item ****************************************************/
 
 router.post('/nuevo_item',(req, res) => {
     var DB = req.app.settings.DB;
+    var _map = req.app.settings.MAP;
     console.log("item",req.body);
 
     let CollectionItem = DB.collection("item");
 
     CollectionItem.insertOne(req.body).then(results => {
+        var messageText =  "No se pudo addicionar el item al catalogo....";
+        var state = false;
+        var reaction = "none";
 
-        console.log(results);
-        console.log(`Un item nuevo fue addicionado al catalogo...`);
+        if (results.insertedId) {
+            _map.item.add(req.body);
+            messageText = `El item nuevo fue addicionado al catalogo...`;
+            state = true;
+            reaction = "reload"
+        }
 
-        res.status(200).json({ok: true, message: "Un item nuevo fue addicionado al catalogo....", action: "reload"});
+        console.log(messageText);
+        res.status(200).json({ok: state, message: messageText, action: reaction});
         res.end();
     })
     .catch(error => console.error(error))
 })
 
 router.put('/actualizar_item/:id',(req, res) => {
-    var DB = req.app.settings.DB;
+    try {
+        var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
 
-    console.log("item: ", req.body);
-    let idc = DB.getObjecyID(req.params.id);
-    console.log(req.params.id, idc);
+        console.log("item: ", req.body);
+        let idc = DB.getObjecyID(req.params.id);
+        console.log(req.params.id, idc);
 
-    let CollectionItem = DB.collection("item");
+        let CollectionItem = DB.collection("item");
 
-    CollectionItem.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Item ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Item (" + req.body.nombre + ") actualizado.", action: "none"});
+        CollectionItem.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+            var messageText = `El Item ${req.body.nombre} no pudo ser actualizado...`;
+            var state = false;
+            var reaction = "none";
+
+            if (results.modifiedCount) {
+                _map.item.update(idc, req.body);
+                _map.item.reload();
+                messageText = `Item ${req.body.nombre} actualizado...`;
+                state = true;
+            }
+
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
+            res.end();
+        })
+        .catch(error => console.error(error))
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
         res.end();
-    })
-    .catch(error => console.error(error))
+    }
 })
 
 router.delete('/delete_item/:id', (req, res) => {
-    var DB = req.app.settings.DB;
-    
-    var CollectionItem = DB.collection("item");
-    let cid = DB.getObjecyID(req.params.id);
+    try {
+        var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
+        
+        var CollectionItem = DB.collection("item");
+        let cid = DB.getObjecyID(req.params.id);
 
-    CollectionItem.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Item ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Item (" + req.params.id + ") borrado.", action: "none"});
+        CollectionItem.deleteOne({"_id": cid }).then(result => {
+            var messageText = `El item ${req.params.id} no pudo ser borrado...`;
+            var state = false;
+            var reaction = "none";
+
+            if (result.deletedCount) {
+                _map.item.delete(cid);
+                _map.item.reload();
+                messageText = `Item ${req.params.id} borrado...`;
+                state = true;
+            }
+
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
+            res.end();
+        })
+        .catch(error => console.error(error))
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
         res.end();
-    })
-    .catch(error => console.error(error))
+    }
 })
 
+/******************************** Cliente ****************************************************/
+
 router.post('/nuevo_cliente',(req, res) => {
-    var DB = req.app.settings.DB;
-    console.log("cliente",req.body);
+    try {
+        var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
+        console.log("cliente", req.body);
 
-    let CollectionCliente = DB.collection("collectionCliente");
+        let CollectionCliente = DB.collection("collectionCliente");
 
-    CollectionCliente.insertOne(req.body).then(results => {
+        CollectionCliente.insertOne(req.body).then(results => {
+            var messageText =  "No se pudo addicionar el Cliente al catalogo....";
+            var state = false;
+            var reaction = "none";
 
-        console.log(results);
-        console.log(`Un Cliente nuevo fue addicionado al catalogo...`);
+            if (results.insertedId) {
+                _map.collectionCliente.add(req.body);
+                messageText = `El Cliente nuevo fue addicionado al catalogo...`;
+                state = true;
+                reaction = "reload"
+            }
 
-        res.status(200).json({ok: true, message: "Un Cliente nuevo fue addicionado al catalogo....", action: "reload"});
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
+            res.end();
+        })
+        .catch(error => console.error(error))
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
         res.end();
-    })
-    .catch(error => console.error(error))
+    }
 })
 
 router.put('/actualizar_cliente/:id',(req, res) => {
-    var DB = req.app.settings.DB;
+    try {
+        var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
 
-    console.log("cliente: ", req.body);
-    let idc = DB.getObjecyID(req.params.id);
-    console.log(req.params.id, idc);
+        console.log("cliente: ", req.body);
+        let idc = DB.getObjecyID(req.params.id);
+        console.log(req.params.id, idc);
 
-    let CollectionCliente = DB.collection("collectionCliente");
+        let CollectionCliente = DB.collection("collectionCliente");
 
-    CollectionCliente.updateOne({"_id": idc}, {$set: req.body}).then(results => {
-        console.log(results);
-        console.log(`Cliente ${req.body.nombre} actualizado...`);
-        res.status(200).json({ok: true, message: "Cliente (" + req.body.nombre + ") actualizado.", action: "none"});
+        CollectionCliente.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+            var messageText = `El Cliente ${req.body.nombre} no pudo ser actualizado...`;
+            var state = false;
+            var reaction = "none";
+
+            if (results.modifiedCount) {
+                _map.collectionCliente.update(idc, req.body);
+                _map.collectionCliente.reload();
+                messageText = `Cliente ${req.body.nombre} actualizado...`;
+                state = true;
+            }
+
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
+            res.end();
+        })
+        .catch(error => console.error(error))
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
         res.end();
-    })
-    .catch(error => console.error(error))
+    }
 })
 
 router.delete('/delete_cliente/:id', (req, res) => {
-    var DB = req.app.settings.DB;
-    
-    var CollectionCliente = DB.collection("collectionCliente");
-    let cid = DB.getObjecyID(req.params.id);
+    try {
+        var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
+        
+        var CollectionCliente = DB.collection("collectionCliente");
+        let cid = DB.getObjecyID(req.params.id);
 
-    CollectionCliente.deleteOne({"_id": cid }).then(result => {
-        console.log(result);
-        console.log(`Cliente ${req.params.id} borrado...`);
-        res.status(200).json({ok: true, message: "Cliente (" + req.params.id + ") borrado.", action: "none"});
+        CollectionCliente.deleteOne({"_id": cid }).then(result => {
+            var messageText = `El Cliente ${req.params.id} no pudo ser borrado...`;
+            var state = false;
+            var reaction = "none";
+
+            if (result.deletedCount) {
+                _map.collectionClientecollectionCliente.delete(cid);
+                _map.collectionCliente.reload();
+                messageText = `Cliente ${req.params.id} borrado...`;
+                state = true;
+            }
+
+            console.log(messageText);
+            res.status(200).json({ok: state, message: messageText, action: reaction});
+            res.end();
+        })
+        .catch(error => console.error(error))
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
         res.end();
-    })
-    .catch(error => console.error(error))
+    }
 })
+
+/******************************** Producto Melamina ****************************************************/
 
 router.post('/nueva_melamina',(req, res) => {
     var DB = req.app.settings.DB;
@@ -1327,26 +1598,42 @@ router.delete('/delete_tapatornillos/:id', (req, res) => {
     .catch(error => console.error(error))
 })
 
+/******************************** Control producto ******************************************************/
+
 router.put('/actualizar_control_producto/',(req, res) => {
-    var DB = req.app.settings.DB;
+    try {
+        var DB = req.app.settings.DB;
+        var _map = req.app.settings.MAP;
 
-    console.log("control: ", req.body);
+        console.log("control: ", req.body);
 
-    let CollectionControl = DB.collection("control_producto");
+        let CollectionControl = DB.collection("control_producto");
 
-    CollectionControl.findOneAndUpdate({item: "Melamina"}, {$set: {minimo: Number(req.body.melamina)}}).then(results => {
-        console.log(results);
-        CollectionControl.findOneAndUpdate({item: "Tapacantos"}, {$set: {minimo: Number(req.body.tapacantos)}}).then(results => {
+        CollectionControl.findOneAndUpdate({item: "Melamina"}, {$set: {minimo: Number(req.body.melamina)}}).then(results => {
             console.log(results);
-            CollectionControl.findOneAndUpdate({item: "Pegamento"}, {$set: {minimo: Number(req.body.pegamento)}}).then(results => {
+            CollectionControl.findOneAndUpdate({item: "Tapacantos"}, {$set: {minimo: Number(req.body.tapacantos)}}).then(results => {
                 console.log(results);
-                CollectionControl.findOneAndUpdate({item: "Fondo"}, {$set: {minimo: Number(req.body.fondo)}}).then(results => {
+                CollectionControl.findOneAndUpdate({item: "Pegamento"}, {$set: {minimo: Number(req.body.pegamento)}}).then(results => {
                     console.log(results);
-                    CollectionControl.findOneAndUpdate({item: "Tapatornillos"}, {$set: {minimo: Number(req.body.tapatornillos)}}).then(results => {
+                    CollectionControl.findOneAndUpdate({item: "Fondo"}, {$set: {minimo: Number(req.body.fondo)}}).then(results => {
                         console.log(results);
-                        console.log("Control producto ",req.body," actualizado...");
-                        res.status(200).json({ok: true, message: "Control Producto actualizado.", action: "none"});
-                        res.end();
+                        CollectionControl.findOneAndUpdate({item: "Tapatornillos"}, {$set: {minimo: Number(req.body.tapatornillos)}}).then(results => {
+                            var messageText = `Control producto, ${req.body.nombre} no pudo ser actualizado...`;
+                            var state = false;
+                            var reaction = "none";
+                
+                            if (results.modifiedCount) {
+                                _map.control_producto.update(idc, req.body);
+                                _map.control_producto.reload();
+                                messageText = `Control producto, ${req.body.nombre} actualizado...`;
+                                state = true;
+                            }
+                
+                            console.log(messageText);
+                            res.status(200).json({ok: state, message: messageText, action: reaction});
+                            res.end();
+                        })
+                        .catch(error => console.error(error))
                     })
                     .catch(error => console.error(error))
                 })
@@ -1354,10 +1641,15 @@ router.put('/actualizar_control_producto/',(req, res) => {
             })
             .catch(error => console.error(error))
         })
-        .catch(error => console.error(error))
-    })
-    .catch(error => console.error(error));
+        .catch(error => console.error(error));
+    } catch(error) {
+        console.log(error);
+        res.status(200).json({ok: false, message: error, action: "none"});
+        res.end();
+    }
 });
+
+/******************************** Preferencias ******************************************************/
 
 router.put('/actualizar_preferencias/',(req, res) => {
     var DB = req.app.settings.DB;
@@ -1375,6 +1667,8 @@ router.put('/actualizar_preferencias/',(req, res) => {
     })
     .catch(error => console.error(error))
 });
+
+/******************************** Usuario ******************************************************/
 
 router.post('/nuevo_usuario',(req, res) => {
     var DB = req.app.settings.DB;

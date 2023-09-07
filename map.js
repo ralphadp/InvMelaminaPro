@@ -1,5 +1,6 @@
 class Collection {
     list = {};
+    array = [];
 
     constructor(name) {
         this.name = name;
@@ -14,21 +15,22 @@ class Collection {
     }
 
     add(valueJson) {
+        this.array.push(valueJson);
         if (valueJson.nombre) {
             if (this.list[valueJson.nombre]) {
-                console.log(valueJson.nombre + " cannot be added , already exists");
+                console.log("Collection: "+valueJson.nombre + " cannot be added , already exists");
             } else {
                 this.list[valueJson.nombre] = valueJson;
                 this.list[valueJson._id.toString()] = valueJson;
             }
         } else if (valueJson.item) {
             if (this.list[valueJson.item]) {
-                console.log(valueJson.item + " cannot be added , already exists");
+                console.log("Collection: "+valueJson.item + " cannot be added , already exists");
             } else {
                 this.list[valueJson.item] = valueJson;
             }
         } else {
-            console.log("Cannot add to collection: json value does not have name or item field.")
+            console.log("Collection: Cannot add to collection: json value does not have name or item field.")
         }
     }
 
@@ -49,10 +51,10 @@ class Collection {
             } else if (valueJson.item) {
                 this.list[valueJson.item] = valueJson;
             } else {
-                console.log("Cannot update collection by item or nombre: does not have name or item field.")
+                console.log("Collection: Cannot update collection by item or nombre: does not have name or item field.")
             }
         } else {
-            console.log("List is empty.");
+            console.log("Collection: List is empty.");
         }
     }
 
@@ -67,8 +69,38 @@ class Collection {
             }
             delete this.list[Id];
         } else {
-            console.log("Cannot delete collection: json value does not have name or item field.")
+            console.log("Collection: Cannot delete collection: json value does not have name or item field.")
         }
+    }
+
+    use(db) {
+        if (!db) {
+            console.log("Collection: Cannot use DB for " + this.name);
+            return false;
+        }
+        this.DB = db;
+        return true;
+    }
+
+    async reload() {
+        if (!this.DB) {
+            console.log("Collection: Cannot reload, cause DB is not set for " + this.name);
+            return false;
+        }
+        try {
+            let resultsItem = await this.DB.collection(this.name).find().toArray();
+            if (!resultsItem) {
+                console.log("Collection: cannot reload " + this.name);
+            } else {
+                this.array = resultsItem;
+                console.log("Collection: collection ["+this.name + "] reloaded!");
+            }
+        } catch (error) {
+            console.log("Collection: reload " + this.name + " error: ", error);
+            return false;
+        }
+
+        return true;
     }
 }
 
@@ -88,7 +120,11 @@ class Map {
 
     setDB(db) {
         if (db) {
+           
             this.DB = db;
+            for (var i = 0; i < this.collections.length; i++) {
+               this.collections[i].use(db);
+            }
         } else {
             console.log("Map: Db is not instanced");
         }
