@@ -147,9 +147,11 @@
                                             <label for="room" class="special-label-1">Item</label>
                                             <select name="item" id="item" class="form-control verify" onchange="selectItem(this)">
                                                 <option value="" selected="">(Elija el item)</option>
-                                                <% for(let index = 0; index < item.length; index++) {%>
+                                                <% for (let index = 0; index < item.length; index++) { 
+                                                       if (item[index].tipo != "servicio") { %>
                                                     <option value="<%= item[index]._id.toString() %>"><%= item[index].nombre %></option>
-                                                <% } %>
+                                                <%     }
+                                                  } %>
                                             </select>
                                             <span class="select-btn">
                                                 <i class="zmdi zmdi-chevron-down"></i>
