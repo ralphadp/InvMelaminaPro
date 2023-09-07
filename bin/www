@@ -37,8 +37,9 @@ map.populate().then((res) => {
     map.item.update("64af3729d8464fce0b08d888", {nombre:"chacho",item:"cachito"});
     console.log(map.item.list);
     map.item.delete("64af3729d8464fce0b08d888");
-    console.log(map.item.list);*/
-    console.log(map.control_producto.list);
+    console.log(map.item.list);
+    console.log(map.item.list);
+    console.log(map.item.array);*/
     console.log(res ? "Resources loaded." : "Resources NOT loaded.");
 });
 
