@@ -858,7 +858,7 @@ let selectItem = function(selected) {
     _CLIENTE[ids.CLIENTE_TIPO].setTipo(selectedItem);
 
     PRODUCTO = fetchProducto(_CLIENTE[ids.CLIENTE_TIPO]);
-    document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "_____________________";
+    document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "__________________________________________";
 
     if (selectedItem == "pegamento") {
         cleanColor(ids);
@@ -918,10 +918,11 @@ document.getElementById("form-total-t-2").addEventListener("click", go2);
 
 function _KEY() {
     this.tipo_producto = '';
-    this.item   ='';
-    this.color  ='';
-    this.medida ='';
-    this.marca  ='';
+    this.item   = '';
+    this.color  = '';
+    this.medida = '';
+    this.marca  = '';
+
     this.AllFilled = () => {
         if (this.tipo_producto === "pegamento") {
             return this.item.length > 0
@@ -937,14 +938,21 @@ function _KEY() {
         && this.marca.length > 0;
     };
     this.clean = () => {
-        this.item   ='';
-        this.color  ='';
-        this.medida ='';
-        this.marca  ='';
+        this.item   = '';
+        this.color  = '';
+        this.medida = '';
+        this.marca  = '';
     };
     this.setTipo = (tipo) => {
         this.tipo_producto = tipo;
     }
+    this.getUnidad = () => {
+        if (this.item && items[this.item]) {
+            return items[this.item].unidad;
+        }
+
+        return "items";
+    };
 };
 var _CLIENTE = {
     interno: new _KEY(),
@@ -964,11 +972,15 @@ $(".verify").on("change", function() {
         if (PRODUCTO.existencia == 0) {
             document.getElementById(ids.PRODUCT_MENSAJE).style.background = "red";
             document.getElementById(ids.PRODUCT_MENSAJE).style.color = "#55e8d5";
-            document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "El producto esta agotado, " + PRODUCTO.existencia+ " items.";
+            if (PRODUCTO.contenido.apedido) {
+                document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "El producto es a PEDIDO. Total actual es de " + PRODUCTO.existencia + " " + _CLIENTE[ids.CLIENTE_TIPO].getUnidad() + ".";
+            } else {
+                document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "El producto esta agotado, " + PRODUCTO.existencia + " " + _CLIENTE[ids.CLIENTE_TIPO].getUnidad() + ".";
+            }
         } else {
             document.getElementById(ids.PRODUCT_MENSAJE).style.background = "transparent";
             document.getElementById(ids.PRODUCT_MENSAJE).style.color = "#55e8d5";
-            document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "Este producto tiene " + PRODUCTO.existencia+ " items aun.";
+            document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "Este producto tiene " + PRODUCTO.existencia + " " + _CLIENTE[ids.CLIENTE_TIPO].getUnidad() + " aun.";
         }
     } else {
         if (_CLIENTE[ids.CLIENTE_TIPO].AllFilled()) {

@@ -28,8 +28,8 @@
 		
 		function fetchProducto(key) {
 			let indexHash = CryptoJS.MD5(key.item + key.color + key.medida + key.marca);
-			let h = indexHash.toString();
-			return item_inventario[h];
+			let hash = indexHash.toString();
+			return item_inventario[hash];
 		}
 
     </script>
@@ -411,7 +411,7 @@
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
-											<label id="product_message" for="room" class="special-label-1">Una Cinta de 18 mts y fondo de 200x150 adjuntos.</label>
+											<label id="product_message" for="room" class="special-label-1"></label>
 										</div>
 									</div>
 									<div class="form-row">
