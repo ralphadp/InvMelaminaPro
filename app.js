@@ -620,6 +620,7 @@ app.post('/obtener_precio', (req, res) => {
             let precio_caja = 0;
             let EXPLICACION = "";
             var producto;
+            let rebaja = 0;
 
             try {
 
@@ -634,7 +635,8 @@ app.post('/obtener_precio', (req, res) => {
                     }
                     precio_metros = result.precio_venta_metros;
                     if (req.body.canteo && result.hasOwnProperty('precio_venta_metros_canteo')) {
-                        precio_metros = result.precio_venta_metros_canteo;
+                        precio_metros = Number(result.precio_venta_metros_canteo);
+                        console.log("canteo mt al canteo:", precio_metros);
                     }
                     precio_caja = result.precio_venta_caja?result.precio_venta_caja:0;
                 }
@@ -650,8 +652,9 @@ app.post('/obtener_precio', (req, res) => {
 
                         precio = req.body.cantidad * precio_metros;
                         if (req.body.tipo_cliente == 'interno' || req.body.canteo) {
-                            EXPLICACION = `${req.body.cantidad} x ${precio_metros-1}(pm) Bs`;
-                            precio = req.body.cantidad * (precio_metros - 1);
+                            rebaja = 1;
+                            EXPLICACION = `${req.body.cantidad} x (${precio_metros}(pm) Bs - ${rebaja} Bs)`;
+                            precio = req.body.cantidad * (precio_metros - rebaja);
                         }
 
                     } else if (req.body.unidad == "rollos") {
@@ -766,6 +769,7 @@ app.post('/obtener_precio', (req, res) => {
                     precio: precio,
                     detalles: producto,
                     explicacion: EXPLICACION,
+                    rebaja: rebaja,
                     error: e_message
                 };
                 console.log(index + ") price : ",precios[index]);

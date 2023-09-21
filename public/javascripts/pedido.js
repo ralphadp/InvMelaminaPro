@@ -203,7 +203,12 @@ let setHistorial = function() {
     if (historialUnit.nombreDeUnidad == "metros") {
         historialUnit.pu       = PRODUCTO.contenido.precio_venta_metros;
     } else if (isMetrosAlCanteo(historialUnit.nombreDeUnidad)) {
-        historialUnit.pu       = PRODUCTO.contenido.precio_venta_metros_canteo?PRODUCTO.contenido.precio_venta_metros_canteo:'ne';
+        if (ids.esInterno()) {
+            historialUnit.rebaja_canteo = 1;
+            historialUnit.pu   = PRODUCTO.contenido.precio_venta_metros_canteo?(PRODUCTO.contenido.precio_venta_metros_canteo-historialUnit.rebaja_canteo):'ne';
+        } else {
+            historialUnit.pu   = PRODUCTO.contenido.precio_venta_metros_canteo?PRODUCTO.contenido.precio_venta_metros_canteo:'ne';
+        }
         historialUnit.canteo   = true;
         historialUnit.nombreDeUnidad = "metros";
     } else if (historialUnit.nombreDeUnidad == "caja") {
@@ -235,13 +240,13 @@ let setHistorial = function() {
     };
         
 
-    if (["Tapacanto","Melamina","Fondo","Tapatornillos"].includes(item)) {
+    if (["Tapacantos","Melamina","Fondo","Tapatornillos"].includes(item)) {
         historialUnit.color    = $('#'+ids.COLOR_ID).find(":selected").val();
         historialUnit.medida   = $('#'+ids.MEDIDA_ID).find(":selected").val();
         
-        if (item == "Tapacanto") {
-            historialUnit.metrosXRollo   = NONE;
-            historialUnit.precioVentaMts = NONE;
+        if (item == "Tapacantos") {
+            historialUnit.metrosXRollo   = PRODUCTO.contenido.metrosxrollo;
+            historialUnit.precioVentaMts = isMetrosAlCanteo(historialUnit.nombreDeUnidad)?PRODUCTO.contenido.precio_venta_metros_canteo:PRODUCTO.contenido.precio_venta_metros;
         }
     } else {
         historialUnit.color    = NONE;
@@ -702,9 +707,10 @@ function obtenerPrecioStandard() {
                     mensaje = "<p style='color:red;'>" + price.error + "</p>";
                 } else {
                     mensaje = "<button type='button' class='button-globo' onclick='setPrice(" + price.precio + ")'>"
-                        + "<strong>Provedor:</strong>" + price.provedor + '\n' 
-                        + "<strong>Calculo:</strong>" + price.explicacion + '\n'
-                        + "<strong>Precio:</strong>" + price.precio + '\n';
+                        + "<strong>Provedor: </strong>" + price.provedor + '\n' 
+                        + "<strong>Calculo: </strong>" + price.explicacion + '\n'
+                        + "<strong>Precio: " + price.precio + ' Bs</strong>\n'
+                        + "<strong>rebaja unitaria: </strong>" + price.rebaja + ' Bs\n'
                         + "</button>";
                 }
                 document.getElementById(ids.PRECIO_MENSAJE).style.position = "absolute";
