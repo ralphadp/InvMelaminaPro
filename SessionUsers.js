@@ -23,9 +23,13 @@ class SessionUsers {
         return true;
     }
 
-    verifyAuthentication(req, res, next) {
+    printSessionData(req) {
         console.log("SESSION: ", req.session);
         console.log("Usuarios: ", this.USUARIOS);
+    }
+
+    verifyAuthentication(req, res, next) {
+        this.printSessionData(req);
 
         if (!req.session.user_id) {
             process.env.last_url = req.url;

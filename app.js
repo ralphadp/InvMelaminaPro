@@ -1231,12 +1231,15 @@ app.post('/login', function (req, res) {
                 found = true;
 
                 if (SU.userExists(ID)) {
+                    if (user.administrador) {
+                        req.session.user_id = ID;
+                        SU.setUser(ID, user);
+                    }
                     res.redirect('/login?response=545egetgedd0');
                 } else {
                     req.session.user_id = ID;
                     SU.setUser(ID, user);
-                    console.log("SESSION: ", req.session);
-                    console.log("Usuarios: ", SU.USUARIOS);
+                    SU.printSessionData(req);
                     if (process.env.last_url && process.env.last_url.length > 1) {
                         res.redirect(process.env.last_url);
                     } else {
@@ -1247,7 +1250,7 @@ app.post('/login', function (req, res) {
         });
 
         if (!found) {
-            console.log("SESSION: ",req.session);
+            SU.printSessionData(req);
             console.log("Wrong password or username");
             //var string = encodeURIComponent("Usuario o contraseña incorrecta");
             res.redirect('/login?response=f3g33vb5v443');
