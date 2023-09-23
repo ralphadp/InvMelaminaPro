@@ -83,7 +83,6 @@ app.get('/pedidos', checkAuth, function(req, res) {
                     let hash = MD5(items["Fondo"]._id.toString() + fondo.color + fondo.medidas + fondo.marca).toString();
                     console.log(hash);
                     if (rInventario[hash]) {
-                        console.log(rInventario[hash]);
                         rInventario[hash].contenido = fondo;
                     }
                 })
@@ -92,15 +91,12 @@ app.get('/pedidos', checkAuth, function(req, res) {
                         let hash = MD5(items["Tapatornillos"]._id.toString() + tapatornillos.color + tapatornillos.marca).toString();
                         console.log(hash);
                         if (rInventario[hash]) {
-                            console.log('Ok ', tapatornillos);
                             rInventario[hash].contenido = tapatornillos;
                         }
                     })
                     DB.collection("collectioncanteo").find().toArray().then(resultsCanteo => {
                         resultsCanteo.forEach((canteo) => {
                             let hash = MD5(items["Canteo"]._id.toString()).toString();
-                            console.log(hash);
-                            console.log('Ok ', canteo);
                             rInventario[hash] = {existencia : "(1 Servicio)"};
                             rInventario[hash].contenido = canteo;
                         })
