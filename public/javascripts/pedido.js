@@ -1,4 +1,5 @@
 let carritoReg = 1;
+let ENVIANDO = false;
 let NotaVenta = function() {
     var NumeroPedido;
     var NombreCliente;
@@ -256,19 +257,40 @@ let setHistorial = function() {
     }
 }
 
+let disableGuardarButton = function() {
+    ENVIANDO = true;
+    document.getElementById("anchorGuardar").innerHTML = "Enviando";
+    document.getElementById("waiticon").style.display = "block";
+}
+
+let enableGuardarButton = function() {    
+    ENVIANDO = false;
+    document.getElementById("anchorGuardar").innerHTML = "Guardar";
+    document.getElementById("waiticon").style.display = "none";
+}
+
 let GuardarPedidos = function() {
     let ids = new getIDS();
+
+    if (ENVIANDO) {
+        console.log("Enviando carrito de pedidos a DB");
+        return false;
+    }
 
     var table_carrito = document.getElementById(ids.CARRITO).getElementsByTagName('tbody')[0];
     MAX_REQUESTS = table_carrito.children.length;
 
-     if (MAX_REQUESTS <= 0) {
+    if (MAX_REQUESTS <= 0) {
         alert("Aun no tiene productos en el carrito, addicione por lo menos uno.");
+        return false;
     }
 
+    disableGuardarButton();
+   
     for (let index = 0; index < MAX_REQUESTS; index++) {
         var Pedido = table_carrito.children[index].pedido;
         salvarPedidos(Pedido);
+        //table_carrito.removeChild(index);
     }
 }
 
@@ -295,7 +317,7 @@ let removerUltimoPedidoDelCarrito = function() {
     if (rowCount == 1) {
         return;
     }
-    table.deleteRow(rowCount-1);
+    table.deleteRow(rowCount - 1);
 }
 
 function DatosCliente(select) {

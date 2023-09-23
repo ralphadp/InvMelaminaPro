@@ -791,7 +791,10 @@
 						<div class="actions clearfix">
 							<ul role="menu" aria-label="Pagination">
 								<li><a></a></li>
-								<li aria-hidden="false" aria-disabled="false"><a role="menuitem" style="cursor:pointer;" onclick="GuardarPedidos();">Guardar</a></li>
+								<li aria-hidden="false" aria-disabled="false" id="guardarItem">
+									<a role="menuitem" style="cursor:pointer;" id="anchorGuardar" onclick="GuardarPedidos();">Guardar</a>
+					                <img id="waiticon" style="display:none;" width="35px" src="../images/icon.gif" alt="wait"/>
+								</li>
 							</ul>
 						</div>
 					</div>

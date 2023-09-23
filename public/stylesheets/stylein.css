@@ -426,7 +426,7 @@ input::-ms-input-placeholder { /* Microsoft Edge */
 .actions ul li a {
 	color: #fff;
 	text-decoration: none;
-    padding: 11px 55px;
+    padding: 11px 5px;
 }
 
 select option {

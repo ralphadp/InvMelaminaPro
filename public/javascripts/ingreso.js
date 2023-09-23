@@ -1,3 +1,4 @@
+let ENVIANDO = false;
 let historialUnit = {
     fecha          : "",
     numIngreso     : "",
@@ -13,9 +14,29 @@ let historialUnit = {
     metrosXRollo   : "",
     precioVentaMts : "",
     tipo_entrada   : "ingreso"
-} 
+}
+
+
+let disableGuardarButton = function() {
+    ENVIANDO = true;
+    document.getElementById("anchorGuardar").innerHTML = "Enviando";
+    document.getElementById("waiticon").style.display = "block";
+}
+
+let enableGuardarButton = function() {    
+    ENVIANDO = false;
+    document.getElementById("anchorGuardar").innerHTML = "Guardar";
+    document.getElementById("waiticon").style.display = "none";
+}
 
 let GuardarIngreso = function() {
+
+    if (ENVIANDO) {
+        console.log("Enviando ingreso a DB");
+        return false;
+    }
+
+    disableGuardarButton();
 
     let NONE = "(ninguno)";
     historialUnit.fecha          = document.getElementById('timestamp1').value;
@@ -239,11 +260,13 @@ function addIngreso() {
             alert(response.message + ". Item guardado!");
             window.location.reload();
         } else {
+            enableGuardarButton();
             console.log(response.status, response.statusText);
             alert(response.message);
         }
     })
     .catch(error => {
+        enableGuardarButton();
         alert("Error: " + error.message);
         console.log(error.message);
     });
