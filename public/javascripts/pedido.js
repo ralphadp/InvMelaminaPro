@@ -169,6 +169,16 @@ let isMetrosAlCanteo = (valor) => {
     return (valor == "metros al canteo");
 }
 
+let isMetros = (valor) => {
+    return (valor == "metros");
+}
+
+let isUnidadMetros = () => {
+    let ids = new getIDS();
+    let unidad = $('#' + ids.UNIDAD_ID).find(":selected").text();
+    return isMetrosAlCanteo(unidad) || isMetros(unidad);
+}
+
 let getCurrentProduct = () => {
     let ids = new getIDS();
     return $('#'+ids.ITEM_ID).find(":selected").text();
@@ -295,10 +305,13 @@ let GuardarPedidos = function() {
 }
 
 let addicionarPedidoAlCarrito = function() {
-    try{
-        if (PRODUCTO && (PRODUCTO.existencia <= 0 && PRODUCTO.metraje <= 0)) {
+    try {
+        if (PRODUCTO && isUnidadMetros() &&  PRODUCTO.existencia <= 0 && PRODUCTO.metraje <= 0) {
+            return;
+        } else if (PRODUCTO && !isUnidadMetros() && PRODUCTO.existencia <= 0) {
             return;
         }
+
         cleanHistorial();
         setHistorial();
         addCarrito();
@@ -997,18 +1010,22 @@ $(".verify").on("change", function() {
     PRODUCTO = fetchProducto(_CLIENTE[ids.CLIENTE_TIPO]);
 
     if (PRODUCTO) {
+        let Metraje = '.';
+        if (PRODUCTO.metraje >= -1) {
+            Metraje = " y " + PRODUCTO.metraje + " Mt.";
+        }
         if (PRODUCTO.existencia == 0) {
             document.getElementById(ids.PRODUCT_MENSAJE).style.background = "red";
             document.getElementById(ids.PRODUCT_MENSAJE).style.color = "#55e8d5";
             if (PRODUCTO.contenido.apedido) {
-                document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "El producto es a PEDIDO. Total actual es de " + PRODUCTO.existencia + " " + _CLIENTE[ids.CLIENTE_TIPO].getUnidad() + ".";
+                document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "El producto es a PEDIDO. Total actual es de " + PRODUCTO.existencia + " " + _CLIENTE[ids.CLIENTE_TIPO].getUnidad() + Metraje;
             } else {
-                document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "El producto esta agotado, " + PRODUCTO.existencia + " " + _CLIENTE[ids.CLIENTE_TIPO].getUnidad() + ".";
+                document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "El producto esta agotado, " + PRODUCTO.existencia + " " + _CLIENTE[ids.CLIENTE_TIPO].getUnidad() + Metraje;
             }
         } else {
             document.getElementById(ids.PRODUCT_MENSAJE).style.background = "transparent";
             document.getElementById(ids.PRODUCT_MENSAJE).style.color = "#55e8d5";
-            document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "Este producto tiene " + PRODUCTO.existencia + " " + _CLIENTE[ids.CLIENTE_TIPO].getUnidad() + " aun.";
+            document.getElementById(ids.PRODUCT_MENSAJE).innerHTML = "Este producto tiene " + PRODUCTO.existencia + " " + _CLIENTE[ids.CLIENTE_TIPO].getUnidad() + Metraje + " aun.";
         }
     } else {
         if (_CLIENTE[ids.CLIENTE_TIPO].AllFilled()) {
