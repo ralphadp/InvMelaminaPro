@@ -296,7 +296,7 @@ let GuardarPedidos = function() {
 
 let addicionarPedidoAlCarrito = function() {
     try{
-        if (PRODUCTO && PRODUCTO.existencia <= 0) {
+        if (PRODUCTO && (PRODUCTO.existencia <= 0 && PRODUCTO.metraje <= 0)) {
             return;
         }
         cleanHistorial();
