@@ -151,8 +151,8 @@
 								<td class="td_history Marca"><%= historial[index].marca %></td>
 								<td class="td_history Unidad"><%= historial[index].nombreDeUnidad %><%= historial[index].canteo?' con canteo':'' %></td>
 								<td class="td_history Cantidad"><%= historial[index].cantidad %></td>
-								<td class="td_history Compra"><%=historial[index].precioCompra %></td>
-								<td class="td_history Venta"><%=historial[index].precioVenta %></td>
+								<td class="td_history Compra" title="<%= mes %>"><%=historial[index].precioCompra %></td>
+								<td class="td_history Venta" title="<%= mes %>"><%=historial[index].precioVenta %></td>
 							</tr>
 							<% } %>
 						</tbody>
@@ -166,6 +166,7 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
 
 	<script>
+		var SelectedMes = null;/*Verify if it has the Valuie to filter the Suming*/
 		var blacking = function(item) {
 			item.style.color = "black";
 			item.style.textAlign = "center";
@@ -189,12 +190,18 @@
 
 			var compra = 0;
 			[].forEach.call(table.getElementsByClassName('Compra'), (item) => {
+				if (SelectedMes && SelectedMes != item.title) {
+					return;
+				}
 				if (item.innerText.trim().length && !isNaN(item.innerText)) {
 					compra += parseInt(item.innerText);
 				}
 			});
 			var venta = 0;
 			[].forEach.call(table.getElementsByClassName('Venta'), (item) => {
+				if (SelectedMes && SelectedMes != item.title) {
+					return;
+				}
 				if (item.innerText.trim().length && !isNaN(item.innerText)) {
 					venta += parseInt(item.innerText);
 				}
@@ -236,7 +243,8 @@
 
 		function selectMes(selectBox) {
 			var mes = selectBox.value;
-			var mesCodes=["01","02","03","04","05","06","07","08","09","10","11","12"];
+			SelectedMes = mes.length ? mes : null;
+			var mesCodes = ["01","02","03","04","05","06","07","08","09","10","11","12"];
 
 			mesCodes.forEach((mesCode) => {
 				var Row = document.getElementsByClassName("Hist" + mesCode);
