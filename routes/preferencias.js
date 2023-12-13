@@ -166,7 +166,7 @@ router.delete('/delete_marca/:id', (req, res) => {
         var _map = req.app.settings.MAP;
         
         var CollectionMarca = DB.collection("marcas");
-        let cid = DB.getObjecyID(req.params.id);
+        let cid = DB.getObjectID(req.params.id);
 
         CollectionMarca.deleteOne({"_id": cid }).then(result => {
             var messageText = `Marca ${req.params.id} no pudo ser borrada...`;
@@ -226,7 +226,7 @@ router.put('/actualizar_medida/:id',(req, res) => {
         var _map = req.app.settings.MAP;
 
         console.log("medida: ", req.body);
-        let idc = DB.getObjecyID(req.params.id);
+        let idc = DB.getObjectID(req.params.id);
         console.log(req.params.id, idc);
 
         let CollectionMedida = DB.collection("medidas");
@@ -266,7 +266,7 @@ router.delete('/delete_medida/:id', (req, res) => {
         var _map = req.app.settings.MAP;
         
         var CollectionMedida = DB.collection("medidas");
-        let cid = DB.getObjecyID(req.params.id);
+        let cid = DB.getObjectID(req.params.id);
 
         CollectionMedida.deleteOne({"_id": cid }).then(result => {
             var messageText = `Medida ${req.params.id} no pudo ser borrada...`;
@@ -326,7 +326,7 @@ router.put('/actualizar_provedor/:id',(req, res) => {
         var _map = req.app.settings.MAP;
 
         console.log("provedor: ", req.body);
-        let idc = DB.getObjecyID(req.params.id);
+        let idc = DB.getObjectID(req.params.id);
         console.log(req.params.id, idc);
 
         let CollectionProvedor = DB.collection("collectionprovedor");
@@ -361,7 +361,7 @@ router.delete('/delete_provedor/:id', (req, res) => {
         var _map = req.app.settings.MAP;
         
         var CollectionProvedor = DB.collection("collectionprovedor");
-        let cid = DB.getObjecyID(req.params.id);
+        let cid = DB.getObjectID(req.params.id);
 
         CollectionProvedor.deleteOne({"_id": cid }).then(result => {
             var messageText = `El provedor ${req.params.id} no pudo ser borrado...`;
@@ -421,7 +421,7 @@ router.put('/actualizar_item/:id',(req, res) => {
         var _map = req.app.settings.MAP;
 
         console.log("item: ", req.body);
-        let idc = DB.getObjecyID(req.params.id);
+        let idc = DB.getObjectID(req.params.id);
         console.log(req.params.id, idc);
 
         let CollectionItem = DB.collection("item");
@@ -456,7 +456,7 @@ router.delete('/delete_item/:id', (req, res) => {
         var _map = req.app.settings.MAP;
         
         var CollectionItem = DB.collection("item");
-        let cid = DB.getObjecyID(req.params.id);
+        let cid = DB.getObjectID(req.params.id);
 
         CollectionItem.deleteOne({"_id": cid }).then(result => {
             var messageText = `El item ${req.params.id} no pudo ser borrado...`;
@@ -522,7 +522,7 @@ router.put('/actualizar_cliente/:id',(req, res) => {
         var _map = req.app.settings.MAP;
 
         console.log("cliente: ", req.body);
-        let idc = DB.getObjecyID(req.params.id);
+        let idc = DB.getObjectID(req.params.id);
         console.log(req.params.id, idc);
 
         let CollectionCliente = DB.collection("collectionCliente");
@@ -557,7 +557,7 @@ router.delete('/delete_cliente/:id', (req, res) => {
         var _map = req.app.settings.MAP;
         
         var CollectionCliente = DB.collection("collectionCliente");
-        let cid = DB.getObjecyID(req.params.id);
+        let cid = DB.getObjectID(req.params.id);
 
         CollectionCliente.deleteOne({"_id": cid }).then(result => {
             var messageText = `El Cliente ${req.params.id} no pudo ser borrado...`;
@@ -648,7 +648,7 @@ router.put('/actualizar_melamina/:id',(req, res) => {
     CollectionItem.findOne({nombre:"Melamina"}).then(producto => {
 
         console.log("Melamina: ", req.body);
-        let idc = DB.getObjecyID(req.params.id);
+        let idc = DB.getObjectID(req.params.id);
         console.log("param: "+req.params.id);
 
         let hashOld = req.body.hash_inventario;
@@ -737,7 +737,7 @@ router.delete('/delete_melamina/:id', (req, res) => {
     let CollectionItem = DB.collection("item");
     var CollectionProducto = DB.collection("collectionmelamina");
     var CollectionInventario = DB.collection("inventario");
-    let cid = DB.getObjecyID(req.params.id);
+    let cid = DB.getObjectID(req.params.id);
     console.log("ID: ",req.params.id);
 
     CollectionItem.findOne({nombre:"Melamina"}).then(producto => {
@@ -851,7 +851,7 @@ router.put('/actualizar_tapacantos/:id',(req, res) => {
     CollectionItem.findOne({nombre:"Tapacantos"}).then(producto => {
 
         console.log("tapacantos: ", req.body);
-        let idc = DB.getObjecyID(req.params.id);
+        let idc = DB.getObjectID(req.params.id);
         console.log("param: "+req.params.id);
 
         let hashOld = req.body.hash_inventario;
@@ -941,7 +941,7 @@ router.delete('/delete_tapacantos/:id', (req, res) => {
     let CollectionItem = DB.collection("item");
     var CollectionProducto = DB.collection("collectiontapacantos");
     var CollectionInventario = DB.collection("inventario");
-    let cid = DB.getObjecyID(req.params.id);
+    let cid = DB.getObjectID(req.params.id);
     console.log("ID: ",req.params.id);
 
     CollectionItem.findOne({nombre:"Tapacantos"}).then(producto => {
@@ -1054,7 +1054,7 @@ router.put('/actualizar_pegamento/:id',(req, res) => {
     CollectionItem.findOne({nombre:"Pegamento"}).then(producto => {
 
         console.log("pegamento: ", req.body);
-        let idc = DB.getObjecyID(req.params.id);
+        let idc = DB.getObjectID(req.params.id);
         console.log("param: "+req.params.id);
 
         let hashOld = req.body.hash_inventario;
@@ -1144,7 +1144,7 @@ router.delete('/delete_pegamento/:id', (req, res) => {
     let CollectionItem = DB.collection("item");
     var CollectionProducto = DB.collection("collectionpegamento");
     var CollectionInventario = DB.collection("inventario");
-    let cid = DB.getObjecyID(req.params.id);
+    let cid = DB.getObjectID(req.params.id);
     console.log("Id: ",req.params.id);
 
     CollectionItem.findOne({nombre:"Pegamento"}).then(producto => {
@@ -1256,7 +1256,7 @@ router.put('/actualizar_fondo/:id',(req, res) => {
     CollectionItem.findOne({nombre:"Fondo"}).then(producto => {
 
         console.log("fondo: ", req.body);
-        let idc = DB.getObjecyID(req.params.id);
+        let idc = DB.getObjectID(req.params.id);
         console.log("param: "+req.params.id);
 
         let hashOld = req.body.hash_inventario;
@@ -1346,7 +1346,7 @@ router.delete('/delete_fondo/:id', (req, res) => {
     let CollectionItem = DB.collection("item");
     var CollectionProducto = DB.collection("collectionfondo");
     var CollectionInventario = DB.collection("inventario");
-    let cid = DB.getObjecyID(req.params.id);
+    let cid = DB.getObjectID(req.params.id);
     console.log("Id: ",req.params.id);
 
     CollectionItem.findOne({nombre:"Fondo"}).then(producto => {
@@ -1458,7 +1458,7 @@ router.put('/actualizar_tapatornillos/:id',(req, res) => {
     CollectionItem.findOne({nombre:"Tapatornillos"}).then(producto => {
 
         console.log("tapatornillos: ", req.body);
-        let idc = DB.getObjecyID(req.params.id);
+        let idc = DB.getObjectID(req.params.id);
         console.log("param: "+req.params.id);
 
         let hashOld = req.body.hash_inventario;
@@ -1548,7 +1548,7 @@ router.delete('/delete_tapatornillos/:id', (req, res) => {
     let CollectionItem = DB.collection("item");
     var CollectionProducto = DB.collection("collectiontapatornillos");
     var CollectionInventario = DB.collection("inventario");
-    let cid = DB.getObjecyID(req.params.id);
+    let cid = DB.getObjectID(req.params.id);
     console.log("ID: ",req.params.id);
 
     CollectionItem.findOne({nombre:"Tapatornillos"}).then(producto => {
@@ -1657,7 +1657,7 @@ router.put('/actualizar_preferencias/',(req, res) => {
     console.log("preferencias: ", req.body);
 
     let CollectionPreferencias = DB.collection("preferencias");
-    let idc = DB.getObjecyID("64c9bb9c353410982749f89e");
+    let idc = DB.getObjectID("64c9bb9c353410982749f89e");
 
     CollectionPreferencias.findOneAndUpdate({_id: idc}, {$set: {telefono: Number(req.body.telefono)}}).then(results => {
         console.log(results);
@@ -1691,7 +1691,7 @@ router.put('/actualizar_usuario/:id',(req, res) => {
     var DB = req.app.settings.DB;
 
     console.log("user: ", req.body);
-    let idc = DB.getObjecyID(req.params.id);
+    let idc = DB.getObjectID(req.params.id);
     console.log(req.params.id, idc);
 
     let CollectionUser = DB.collection("user");
@@ -1714,7 +1714,7 @@ router.delete('/delete_usuario/:id', (req, res) => {
     var DB = req.app.settings.DB;
     
     var CollectionUser = DB.collection("user");
-    let cid = DB.getObjecyID(req.params.id);
+    let cid = DB.getObjectID(req.params.id);
 
     CollectionUser.deleteOne({"_id": cid }).then(result => {
         console.log(result);
