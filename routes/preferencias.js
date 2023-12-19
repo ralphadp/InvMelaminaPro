@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var MD5 = require("crypto-js/md5");
 
 /******************************** COLOR ******************************************************/
 
