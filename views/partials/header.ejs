@@ -85,6 +85,18 @@
       display: inline;
       padding: 10px;
     }
+    .input-info {
+      width: 100%;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+    }
 </style>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -115,6 +127,9 @@
 <div id="user-left-menu">
   <a onclick="displayUserInfo()" style="cursor: pointer;">
     <p><ion-icon name="person-circle-outline"></ion-icon>&ensp;<%- username.name%></p>
+  </a>
+  <a onclick="displayConfiguration()" style="cursor: pointer;">
+    <p><ion-icon name="person-circle-outline"></ion-icon>&ensp;Configuracion de Sitio</p>
   </a>
   <hr>
   <a href="/logout">
@@ -201,6 +216,35 @@
   </div>
 </div>
 
+<div id="configuration-frame" style="background: #FFFFFF;position:fixed;margin-top:60px;width:90%;height:540px;margin-left:60px;margin-top:0px;display:none;border-radius: 10px;">
+  <link type="text/css" rel="stylesheet" href="stylesheets/stylepre.css" />
+  <div style="cursor: pointer;float: right;padding: 20px;font-size: 12px;" onclick="$('#configuration-frame').hide()">&#10005;</div>
+  <div style="padding: 30px; border-radius: 10px; border: 1px solid #d7d7d7; margin:10px;height: -webkit-fill-available;">
+    <div id="leftform"style="width:50%;float:left;padding-right:10px">
+      <h4>Configuracion de la aplicación</h4><br>
+      <h5 class="input-info"><label class="blues" for="name-app">Nombre:</label><input class="form-control" type="text" id="name-app" value="Melamina Pro"></h5>
+      <h5 class="input-info"><label class="blues" for="cell1-app">Celular #1:</label><input class="form-control" type="tel" id="cell1-app" value="72225374"></h5>
+      <h5 class="input-info"><label class="blues"for="cell2-app">Celular #2:</label><input class="form-control" type="tel" id="cell2-app" value="65225374"></h5>
+      <h5 class="input-info"><label class="blues"for="direccion-app">Direccion:</label><input class="form-control" type="text" id="direccion-app" value="Av. Petrolera"></h5>
+      <h5 class="input-info"><label class="blues"for="foto-app">Foto:</label><input class="form-control" type="file" accept="image/*" id="foto-app" onchange="onImageSelected(event,'photo-image')"></h5>
+      <h5 class="input-info"><label class="blues"for="icono-app">Icono:</label><input class="form-control" type="file" accept="image/*" id="icono-app" onchange="onImageSelected(event,'icon-image')"></h5>
+      <button class="submit-btn" type="button" onclick="guardarConfig()">Guardar</button>
+    </div>
+    <div id="rightform"style="width:50%;float:right;padding-left:10px">
+      <input class="form-control" type="hidden" id="token-app" value="">
+      <h4><input class="form-control" type="hidden" id="id-app" value="1000"></h4><br>
+      <h5 class="input-info"><label class="blues" for="email-app">Email:</label><input class="form-control" type="email" id="email-app" value="user@melamina.com"></h5>
+      <h5 class="input-info"><label class="blues" for="tiktok-app">tiltok:</label><input class="form-control" type="text" id="tiktok-app" value="@tiktok:/ffff"></h5>
+      <div id="icon-app" style="width:80px; height:80px; border: 1px dashed #918484;padding:20px;float: right;border-radius: 8px;">
+        <img id="icon-image" height="40"/>
+      </div>
+      <div id="photo-app" style="width:65%; height:300px; border: 1px dashed #9b8d8d;padding:20px;border-radius: 8px;">
+        <img id="photo-image" height="260"/>
+      </div>
+    </div>
+   </div>
+</div>
+
 <script>
 function userMenu() {
     let state = document.getElementById("user-left-menu").style.display;
@@ -210,5 +254,136 @@ function userMenu() {
 function displayUserInfo() {
     let state = document.getElementById("user-info-frame").style.display = "block";
     document.getElementById("user-left-menu").style.display = "none";
+}
+
+function displayConfiguration() {
+    let state;
+    fetch('/configuracion/', {
+	        method: 'GET',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify(this.att)
+	    })
+	    .then(response => response.json())
+	    .then(response => {
+              console.log(response);
+              console.log(response.message);
+              document.getElementById("token-app").value = response.token;
+              document.getElementById("id-app").value = response.config._id.toString();
+              document.getElementById("name-app").value = response.config.nombre_app;
+              document.getElementById("cell1-app").value = response.config.celular_1;
+              document.getElementById("cell2-app").value = response.config.celular_2;
+              document.getElementById("direccion-app").value = response.config.direccion;
+              document.getElementById("email-app").value = response.config.email;
+              document.getElementById("tiktok-app").value = response.config.tiktok_site;
+              document.getElementById("photo-image").src  = response.config.foto;
+              document.getElementById("icon-image").src  = response.config.icon;
+	        if (response.ok) {
+              state = document.getElementById("configuration-frame").style.display = "block";
+              document.getElementById("user-left-menu").style.display = "none";
+
+	        } else {
+				      document.getElementById("message").style.background = "red";
+	            document.getElementById("message").innerHTML = response.message + "<br>";
+              state = document.getElementById("configuration-frame").style.display = "block";
+              document.getElementById("user-left-menu").style.display = "none";
+	        }
+	    })
+	    .catch(error => {
+			    document.getElementById("message").style.background = "red";
+	        document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+          document.getElementById("user-left-menu").style.display = "none";
+	        console.log(error.message);
+	    });
+   
+}
+
+function onImageSelected(event, imageID) {
+    let selectedFile = event.target.files[0];
+    let reader = new FileReader();
+    let imgtag = document.getElementById(imageID);
+
+    if (!selectedFile) {
+      return;
+    }
+
+    imgtag.title = selectedFile.name;
+    reader.onload = function(event) {
+        imgtag.src = event.target.result;
+    };
+
+    reader.readAsDataURL(selectedFile);
+}
+
+async function uploadImage(inputID, imageID) {
+    const fileInput = document.getElementById(inputID);
+    const imgtag = document.getElementById(imageID);
+
+    if (typeof fileInput.files === 'undefined'  ||  !fileInput.files ) {
+      console.log ("upload: not files ");
+      return imgtag.src;
+    }
+    if (fileInput.files.length <= 0) {
+      console.log ("upload: not length ");
+      return imgtag.src;
+    }
+
+    const file = fileInput.files[0];
+    const apiKey = document.getElementById("token-app").value;
+
+    if (!file) {
+      console.log ("upload: not first file");
+      return imgtag.src;
+    }
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        console.log('upload: URL de la imagen:', data.data.url); // URL de la imagen subida
+        return data.data.url;
+    } catch (error) {
+        console.error('upload: Error:', error);
+    }
+}
+
+async function guardarConfig() {
+    let id =  document.getElementById("id-app").value;
+
+    let config = {};
+    config.nombre_app = document.getElementById("name-app").value; 
+    config.celular_1 = document.getElementById("cell1-app").value;
+    config.celular_2 = document.getElementById("cell2-app").value;
+    config.direccion = document.getElementById("direccion-app").value;
+    config.email = document.getElementById("email-app").value;
+    config.tiktok_site = document.getElementById("tiktok-app").value;
+    config.foto = await uploadImage("foto-app", "photo-image");
+    config.icon = await uploadImage("icono-app", "icon-image");
+console.log("new foto:", config.foto);
+console.log("new icon:", config.icon);
+      fetch(`/configuracion/actualizar/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(config)
+        })
+        .then(response => response.json())
+        .then(response => {
+            document.getElementById("message").style.background = "#a4f1a4";
+            document.getElementById("message").innerHTML = response.message + "<br>";
+            document.getElementById("user-left-menu").style.display = "none";
+            console.log(response);
+        })
+        .catch(error => {
+            document.getElementById("message").style.background = "red";
+            document.getElementById("message").innerHTML = "Error: " + error.message + "<br>";
+            document.getElementById("user-left-menu").style.display = "none";
+            console.log(error.message);
+        });
+
+      document.getElementById("configuration-frame").style.display = "none";
 }
 </script>

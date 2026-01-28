@@ -1193,6 +1193,62 @@ app.get('/preferencias', checkAuth, function(req, res) {
     .catch(error => console.error(error))
 });
 
+app.get('/configuracion',(req, res) => {
+    var DB = req.app.settings.DB;
+    var _map = req.app.settings.MAP;
+
+    console.log("Configuracion request: ", req.body);
+
+    let CollectionConfig = DB.collection("configuracion");
+    CollectionConfig.find().toArray().then((data) => {
+
+        data.forEach((configitem) => {
+            console.log("configuracion: ",configitem);
+            res.status(200).json({config: configitem, ok: true, message:"Configuracion encontrada.", token: process.env.IMAGE_KEY});
+            res.end();
+        });
+    })
+    .catch(error => {
+        console.error(error);
+            configitem.nombre_app = "unavailable";
+            configitem.celular_1 = 0;
+            configitem.celular_2 = 0;
+            configitem.tiktok_site = "unavailable";
+            configitem.direccion = "unavailable";
+            configitem.foto = "public/images/logo.jpg";
+            configitem.icon = "public/images/icon.gif";
+        res.status(405).json({config: configitem, ok: false, message: error});
+        res.end();
+    })
+    
+})
+
+app.put('/configuracion/actualizar/:id',(req, res) => {
+    var DB = req.app.settings.DB;
+    var _map = req.app.settings.MAP;
+
+    console.log("guardando config: ", req.body);
+    let idc = DB.getObjectID(req.params.id);
+    console.log(req.params.id, idc);
+
+    let CollectionConfig = DB.collection("configuracion");
+
+    CollectionConfig.updateOne({"_id": idc}, {$set: req.body}).then(results => {
+        var messageText =  "No se pudo actualizar la configuracion....";
+        var state = false;
+
+        if (results.modifiedCount) {
+            messageText = "La Configuracion se actualizo...";
+            state = true;
+        }
+
+        console.log(messageText);
+        res.status(200).json({ok: state, message: messageText});
+        res.end();
+    })
+    .catch(error => console.error(error))
+})
+
 app.get('/login', function (req, res) {
     var Messages = {
         'f3g33vb5v443' : "Usuario o contraseña incorrectos.",
