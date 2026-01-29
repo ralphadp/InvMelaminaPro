@@ -1233,9 +1233,8 @@ app.get('/configuracion',(req, res) => {
 
 app.put('/configuracion/actualizar/:id',(req, res) => {
     var DB = req.app.settings.DB;
-    var _map = req.app.settings.MAP;
 
-    console.log("guardando config: ", req.body);
+    console.log("Guardando config: ", req.body);
     let idc = DB.getObjectID(req.params.id);
     console.log(req.params.id, idc);
 
@@ -1247,6 +1246,7 @@ app.put('/configuracion/actualizar/:id',(req, res) => {
 
         if (results.modifiedCount) {
             messageText = "La Configuracion se actualizo...";
+            req.app.settings.MAP.configuracion = req.body; //update map
             state = true;
         }
 
