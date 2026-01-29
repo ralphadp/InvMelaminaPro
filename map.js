@@ -149,6 +149,7 @@ class Map {
             }
 
             this.preferencias = await this.DB.collection("preferencias").findOne();
+            this.configuracion = await this.DB.collection("configuracion").findOne();
 
         } catch (error) {
             console.log("Map: Populate error: ", error);

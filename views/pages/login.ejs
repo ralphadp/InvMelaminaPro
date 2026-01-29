@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <%- include('../partials/icono'); %>
-    <title>Login MelaminaPro</title>
+    <title>Login <%= config.nombre_app %></title>
     <%- include('../partials/head'); %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,7 +10,7 @@
 </head>
 <body>
     <a class="melamina-icon" href="/productos">
-        <img width="40px;" src="images/logo.jpg" alt="Melamina pro"></img>
+        <img width="40px;" src="<%= config.icon %>" alt="<%= config.nombre_app %>"></img>
     </a>
     <section>
         <div class="login-box">

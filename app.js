@@ -120,7 +120,8 @@ app.get('/pedidos', checkAuth, function(req, res) {
                                     inventario: rInventario,
                                     _inventario: resultsInventario,
                                     _control: resultsControl,
-                                    username: SU.getCurrentUsername(req)
+                                    username: SU.getCurrentUsername(req),
+                                    config: req.app.settings.MAP.configuracion
                                 });
                             })
                             .catch(error => console.error(error))
@@ -201,7 +202,8 @@ app.get('/ingresos', checkAuth, function(req, res) {
                                     inventario: rInventario,
                                     _inventario: resultsInventario,
                                     _control: resultsControl,
-                                    username: SU.getCurrentUsername(req)
+                                    username: SU.getCurrentUsername(req),
+                                    config: req.app.settings.MAP.configuracion
                                 });
                             })
                             .catch(error => console.error(error))
@@ -798,7 +800,8 @@ app.get('/reporte', checkAuth, function(req, res) {
             _inventario: resultsInventario,
             _control: resultsControl,
             cliente: resultCliente,
-            username: SU.getCurrentUsername(req)
+            username: SU.getCurrentUsername(req),
+            config: req.app.settings.MAP.configuracion
         });
     })
     .catch(error => console.error(error))
@@ -894,7 +897,8 @@ app.get('/catalogos', checkAuth, function(req, res) {
                                 cliente:    cliente_results,
                                 _inventario: resultsInventario,
                                 _control: resultsControl,
-                                username: SU.getCurrentUsername(req)
+                                username: SU.getCurrentUsername(req),
+                                config: req.app.settings.MAP.configuracion
                             });
                         })
                         .catch(error => console.error(error))
@@ -932,7 +936,8 @@ app.get('/historial', checkAuth, function(req, res) {
                 historial: results,
                 _inventario: resultsInventario,
                 _control: resultsControl,
-                username: SU.getCurrentUsername(req)
+                username: SU.getCurrentUsername(req),
+                config: req.app.settings.MAP.configuracion
             });
         })
         .catch(error => console.error(error))
@@ -975,7 +980,8 @@ app.get('/productos', function(req, res) {
                                             tapatornillos: resultsTapatornillos,
                                             pegamento: resultsPegamento,
                                             inventario: inventario,
-                                            preferencias: resultsPreferencias
+                                            preferencias: resultsPreferencias,
+                                            config: req.app.settings.MAP.configuracion
                                         });
                                     })
                                     .catch(error => console.error(error))
@@ -1084,7 +1090,8 @@ app.get('/inventario', checkAuth, function(req, res) {
                                     size: (Object.keys(rInventario).length - 1),  //less 1 function
                                     _inventario: resultsInventario,
                                     _control: resultsControl,
-                                    username: SU.getCurrentUsername(req)
+                                    username: SU.getCurrentUsername(req),
+                                    config: req.app.settings.MAP.configuracion
                                 });
                             })
                             .catch(error => console.error(error))
@@ -1161,7 +1168,8 @@ app.get('/preferencias', checkAuth, function(req, res) {
                                                     _inventario: resultsInventario,
                                                     _control: resultsControl,
                                                     username: SU.getCurrentUsername(req),
-                                                    registeredUsers: SU.USUARIOS
+                                                    registeredUsers: SU.USUARIOS,
+                                                    config: req.app.settings.MAP.configuracion
                                                 });
                                             })
                                             .catch(error => console.error(error))
@@ -1263,7 +1271,8 @@ app.get('/login', function (req, res) {
 
     res.render('pages/login', {
         client_message: message,
-        code: req.query.response
+        code: req.query.response,
+        config: req.app.settings.MAP.configuracion
     });
 });
 

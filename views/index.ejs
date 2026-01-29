@@ -2,15 +2,15 @@
 <html>
   <head>
     <%- include('./partials/icono'); %>
-    <title><%= title %></title>
+    <title><%= config.nombre_app %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
     <div style="text-align: center;">
-        <h4><a href="/inventario"><%= title %></a></h4>
-        <img style="width: 300px;" src="<%= photo_enterprise %>" alt="<%= title %>"></img>
-        <h2>Celular: <%= celular1 %></h2>
-        <p>Welcome to <%= title %></p>
+        <h4><a href="/inventario"><%= config.nombre_app %></a></h4>
+        <img style="width: 300px;" src="<%= config.foto %>" alt="<%= config.nombre_app %>"></img>
+        <h2>Celular: <%= config.celular_1 %></h2>
+        <p>Welcome to <%= config.nombre_app %></p>
         <h3>Version: <%-process.env.npm_package_version %></h3>
     </div>
   </body>

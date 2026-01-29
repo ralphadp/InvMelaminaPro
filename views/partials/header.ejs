@@ -104,7 +104,7 @@
     <img width="30px;" src="images/user.png" alt="Usuario" title="Usuario: <%- username.name%> (<%- username.completo%>)"></img>
   </div>
   <a href="/catalogos">
-    <img width="30px;" src="images/logo.jpg" alt="Melamina pro"></img>
+    <img width="30px;" src="<%-config.icon %>" alt="<%-config.nombre_app %>"></img>
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -193,12 +193,12 @@
 <div id="about" style="background: #FFFFFF;position:fixed;margin-left:50%;margin-top:50%;width:400px;height:400px;margin-left:-200px;margin-top:-200px;display:none;top: 50%;left: 50%;border-radius: 10px;">
     <div style="cursor: pointer;float: right;padding: 20px;font-size: 12px;" onclick="$('#about').hide()">&#10005;</div>
     <div style="padding: 50px">
-        <h4><a style="color: cornflowerblue;">Melamina Pro</a></h4><br>
-        <img width="300px;" src="images/melaninapro_image.png" alt="Melamina pro"></img>
+        <h4><a style="color: cornflowerblue;"><%-config.nombre_app %></a></h4><br>
+        <img height="200px;" src="<%-config.foto %>" alt="<%-config.nombre_app %>"></img>
         <br>
         <br>
         <br>
-        <p>Welcome to Melamina Pro</p>
+        <p>Welcome to <%-config.nombre_app %></p>
         <h4>Version: <%-process.env.npm_package_version %></h4>
     </div>
 </div>
@@ -206,7 +206,7 @@
 <div id="user-info-frame" style="background: #FFFFFF;position:fixed;margin-left:50%;margin-top:50%;width:380px;height:410px;margin-left:-200px;margin-top:-200px;display:none;top: 50%;left: 50%;border-radius: 10px;">
   <div style="cursor: pointer;float: right;padding: 20px;font-size: 12px;" onclick="$('#user-info-frame').hide()">&#10005;</div>
   <div style="padding: 50px; border-radius: 10px; border: 1px solid #d7d7d7; margin:10px;">
-      <h4>Melamina Pro User Info</h4><br>
+      <h4><%-config.nombre_app %> User Info</h4><br>
       <h5><span class="blues">Username:</span> <%=username.name %> <%= (username.administrador)?'(Administrador)':'' %></h5><br>
       <h5><span class="blues">Nombre:</span> <%=username.completo %></h5><br>
       <div class="blues">Permissions: </div>

@@ -29,6 +29,7 @@ map.setDB(db);
 map.populate().then((res) => {
     app.set('MAP', map);
     console.log(map.preferencias);
+    console.log(map.configuracion);
     /*console.log(map.item.get("Melamina"));
     console.log(map.color.get("64b810acd8bfbca012887f5b"));
     console.log(map.item.list);
