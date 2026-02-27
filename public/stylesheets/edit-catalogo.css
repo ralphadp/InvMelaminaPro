@@ -33,16 +33,16 @@
     float:right;
 }
 .f-30 {
-    width: 45%;
+    width: 55%;
     display:inline-block;
     margin-right: 10px;
 }
 .f-70 {
-    width: 45%;
+    width: 35%;
     display:inline-block;
     margin-left: 10px;
 }
-[id^="precio"] {
+[id^="precio"], [id^="interno"], [id^="compra"], [id^="compramt"], [id^="ventamt"], [id^="laminapaquete"]  {
     width: 50px;
 }
 [id^="color"] {
@@ -51,19 +51,32 @@
 [id^="medidas"] {
     width: 150px;
 }
+#medida-f {
+    width: 120px;
+}
 [id^="marca"] {
     width: 70px;
 }
 [id^="provedor"] {
    width: 75px; 
 }
-.centered {
+.centered {/*fix for editor*/
    transform: translate(-20%, -15000%)!important;
    height: 1px!important;
 }
-input:read-only {
+input:read-only {/*mainly for saving last form*/
   background-color: lightgray;
   color: #333;
   border: 1px solid #ccc;
   outline: none;
+}
+#melamina-bg-form {
+    background-color: rgba(23,44,122,0.4);
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    position:fixed;
+    display: none;
+    z-index:3;
 }

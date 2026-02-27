@@ -966,6 +966,10 @@ app.get('/editar_catalogo', checkAuth, function(req, res) {
                 resultMarcas.forEach((marca) => {
                     items[marca._id.toString()] = marca.nombre;
                 });
+                DB.collection("collectionprovedor").find().toArray().then(resultProvedor => {
+                    resultProvedor.forEach((provedor) => {
+                    items[provedor._id.toString()] = provedor.nombre;
+                });
                 DB.collection("collectionmelamina").find().toArray().then(resultsMelamina => {
                     DB.collection("collectiontapacantos").find().toArray().then(resultsTapacantos => {
                         DB.collection("collectionfondo").find().toArray().then(resultsFondos => {
@@ -981,6 +985,7 @@ app.get('/editar_catalogo', checkAuth, function(req, res) {
                                             _color:resultsColor,
                                             _medida:resultMedida,
                                             _marca:resultMarcas,
+                                            _provedor:resultProvedor,
                                             melamina: resultsMelamina,
                                             tapacantos: resultsTapacantos,
                                             fondos: resultsFondos,
@@ -1002,6 +1007,8 @@ app.get('/editar_catalogo', checkAuth, function(req, res) {
                         .catch(error => console.error(error))
                     })
                     .catch(error => console.error(error))
+                })
+                .catch(error => console.error(error))
                 })
                 .catch(error => console.error(error))
             })

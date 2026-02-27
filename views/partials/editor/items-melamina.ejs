@@ -1,7 +1,6 @@
 <%  for (let index = melamina.length - 1; index >= 0; index--) {
         let producto = melamina[index];
         let noDisponible = (inventario[producto.hash_inventario] && inventario[producto.hash_inventario].existencia <= 0);
-        console.log(producto.apedido , " ",noDisponible);
 %>
     <div class="col-md-4">
         <div class="card">
@@ -34,8 +33,15 @@
                             <% }); %>
                         </select>
                     </span>
+                    <%= console.log(_provedor);%>
                     <span class="font-weight-bold-price">
-                        <input id="precio<%= index%>"name="precio<%= index%>"class="edit-control" value=" <%= producto.precio_venta %>"/>Bs (lamina)
+                        <input id="precio<%= index%>"name="precio<%= index%>"class="edit-control" value="<%= producto.precio_venta %>"/>Bs (lamina)
+                        <input id="compra<%= index%>"name="compra<%= index%>" type="hidden" value="<%= producto.precio_compra %>"/>
+                        <input id="ventainterno<%= index%>"name="ventainterno<%= index%>" type="hidden" value="<%= producto.precio_venta_interno %>"/>
+                        <input id="ventamt<%= index%>"name="ventamt<%= index%>" type="hidden" value="<%= (producto.precio_venta_metros)?0:producto.precio_venta_metros %>"/>
+                        <input id="compramt<%= index%>"name="compramt<%= index%>" type="hidden" value="<%= (producto.precio_compra_metros)?0:producto.precio_compra_metros %>"/>
+                        <input id="laminapaquete<%= index%>"name="laminapaquete<%= index%>" type="hidden" value="<%= producto.laminaxpaquete %>"/>
+                        <input id="provedor<%= index%>"name="provedor<%= index%>" type="hidden" value="<%= items[producto.provedor] %>"/>
                     </span>
                 </div>
                 <p class="card-text mb-1 mt-1">
