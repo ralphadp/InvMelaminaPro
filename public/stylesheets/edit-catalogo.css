@@ -8,18 +8,6 @@
     height: 20px;
     font-size: 10px;
 }
-#precio {
-    width: 50px;
-}
-#color {
-    width: 110px;
-}
-#medidas {
-    width: 150px;
-}
-#marca {
-    width: 70px;
-}
 .optionUnavailable {
     color: red;
     font-size: 26px;
@@ -54,19 +42,28 @@
     display:inline-block;
     margin-left: 10px;
 }
-
-.precio {
+[id^="precio"] {
     width: 50px;
 }
-.color {
+[id^="color"] {
     width: 110px;
 }
-.medidas {
+[id^="medidas"] {
     width: 150px;
 }
-.marca {
+[id^="marca"] {
     width: 70px;
 }
-.provedor {
+[id^="provedor"] {
    width: 75px; 
+}
+.centered {
+   transform: translate(-20%, -15000%)!important;
+   height: 1px!important;
+}
+input:read-only {
+  background-color: lightgray;
+  color: #333;
+  border: 1px solid #ccc;
+  outline: none;
 }

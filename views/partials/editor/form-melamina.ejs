@@ -1,25 +1,45 @@
-<div id="Melamina-Form-Save" style="background: #FFFFFF;position:fixed;margin-left:50%;margin-top:50%;width:380px;height:520px;margin-left:-200px;margin-top:-200px;display:none;top: 50%;left: 50%;border-radius: 10px;z-index:2;">
+<div id="Melamina-Form-Save" style="background: #FFFFFF;position:fixed;margin-left:50%;margin-top:50%;width:380px;height:520px;margin-left:-200px;margin-top:-200px;display:none;top: 50%;left: 50%;border-radius: 10px;z-index:2;" >
   <div style="cursor: pointer;float: right;padding: 20px;font-size: 12px;" onclick="$('#Melamina-Form-Save').hide()">&#10005;</div>
   <div style="padding: 20px 50px; border-radius: 10px; border: 1px solid #d7d7d7; margin:10px;">
       <h6>Guardar Datos de Melamina</h6>
-      <div class="blues f-30"><span class="f-right">color: </span></div><div class="blues f-70"><input id="color-f"name="color-f"class="edit-control color" value=""/></div>
-      <div class="blues f-30"><span class="f-right">Tamaño: </span></div><div class="blues f-70"><input id="tamanio-f"name="tamanio-f"class="edit-control medidas" value=""/></div>
-      <div class="blues f-30"><span class="f-right">Marca: </span></div><div class="blues f-70"><input id="marca-f"name="marca-f"class="edit-control marca" value=""/></div>
-      <div class="blues f-30"><span class="f-right">Proveedor: </span></div><div class="blues f-70"><input id="proverdor-f"name="provedor-f provedor"class="edit-control" value=""/></div>
-      <div class="blues f-30"><span class="f-right">Disponible: </span></div><div class="blues f-70"><input id="disonible-f"name="disponible-f"class="edit-control" value=""/></div>
+      <div class="blues f-30"><span class="f-right">Color: </span></div><div class="blues f-70"><input id="color-f"name="color-f"class="edit-control color" value="" readonly/></div>
+      <div class="blues f-30"><span class="f-right">Tamaño: </span></div><div class="blues f-70"><input id="medidas-f"name="medidas-f"class="edit-control medidas" value="" readonly/></div>
+      <div class="blues f-30"><span class="f-right">Marca: </span></div><div class="blues f-70"><input id="marca-f"name="marca-f"class="edit-control marca" value="" readonly/></div>
+      <div class="blues f-30"><span class="f-right">Proveedor: </span></div><div class="blues f-70"><input id="provedor-f"name="provedor-f provedor"class="edit-control" value=""/></div>
+      <div class="blues f-30"><span class="f-right">Disponible: </span></div><div class="blues f-70"><input id="disponible-f"name="disponible-f"class="edit-control" value="" readonly/></div>
       <div class="blues f-30"><span class="f-right">A Pedido: </span></div><div class="blues f-70"><input id="pedido-f"name="pedido-f"class="edit-control" value=""/></div>
-      <div class="blues f-30"><span class="f-right">Precio: </span></div><div class="blues f-70"><input id="precio"name="precio"class="edit-control" value=""/></div>
-      <div class="blues f-30"><span class="f-right">Precio interno: </span></div><div class="blues f-70"><input id="interno-f"name="interno-f"class="edit-control" value=""/></div>
-      <div class="blues f-30"><span class="f-right">Precio compra: </span></div><div class="blues f-70"><input id="compra-f"name="compra-f"class="edit-control" value=""/></div>
+      <div class="blues f-30"><span class="f-right">Precio: </span></div><div class="blues f-70"><input id="precio-f"name="precio-f"class="edit-control" value="" readonly/>Bs</div>
+      <div class="blues f-30"><span class="f-right">Precio interno: </span></div><div class="blues f-70"><input id="interno-f"name="interno-f"class="edit-control" value=""/>Bs</div>
+      <div class="blues f-30"><span class="f-right">Precio compra: </span></div><div class="blues f-70"><input id="compra-f"name="compra-f"class="edit-control" value=""/>Bs</div>
  
       <div class="blues">Imagen: </div>
-      <img src="images/plus_card2.jpg" width="100" height="100"/>
+      <img id="image-f"name="image-f" src="images/plus_card2.jpg" width="100" height="100"/>
       <div class="text-right buttons">
-        <button class="btn btn-outline-success" onclick="guardarSeleccionado(0)">Guardar</button>
+        <button class="btn btn-outline-success" onclick="guardarSeleccionado()">Guardar</button>
       </div>
   </div>
   <script>
-      const guardarSeleccionado = (index) => {
+      const initForm = (index) => {
+          let selectElement = document.getElementById("color" + index);
+          document.getElementById('color-f').value = selectElement.value;
+
+          selectElement = document.getElementById("medidas" + index);
+          document.getElementById('medidas-f').value = selectElement.value;
+
+          selectElement = document.getElementById("marca" + index);
+          document.getElementById('marca-f').value = selectElement.value;
+
+          selectElement = document.getElementById("selectBoxAvailable" + index);
+          document.getElementById('disponible-f').value = selectElement.value;
+
+          selectElement = document.getElementById("precio" + index);
+          document.getElementById('precio-f').value = selectElement.value;
+
+          selectElement = document.getElementById('imgPreview_'+index);
+          document.getElementById('image-f').src = selectElement.src;
+      }
+
+      const guardarSeleccionado = () => {
           document.getElementById("Melamina-Form-Save").style.display = "none";
       }
   </script>

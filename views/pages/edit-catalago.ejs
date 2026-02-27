@@ -229,6 +229,7 @@
         }
 
         const guardarMelamina = (index) => {
+            initForm(index);
             document.getElementById("Melamina-Form-Save").style.display = "block";
         }
 
@@ -238,7 +239,7 @@
         }
 
         function UploadImage(imagefile) {
-            const IMGBB_API_KEY = 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy'; ///should be in ENV
+            const IMGBB_API_KEY = '2ab751f1b0f06ffabdff1031b767beef'; ///should be in ENV
 
             const file = imagefile;
 
