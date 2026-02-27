@@ -118,7 +118,8 @@
       <a class="nav-item nav-link" href="/catalogos">Catalogos</a>
       <a class="nav-item nav-link" href="/reporte">Reportes</a>
       <a class="nav-item nav-link" href="/historial">Historial</a>
-      <a class="nav-item nav-link" href="/preferencias">Preferencias</a>
+      <a class="nav-item nav-link" href="/preferencias">Configuración</a>
+      <a class="nav-item nav-link" href="/editar_catalogo">Editor</a>
       <a class="nav-item nav-link" style="cursor:pointer;" onclick="$('#about').show()">About</a>
     </div>
   </div>
@@ -129,7 +130,7 @@
     <p><ion-icon name="person-circle-outline"></ion-icon>&ensp;<%- username.name%></p>
   </a>
   <a onclick="displayConfiguration()" style="cursor: pointer;">
-    <p><ion-icon name="person-circle-outline"></ion-icon>&ensp;Configuracion de Sitio</p>
+    <p><ion-icon name="person-circle-outline"></ion-icon>&ensp;Configuracion de Datos-Empresa</p>
   </a>
   <hr>
   <a href="/logout">
@@ -175,6 +176,7 @@
           }
         }
     });
+
 
     console.log("ALERT!!!",alert);
     if (alert) {

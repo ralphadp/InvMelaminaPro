@@ -28,8 +28,8 @@ app.set('DB', db);
 map.setDB(db);
 map.populate().then((res) => {
     app.set('MAP', map);
-    console.log(map.preferencias);
-    console.log(map.configuracion);
+    console.log("loading preferencias-> ",map.preferencias);
+    console.log("loading coniguracion-> ",map.configuracion);
     /*console.log(map.item.get("Melamina"));
     console.log(map.color.get("64b810acd8bfbca012887f5b"));
     console.log(map.item.list);
@@ -41,7 +41,7 @@ map.populate().then((res) => {
     console.log(map.item.list);
     console.log(map.item.list);
     console.log(map.item.array);*/
-    console.log(res ? "Resources loaded." : "Resources NOT loaded.");
+    console.log(res ? "All map Resources loaded." : "Resources NOT loaded.");
 });
 
 /**

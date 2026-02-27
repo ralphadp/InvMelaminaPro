@@ -945,6 +945,73 @@ app.get('/historial', checkAuth, function(req, res) {
     .catch(error => console.error(error))
 });
 
+
+// historia page
+app.get('/editar_catalogo', checkAuth, function(req, res) {
+    var DB = req.app.settings.DB;
+    var _map = req.app.settings.MAP;
+    var resultsControl = _map.control_producto.list;
+
+  
+    var items = {};
+    DB.collection("color").find().toArray().then(resultsColor => {
+        resultsColor.forEach((color) => {
+            items[color._id.toString()] = color.nombre;
+        });
+        DB.collection("medidas").find().toArray().then(resultMedida => {
+            resultMedida.forEach((medida) => {
+                items[medida._id.toString()] = medida.nombre;
+            });
+            DB.collection("marcas").find().toArray().then(resultMarcas => {
+                resultMarcas.forEach((marca) => {
+                    items[marca._id.toString()] = marca.nombre;
+                });
+                DB.collection("collectionmelamina").find().toArray().then(resultsMelamina => {
+                    DB.collection("collectiontapacantos").find().toArray().then(resultsTapacantos => {
+                        DB.collection("collectionfondo").find().toArray().then(resultsFondos => {
+                            DB.collection("collectiontapatornillos").find().toArray().then(resultsTapatornillos => {
+                                DB.collection("collectionpegamento").find().toArray().then(resultsPegamento => {
+                                    DB.collection("inventario").find().toArray().then(resultInventario => {
+                                        var inventario = {};
+                                        resultInventario.forEach(element => {
+                                            inventario[element.codigo] = element;
+                                        });
+          -                             res.render('pages/edit-catalago', {
+                                            items: items,
+                                            _color:resultsColor,
+                                            _medida:resultMedida,
+                                            _marca:resultMarcas,
+                                            melamina: resultsMelamina,
+                                            tapacantos: resultsTapacantos,
+                                            fondos: resultsFondos,
+                                            tapatornillos: resultsTapatornillos,
+                                            pegamento: resultsPegamento,
+                                            inventario: inventario,
+                                            _inventario: resultInventario,
+                                            _control: resultsControl,
+                                            username: SU.getCurrentUsername(req),
+                                            config: req.app.settings.MAP.configuracion
+                                        });
+                                    })
+                                    .catch(error => console.error(error))
+                                })
+                                .catch(error => console.error(error))
+                            })
+                            .catch(error => console.error(error))
+                        })
+                        .catch(error => console.error(error))
+                    })
+                    .catch(error => console.error(error))
+                })
+                .catch(error => console.error(error))
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => console.error(error))
+    })
+    .catch(error => console.error(error))
+});
+
 app.get('/productos', function(req, res) {
     var DB = req.app.settings.DB;
   
@@ -1228,8 +1295,7 @@ app.get('/configuracion',(req, res) => {
         res.status(405).json({config: configitem, ok: false, message: error});
         res.end();
     })
-    
-})
+ })
 
 app.put('/configuracion/actualizar/:id',(req, res) => {
     var DB = req.app.settings.DB;

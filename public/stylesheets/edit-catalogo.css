@@ -1,0 +1,72 @@
+.navbar {
+    padding: .5rem 1rem!important;
+}
+.edit-border {
+    border: 1px solid #464444;
+}
+.edit-control {
+    height: 20px;
+    font-size: 10px;
+}
+#precio {
+    width: 50px;
+}
+#color {
+    width: 110px;
+}
+#medidas {
+    width: 150px;
+}
+#marca {
+    width: 70px;
+}
+.optionUnavailable {
+    color: red;
+    font-size: 26px;
+    font-weight: 700;
+}
+.optionAvailable {
+    color: green;
+    font-size: 26px;
+    font-weight: 700;
+}
+#selectBoxAvailable {
+    /*background-color: rgba(233, 233, 243, 0.5); */
+    border: 0px;
+    outline: 0px;
+}
+.navbar {
+    position: static!important;
+}
+.card {
+    position: static!important;
+}
+.f-right {
+    float:right;
+}
+.f-30 {
+    width: 45%;
+    display:inline-block;
+    margin-right: 10px;
+}
+.f-70 {
+    width: 45%;
+    display:inline-block;
+    margin-left: 10px;
+}
+
+.precio {
+    width: 50px;
+}
+.color {
+    width: 110px;
+}
+.medidas {
+    width: 150px;
+}
+.marca {
+    width: 70px;
+}
+.provedor {
+   width: 75px; 
+}

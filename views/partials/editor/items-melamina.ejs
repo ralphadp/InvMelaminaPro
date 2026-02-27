@@ -1,0 +1,62 @@
+<%  for (let index = melamina.length - 1; index >= 0; index--) {
+        let producto = melamina[index];
+        let noDisponible = (inventario[producto.hash_inventario] && inventario[producto.hash_inventario].existencia <= 0);
+        console.log(producto.apedido , " ",noDisponible);
+%>
+    <div class="col-md-4">
+        <div class="card">
+            <div id="dropZone_<%= index%>" onDrop="soltarImagen(event, <%= index%>)" onDragOver="arrastrarImagen(event)" style="width: 516px; height: 516px;">
+                <img id="imgPreview_<%= index%>" src="<%= producto.link_photo %>" alt="Vista previa" class="card-img-top " style="max-width: 516px; max-height: 516px;">
+            </div>
+            <div class=<%= producto.apedido?'pedido_centered':'centered' %> >
+                <select name="selectBoxAvailable"id="selectBoxAvailable" class="<%= (producto.apedido || noDisponible)?'optionUnavailable':'optionAvailable'%>" onchange="updateOption(event)">
+                    <option class="optionAvailable"value="stock" <%= (!producto.apedido || !noDisponible)?'selected':'' %>>DISPONIBLE</option>
+                    <option class="optionUnavailable"value="nodisponible" <%= (noDisponible)?'selected':'' %>>NO DISPONIBLE</option>
+                    <option class="optionAvailable"value="apedido" <%= (producto.apedido)?'selected':'' %>>A PEDIDO</option>
+                </select>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <span id="melamina_<%= index%>" class="font-weight-bold Caracteristicas">
+                        <select name="color"id="color" class="edit-control">
+                            <% _color.forEach(color => { %>
+                            <option value="<%= color.nombre %>" <%= (items[producto.color] == color.nombre)?'selected':'' %>><%= color.nombre %></option>
+                            <% }); %>
+                        </select>
+                        <select name="medidas"id="medidas" class="edit-control">
+                            <% _medida.forEach(medida => { %>
+                            <option value="<%= medida.nombre %>" <%= (items[producto.medidas] == medida.nombre)?'selected':'' %>><%= medida.nombre %></option>
+                            <% }); %>
+                        </select>
+                        <select name="marca"id="marca" class="edit-control">
+                            <% _marca.forEach(marca => { %>
+                            <option value="<%= marca.nombre %>" <%= (items[producto.marca] == marca.nombre)?'selected':'' %>><%= marca.nombre %></option>
+                            <% }); %>
+                        </select>
+                    </span>
+                    <span class="font-weight-bold-price">
+                        <input id="precio"name="precio"class="edit-control" value=" <%= producto.precio_venta %>"/>Bs (lamina)
+                    </span>
+                </div>
+                <p class="card-text mb-1 mt-1">
+                    <select name="selectInfo"id="selectInfo" class="edit-control">
+                        <option value="apedido" <%= producto.apedido ? 'selected':'' %>>A pedido, con tardanza de algunos dias.</option>
+                        <option value="existe" <%= !producto.apedido ? 'selected':'' %>>Ventas al por mayor y menor</option>
+                    </select>
+                </p>
+                <div class="d-flex align-items-center flex-row">
+                    <img src="https://i.imgur.com/e9VnSng.png" width="20">
+                    <span class="guarantee">Envios a toda Bolivia</span>
+                </div>
+            </div>
+            <hr>
+            <div class="card-body">
+                <div class="text-right buttons">
+                    <button class="btn btn-outline-warning" onclick="pedido('melamina_<%= index%>')">Pedido</button>
+                    <button class="btn btn-outline-success" onclick="sendToWhatsapp('melamina_<%= index%>')">Enviar a WhatsApp</button>
+                    <button class="btn btn-outline-primary" onclick="guardarMelamina(<%= index%>)"><i class="fas fa-save"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } %>

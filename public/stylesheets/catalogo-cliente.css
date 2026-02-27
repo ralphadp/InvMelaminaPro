@@ -22,7 +22,7 @@ body {
     border-bottom: 3px solid #000
 }
 
-.navbar {
+.navbarC {
     border-bottom: 1px solid #00000012;
     padding-top: 0rem !important; 
     padding-bottom: 0rem !important;
@@ -71,20 +71,20 @@ hr {
 }
 
 .centered {
-    position: absolute;
+    position: relative;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-20%, -350%);
     color: red;
     font-size: 26px;
     font-weight: 700;
 }
 
 .pedido_centered {
-    position: absolute;
+    position: relative;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-20%, -350%);
     color: green;
     font-size: 26px;
     font-weight: 700;
