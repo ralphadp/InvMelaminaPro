@@ -8,19 +8,25 @@
             <div class="d-flex justify-content-between">
                 <span id="melamina_<%= melamina.length%>" class="font-weight-bold Caracteristicas">
                     <select name="color<%= melamina.length%>"id="color<%= melamina.length%>" class="edit-control">
-                        <% _color.forEach(color => { %>
+                        <% _color.forEach(color => { 
+                                if (color.melamina) { %>
                         <option value="<%= color._id %>"><%= color.nombre %></option>
-                        <% }); %>
+                         <%     }
+                            }); %>
                     </select>
                     <select name="medidas<%= melamina.length%>"id="medidas<%= melamina.length%>" class="edit-control">
-                        <% _medida.forEach(medida => { %>
+                        <% _medida.forEach(medida => { 
+                                if (medida.melamina) { %>
                         <option value="<%= medida._id %>"><%= medida.nombre %></option>
-                        <% }); %>
+                         <%     }
+                            }); %>
                     </select>
                     <select name="marca<%= melamina.length%>"id="marca<%= melamina.length%>" class="edit-control">
-                        <% _marca.forEach(marca => { %>
+                        <% _marca.forEach(marca => { 
+                                if (marca.melamina) { %>
                         <option value="<%= marca._id %>"><%= marca.nombre %></option>
-                        <% }); %>
+                         <%     }
+                            }); %>
                     </select>
                 </span>
                 <span class="font-weight-bold-price">

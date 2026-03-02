@@ -1,6 +1,6 @@
 {
   "name": "melaninaserver",
-  "version": "0.1.92",
+  "version": "0.1.99",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"

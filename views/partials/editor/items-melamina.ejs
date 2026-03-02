@@ -14,19 +14,25 @@
                 <div class="d-flex justify-content-between">
                     <span id="melamina_<%= index%>" class="font-weight-bold Caracteristicas">
                         <select name="color<%= index%>"id="color<%= index%>" class="edit-control">
-                            <% _color.forEach(color => { %>
+                            <% _color.forEach(color => { 
+                                    if (color.melamina) { %>
                             <option value="<%= color._id %>" <%= (items[producto.color] == color.nombre)?'selected':'' %>><%= color.nombre %></option>
-                            <% }); %>
+                            <%      }
+                                }); %>
                         </select>
                         <select name="medidas<%= index%>"id="medidas<%= index%>" class="edit-control">
-                            <% _medida.forEach(medida => { %>
+                            <% _medida.forEach(medida => { 
+                                    if (medida.melamina) { %>
                             <option value="<%= medida._id %>" <%= (items[producto.medidas] == medida.nombre)?'selected':'' %>><%= medida.nombre %></option>
-                            <% }); %>
+                            <%      }
+                                }); %>
                         </select>
                         <select name="marca<%= index%>"id="marca<%= index%>" class="edit-control">
-                            <% _marca.forEach(marca => { %>
+                            <% _marca.forEach(marca => { 
+                                    if (marca.melamina) { %>
                             <option value="<%= marca._id %>" <%= (items[producto.marca] == marca.nombre)?'selected':'' %>><%= marca.nombre %></option>
-                            <% }); %>
+                            <%      }
+                                }); %>
                         </select>
                     </span>
                     <span class="font-weight-bold-price">
