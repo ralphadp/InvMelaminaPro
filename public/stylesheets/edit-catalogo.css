@@ -1,6 +1,9 @@
 .navbar {
     padding: .5rem 1rem!important;
 }
+.margin-for-menu {
+    margin-top: 50Px;
+}
 .edit-border {
     border: 1px solid #464444;
 }
