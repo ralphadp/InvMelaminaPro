@@ -3,18 +3,25 @@
   <div style="cursor: pointer;float: right;padding: 20px;font-size: 12px;" onclick="closeForm()">&#10005;</div>
   <div style="padding: 20px 40px; border-radius: 10px; border: 1px solid #d7d7d7; margin:10px;">
       <h6>Guardar Datos de Melamina</h6>
+      <input id="index-f" type="hidden"/>
+      <input id="type-f" type="hidden"/>
+      <input id="ID-f" type="hidden"/>
+      <input id="color-id-f" type="hidden"/>
+      <input id="medida-id-f" type="hidden"/>
+      <input id="marca-id-f" type="hidden"/>
+
       <div class="blues f-30"><span class="f-right">Color: </span></div><div class="blues f-70"><input id="color-f"name="color-f"class="edit-control color" value="" readonly/></div>
       <div class="blues f-30"><span class="f-right">Tamaño: </span></div><div class="blues f-70"><input id="medida-f"name="medida-f"class="edit-control medidas" value="" readonly/></div>
       <div class="blues f-30"><span class="f-right">Marca: </span></div><div class="blues f-70"><input id="marca-f"name="marca-f"class="edit-control marca" value="" readonly/></div>
       <div class="blues f-30"><span class="f-right">Proveedor: </span></div><div class="blues f-70">
         <select name="provedor-f"id="provedor-f" class="edit-control">
+            <option value="0">(desconocido)</option>
             <% _provedor.forEach(provedor => { %>
-            <option value="<%= provedor.nombre %>"><%= provedor.nombre %></option>
+            <option value="<%= provedor._id %>"><%= provedor.nombre %></option>
             <% }); %>
         </select>
       </div>
-      <div class="blues f-30"><span class="f-right">Disponible: </span></div><div class="blues f-70"><input id="disponible-f"name="disponible-f"class="edit-control" value="" readonly/></div>
-      <div class="blues f-30"><span class="f-right">A Pedido: </span></div><div class="blues f-70"><input id="pedido-f"name="pedido-f"class="edit-control" value=""/></div>
+      <div class="blues f-30"><span class="f-right">A Pedido: </span></div><div class="blues f-70"><input id="pedido-f"name="pedido-f"class="edit-control" type="checkbox"/></div>
       <div class="blues f-30"><span class="f-right">Precio Venta: </span></div><div class="blues f-70"><input id="precio-f"name="precio-f"class="edit-control" value="" readonly/>Bs</div>
       <div class="blues f-30"><span class="f-right">Precio Venta Interno: </span></div><div class="blues f-70"><input id="interno-f"name="interno-f"class="edit-control" value=""/>Bs</div>
       <div class="blues f-30"><span class="f-right">Precio Compra: </span></div><div class="blues f-70"><input id="compra-f"name="compra-f"class="edit-control" value=""/>Bs</div>
@@ -22,7 +29,8 @@
       <div class="blues f-30"><span class="f-right">Precio Compra Mt: </span></div><div class="blues f-70"><input id="compramt-f"name="compramt-f"class="edit-control" value=""/>Bs</div>
       <div class="blues f-30"><span class="f-right">Lamina x Paquete: </span></div><div class="blues f-70"><input id="laminapaquete-f"name="laminapaquete-f"class="edit-control" value=""/></div>
       <div class="blues">Imagen: </div>
-      <img id="image-f"name="image-f" src="images/plus_card2.jpg" width="100" height="100"/>
+      <input class="edit-control" type="file" accept="image/*" id="imageinput-f" style="display:none"/>
+      <img id="image-f" name="image-f" src="images/plus_card2.jpg" width="100" height="100"/>
       <div class="text-right buttons">
         <button class="btn btn-outline-success" onclick="guardarSeleccionado()">Guardar</button>
         <button class="btn btn-outline-dark" onclick="cancelar()">Cerrar</button>
@@ -32,17 +40,23 @@
       const initForm = (index) => {
           document.getElementById("melamina-bg-form").style.display = "block";
 
-          let selectElement = document.getElementById("color" + index);
-          document.getElementById('color-f').value = selectElement.value;
+          let selectElement = document.getElementById("ID" + index);
+          document.getElementById('ID-f').value = selectElement.value;
+
+          selectElement = document.getElementById("color" + index);
+          document.getElementById('color-f').value = selectElement.options[selectElement.selectedIndex].text;
+          document.getElementById('color-id-f').value = selectElement.value;
 
           selectElement = document.getElementById("medidas" + index);
-          document.getElementById('medida-f').value = selectElement.value;
+          document.getElementById('medida-f').value = selectElement.options[selectElement.selectedIndex].text;
+          document.getElementById('medida-id-f').value = selectElement.value;
 
           selectElement = document.getElementById("marca" + index);
-          document.getElementById('marca-f').value = selectElement.value;
+          document.getElementById('marca-f').value = selectElement.options[selectElement.selectedIndex].text;
+          document.getElementById('marca-id-f').value = selectElement.value;
 
-          selectElement = document.getElementById("selectBoxAvailable" + index);
-          document.getElementById('disponible-f').value = selectElement.value;
+          selectElement = document.getElementById("pedido" + index);
+          document.getElementById('pedido-f').checked = (selectElement.value=="apedido");
 
           selectElement = document.getElementById("provedor" + index);
           document.getElementById('provedor-f').value = selectElement.value;
@@ -66,6 +80,12 @@
 
           selectElement = document.getElementById('imgPreview_'+index);
           document.getElementById('image-f').src = selectElement.src;
+          inputFile = document.getElementById('imageinput-f');
+
+          selectElement = document.getElementById('type'+index);
+          document.getElementById('type-f').value = selectElement.value;
+
+          document.getElementById('index-f').value = index;
       }
 
       const closeForm = () => {
@@ -73,11 +93,72 @@
           document.getElementById("melamina-bg-form").style.display = "none";
       }
 
-      const guardarSeleccionado = () => {
-          closeForm();
+      const finishSaving = () => {
+            closeForm();
+            closeWaitingGif();
+            location.reload();
       }
+
+      async function guardarSeleccionado() {
+        openWaitingGif();
+
+        const index = document.getElementById("index-f").value;
+        const oldimage = document.getElementById("image" + index);
+        let imageBBpath = oldimage.value;
+        let updatedImage = document.getElementById('imgPreview_' + index);
+
+        if (updatedImage.src != oldimage.value) {
+            console.log("Existe cambio de imagen... se subira a imgbb.");
+            let imgbb = await getFileFromIMG(updatedImage);
+            imageBBpath = await UploadImage(imgbb);
+            console.log("new imgbb foto:", imageBBpath);
+        }
+
+        const melamina = new Melamina();
+        melamina.setAtttribute( 
+            document.getElementById('color-id-f').value,
+            document.getElementById('provedor-f').value,
+            document.getElementById('medida-id-f').value,
+            document.getElementById('marca-id-f').value,
+            document.getElementById('compra-f').value,
+            document.getElementById('precio-f').value,
+            document.getElementById('interno-f').value,
+            document.getElementById('laminapaquete-f').value,
+            document.getElementById('pedido-f').value,
+            imageBBpath
+        );
+
+        if (document.getElementById('type-f').value == "new") {
+            melamina.guardarNuevo().finally(() => {
+               finishSaving();
+            });
+        } else {
+            const ID = document.getElementById('ID-f').value;
+            melamina.guardarEditado(ID).finally(() => {
+                finishSaving();
+            });
+        }
+      }
+
       const cancelar = () => {
           closeForm();
+      }
+
+      async function getFileFromIMG(imgElement, mimeType = 'image/*') {
+        try {
+            const response = await fetch(imgElement.src);
+            const blob = await response.blob();
+
+            const fileName = imgElement.src.split('/').pop() + ".jpg";
+
+            const file = new File([blob], fileName, { type: mimeType });
+
+            return file;
+        } catch (error) {
+            console.error("Error fetching or converting image to file:", error);
+
+            throw error;
+        }
       }
   </script>
 </div>

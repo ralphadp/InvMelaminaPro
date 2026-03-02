@@ -995,7 +995,8 @@ app.get('/editar_catalogo', checkAuth, function(req, res) {
                                             _inventario: resultInventario,
                                             _control: resultsControl,
                                             username: SU.getCurrentUsername(req),
-                                            config: req.app.settings.MAP.configuracion
+                                            config: req.app.settings.MAP.configuracion,
+                                            IMAGE_API_KEY: process.env.IMGBB_API_KEY
                                         });
                                     })
                                     .catch(error => console.error(error))

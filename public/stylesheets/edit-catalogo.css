@@ -59,7 +59,7 @@
     width: 70px;
 }
 [id^="provedor"] {
-   width: 75px; 
+   width: 120px; 
 }
 .centered {/*fix for editor*/
    transform: translate(-20%, -15000%)!important;

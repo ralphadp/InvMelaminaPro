@@ -1,3 +1,4 @@
+//Util function capitalize firsst letter
 Object.defineProperty(String.prototype, 'capitalizeFirst', {
 	value: function() {
 	  return this.charAt(0).toUpperCase() + this.slice(1);
@@ -5,11 +6,13 @@ Object.defineProperty(String.prototype, 'capitalizeFirst', {
 	enumerable: false
 });
 
+//interface get option value
 function getSelectedOption(elementId) {
 	var element = document.getElementById(elementId);
 	return element.options[element.selectedIndex].value;
 }
 
+//inerface get input value
 function getInput(elementId) {
 	var element = document.getElementById(elementId);
 	return element.value;
@@ -831,9 +834,32 @@ function Melamina() {
 		this.att.link_photo = document.getElementById("a_photo_" + row_id).innerText.trim();
 	}
 
+	this.setAtttribute = function(
+		color,
+		provedor,
+		medidas,
+		marca,
+		precio_compra,
+		precio_venta,
+		precio_venta_interno,
+		laminaxpaquete,
+		apedido,
+		link_photo) {
+		this.att.color = color;
+		this.att.provedor = provedor;
+		this.att.medidas = medidas;
+		this.att.marca = marca;
+		this.att.precio_compra = precio_compra;
+		this.att.precio_venta = precio_venta;
+		this.att.precio_venta_interno = precio_venta_interno;
+		this.att.laminaxpaquete = laminaxpaquete;
+		this.att.apedido = apedido;
+		this.att.link_photo = link_photo;
+	}
+
 /*UPDATE*/
 	this.guardarEditado = function(id) {
-		fetch('/preferences/actualizar_melamina/' + id + '/', {
+		return fetch('/preferences/actualizar_melamina/' + id + '/', {
 	        method: 'PUT',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)
@@ -860,7 +886,7 @@ function Melamina() {
 
 /*ADD*/
 	this.guardarNuevo = function() {
-		fetch('/preferences/nueva_melamina/', {
+		return fetch('/preferences/nueva_melamina/', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(this.att)

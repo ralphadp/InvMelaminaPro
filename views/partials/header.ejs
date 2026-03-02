@@ -97,6 +97,24 @@
       -ms-flex-align: center;
       align-items: center;
     }
+    
+    .section-waiting {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background: rgba(255,255,255, 0.7); 
+        text-align: center;
+        padding-top: 20%;
+    }
+    .hidden {
+        display: none;
+    }
+    .visible {
+        display: block;
+    }
 </style>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -247,6 +265,10 @@
    </div>
 </div>
 
+<div class="section-waiting hidden" id="loading-spinner">
+    <img src="images/engranaje.gif" alt="Loading..." width="150" height="150">
+</div>
+
 <script>
 function userMenu() {
     let state = document.getElementById("user-left-menu").style.display;
@@ -388,4 +410,17 @@ console.log("new icon:", config.icon);
 
       document.getElementById("configuration-frame").style.display = "none";
 }
+
+const openWaitingGif = () => {
+  const loadingSpinner = document.getElementById('loading-spinner');
+  loadingSpinner.classList.remove('hidden');
+  loadingSpinner.classList.add('visible');
+}
+
+const closeWaitingGif = () => {
+    const loadingSpinner = document.getElementById('loading-spinner');
+    loadingSpinner.classList.remove('visible');
+    loadingSpinner.classList.add('hidden');
+}
+
 </script>
